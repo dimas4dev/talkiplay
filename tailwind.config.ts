@@ -7,11 +7,11 @@ const config: Config = {
         // Paleta semántica principal
         primary: {
           50: '#EEEEFB',
-          100: '#D3D3F7',
+          100: '#CACCF4', // Indigo/100 de Figma
           200: '#B8B8F3',
-          300: '#9D9DEF',
+          300: '#8C90E6', // Indigo/300 de Figma
           400: '#8282EB',
-          500: '#5459DA', // Color principal usado en botones y acentos
+          500: '#5459DA', // Indigo/500 de Figma - Color principal usado en botones y acentos
           600: '#4A4FC7',
           700: '#3F45B4',
           800: '#353BA1',
@@ -33,12 +33,12 @@ const config: Config = {
         },
         success: {
           50: '#ECFDF5',
-          100: '#D1FAE5',
+          100: '#DAEB99', // Schemes/Tertiary Container
           200: '#A7F3D0',
           300: '#6EE7B7',
           400: '#34D399',
-          500: '#10B981', // Verde usado en métricas
-          600: '#059669',
+          500: '#078339', // Verde de Figma
+          600: '#0D9443', // Verde activo de Figma
           700: '#047857',
           800: '#065F46',
           900: '#064E3B',
@@ -49,8 +49,8 @@ const config: Config = {
           100: '#FEF3C7',
           200: '#FDE68A',
           300: '#FCD34D',
-          400: '#FBBF24',
-          500: '#F59E0B', // Naranja usado en métricas
+          400: '#FE9200', // Naranja de Figma
+          500: '#FEB200', // M3/key-colors/primary (amarillo/dorado)
           600: '#D97706',
           700: '#B45309',
           800: '#92400E',
@@ -76,25 +76,25 @@ const config: Config = {
           200: '#FF9999',
           300: '#FF6666',
           400: '#FF3333',
-          500: '#E80000', // Rojo usado en errores de pago
-          600: '#CC0000',
-          700: '#B30000',
-          800: '#990000',
-          900: '#800000',
-          950: '#660000',
+          500: '#FF0000', // Error/error-500 de Figma
+          600: '#B3261E', // Schemes/Error de Figma
+          700: '#990000',
+          800: '#800000',
+          900: '#660000',
+          950: '#450000',
         },
         neutral: {
-          50: '#FAFAFA',
-          100: '#F5F5F5',
-          200: '#E5E5E5',
-          300: '#D4D4D4',
-          400: '#A3A3A3',
-          500: '#737373',
-          600: '#525252',
-          700: '#404040',
-          800: '#262626',
-          900: '#171717',
-          950: '#0A0A0A',
+          50: '#FEFEFE',
+          100: '#FCFCFC',
+          200: '#F9F9F9',
+          300: '#F0F0F0',
+          400: '#D9D9D9',
+          500: '#848484',
+          600: '#737980',
+          700: '#505760',
+          800: '#393E44',
+          900: '#2C3035',
+          950: '#222528',
         },
         accent: {
           50: '#F5F3FF',
@@ -113,13 +113,13 @@ const config: Config = {
           50: '#ECFEFF',
           100: '#CFFAFE',
           200: '#A5F3FC',
-          300: '#67E8F9',
+          300: '#82D3E0', // Schemes/Primary Fixed Dim
           400: '#22D3EE',
-          500: '#06B6D4', // Cyan usado en métricas
-          600: '#0891B2',
+          500: '#006874', // Schemes/Primary de Figma
+          600: '#004F58', // Schemes/On Primary Container
           700: '#0E7490',
           800: '#155E75',
-          900: '#164E63',
+          900: '#001F24', // Schemes/On Primary Fixed
           950: '#083344',
         },
         // Colores específicos para badges y estados
@@ -173,17 +173,17 @@ const config: Config = {
         },
         // Colores para gráficos (Recharts)
         chart: {
-          primary: '#5459DA',
-          secondary: '#CC0077',
+          primary: '#5459DA', // Indigo/500
+          secondary: '#CC0077', // Magenta/500
           accent: '#4C51C6',
-          success: '#10B981',
-          warning: '#F59E0B',
+          success: '#078339', // Verde de Figma
+          warning: '#FEB200', // M3/key-colors/primary
           danger: '#EF4444',
-          error: '#E80000',
-          info: '#06B6D4',
+          error: '#FF0000', // Error/error-500
+          info: '#006874', // Schemes/Primary
           purple: '#8B5CF6',
-          orange: '#FF5500',
-          cyan: '#00AA55',
+          orange: '#FE9200',
+          cyan: '#017F70', // Brand/500
         },
       },
     },
