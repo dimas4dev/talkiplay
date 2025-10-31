@@ -109,7 +109,7 @@ export default function PasswordRecovery() {
             disabled={isLoading}
             className="w-full flex justify-center py-4 px-6 bg-[var(--color-info-500)] text-white font-semibold rounded-lg shadow-sm hover:bg-[var(--color-chart-cyan)] focus:outline-none focus:ring-2 focus:ring-[var(--color-info-500)] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors mb-6"
           >
-            {isLoading ? t('sendingLink') : t('sendRecoveryLink')}
+            {isLoading ? t('sendingLink') : t('recoverySendButton')}
           </button>
 
           {/* Enlace Volver */}
@@ -119,7 +119,7 @@ export default function PasswordRecovery() {
               onClick={handleBackToLogin}
               className="text-sm text-[var(--color-info-500)] hover:text-[var(--color-chart-cyan)] underline transition-colors"
             >
-              {t('backToLogin')}
+              {t('recoveryBack')}
             </button>
           </div>
         </form>
