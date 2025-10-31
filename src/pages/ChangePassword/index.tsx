@@ -23,54 +23,49 @@ export default function ChangePassword() {
 
   if (isSuccess) {
     return (
-      <main className="relative flex min-h-screen items-center justify-center bg-login-gradient px-4">
-        <section className="w-full max-w-[672px]">
+      <main className="relative flex min-h-screen items-center justify-center px-4 auth-page">
+        <section className="w-full max-w-[672px] bg-white p-10">
           {/* Logo */}
-          <figure className="mx-auto mb-10 flex items-center justify-center">
-            <img src={talkiplayIcon} alt={t('common:brand')} className="h-[98px] w-[98px] rounded-xl" />
+          <figure className="mx-auto mb-8 flex items-center justify-center">
+            <img src={talkiplayIcon} alt={t('common:brand')} className="rounded-xl w-[165.67px] h-[25.6px]" />
           </figure>
 
           {/* Mensaje de éxito */}
           <div className="text-center">
-            <h1 className="mb-6 text-4xl font-bold text-white">{t('passwordChangedTitle')}</h1>
-            <p className="mb-8 text-lg text-white">{t('passwordChangedMessage')}</p>
+            <h1 className="mb-6 text-4xl font-bold text-[var(--color-info-500)]">{t('passwordChangedTitle')}</h1>
+            <p className="mb-8 text-lg text-[var(--color-neutral-900)]">{t('passwordChangedMessage')}</p>
 
             <button
               onClick={handleBackToLogin}
-              className="w-full flex justify-center py-4 px-6 text-white font-semibold rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 transition-colors border-2 btn-recovery"
+              className="w-full flex justify-center py-4 px-6 bg-[var(--color-info-500)] text-white font-semibold rounded-lg shadow-sm hover:bg-[var(--color-chart-cyan)] focus:outline-none focus:ring-2 focus:ring-[var(--color-info-500)] focus:ring-offset-2 transition-colors"
             >
               {t('backToLogin')}
             </button>
           </div>
         </section>
-
-        {/* Footer */}
-        <footer className="absolute bottom-6 left-1/2 -translate-x-1/2 text-center text-base font-bold leading-[1.3] text-white">
-          ClipNest
-        </footer>
       </main>
     )
   }
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center bg-login-gradient px-4">
-      <section className="w-full max-w-[672px]">
+    <main className="relative flex min-h-screen items-center justify-center px-4 auth-page">
+      <section className="w-full max-w-[672px] bg-white p-10">
         {/* Logo */}
-        <figure className="mx-auto mb-10 flex items-center justify-center">
-          <img src={talkiplayIcon} alt={t('common:brand')} className="h-[98px] w-[98px] rounded-xl" />
+        <figure className="mx-auto mb-8 flex items-center justify-center">
+          <img src={talkiplayIcon} alt={t('common:brand')} className="rounded-xl w-[165.67px] h-[25.6px]" />
         </figure>
 
         {/* Título */}
-        <h1 className="mb-4 text-center text-4xl font-bold text-white">{t('changePasswordTitle')}</h1>
+        <h1 className="mb-4 text-center text-4xl font-bold text-[var(--color-info-500)]">{t('changePasswordTitle')}</h1>
 
         {/* Subtítulo */}
-        <p className="mb-10 text-center text-lg text-white">{t('changePasswordSubtitle')}</p>
+        <p className="mb-10 text-center text-lg text-[var(--color-neutral-900)]">{t('changePasswordSubtitle')}</p>
 
         {/* Formulario */}
         <form className="w-full" aria-label={t('aria.changePasswordForm')} onSubmit={handleSubmit}>
           {/* Campo Nueva Contraseña */}
           <div className="mb-6">
-            <label htmlFor="newPassword" className="block text-sm font-medium text-white mb-2">
+            <label htmlFor="newPassword" className="block text-sm font-medium text-[var(--color-neutral-900)] mb-2">
               {t('newPassword')}
             </label>
             <div className="relative">
@@ -80,14 +75,14 @@ export default function ChangePassword() {
                 type={showPassword ? 'text' : 'password'}
                 autoComplete="new-password"
                 required
-                className="w-full px-4 py-3 bg-white border border-white rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white text-gray-900 pr-12"
+                className="w-full px-4 py-3 bg-[var(--color-input-bg)] border-0 border-b-2 border-[var(--color-neutral-900)] rounded-none placeholder-gray-400 focus:outline-none focus:border-[var(--color-info-500)] text-[var(--color-neutral-900)] pr-12"
                 placeholder={t('newPasswordPlaceholder')}
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
               />
               <button
                 type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-neutral-500)] hover:text-[var(--color-neutral-900)]"
                 onClick={() => togglePasswordVisibility('password')}
               >
                 <span className="ms ms-24">{showPassword ? 'visibility_off' : 'visibility'}</span>
@@ -95,7 +90,7 @@ export default function ChangePassword() {
             </div>
             {/* Error del campo nueva contraseña */}
             {formErrors.newPassword && (
-              <div className="mt-2 text-sm text-red-300">
+              <div className="mt-2 text-sm text-red-700">
                 {formErrors.newPassword}
               </div>
             )}
@@ -103,7 +98,7 @@ export default function ChangePassword() {
 
           {/* Campo Confirmar Contraseña */}
           <div className="mb-6">
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-white mb-2">
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-[var(--color-neutral-900)] mb-2">
               {t('confirmPassword')}
             </label>
             <div className="relative">
@@ -113,14 +108,14 @@ export default function ChangePassword() {
                 type={showConfirmPassword ? 'text' : 'password'}
                 autoComplete="new-password"
                 required
-                className="w-full px-4 py-3 bg-white border border-white rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white text-gray-900 pr-12"
+                className="w-full px-4 py-3 bg-[var(--color-input-bg)] border-0 border-b-2 border-[var(--color-neutral-900)] rounded-none placeholder-gray-400 focus:outline-none focus:border-[var(--color-info-500)] text-[var(--color-neutral-900)] pr-12"
                 placeholder={t('confirmPasswordPlaceholder')}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
               <button
                 type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-neutral-500)] hover:text-[var(--color-neutral-900)]"
                 onClick={() => togglePasswordVisibility('confirm')}
               >
                 <span className="ms ms-24">{showConfirmPassword ? 'visibility_off' : 'visibility'}</span>
@@ -128,7 +123,7 @@ export default function ChangePassword() {
             </div>
             {/* Error del campo confirmar contraseña */}
             {formErrors.confirmPassword && (
-              <div className="mt-2 text-sm text-red-300">
+              <div className="mt-2 text-sm text-red-700">
                 {formErrors.confirmPassword}
               </div>
             )}
@@ -147,26 +142,23 @@ export default function ChangePassword() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full flex justify-center py-4 px-6 font-semibold rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors mb-4 btn-send-recovery"
+            className="w-full flex justify-center py-4 px-6 bg-[var(--color-info-500)] text-white font-semibold rounded-lg shadow-sm hover:bg-[var(--color-chart-cyan)] focus:outline-none focus:ring-2 focus:ring-[var(--color-info-500)] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors mb-6"
           >
             {isLoading ? t('changingPassword') : t('changePassword')}
           </button>
 
           {/* Botón de Volver */}
-          <button
-            type="button"
-            onClick={handleBackToLogin}
-            className="w-full flex justify-center py-4 px-6 text-white font-semibold rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 transition-colors border-2 btn-recovery"
-          >
-            {t('backToLogin')}
-          </button>
+          <div className="text-center">
+            <button
+              type="button"
+              onClick={handleBackToLogin}
+              className="text-sm text-[var(--color-info-500)] hover:text-[var(--color-chart-cyan)] underline transition-colors"
+            >
+              {t('backToLogin')}
+            </button>
+          </div>
         </form>
       </section>
-
-      {/* Footer */}
-      <footer className="absolute bottom-6 left-1/2 -translate-x-1/2 text-center text-base font-bold leading-[1.3] text-white">
-        ClipNest
-      </footer>
     </main>
   )
 }

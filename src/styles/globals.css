@@ -31,6 +31,7 @@
   --color-neutral-900: #2C3035; /* Neutral/800 de Figma */
   --color-accent-500: #8B5CF6;
   --color-info-500: #006874; /* Schemes/Primary de Figma */
+  --color-input-bg: #EFF5F6; /* Fondo de inputs en auth */
 
   /* Colores para gráficos (Recharts) */
   --color-chart-primary: #5459DA; /* Indigo/500 */
@@ -73,6 +74,13 @@
 }
 
 @layer utilities {
+  .auth-page {
+    background-image: url('/src/assets/images/background.svg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #FFFFFF;
+  }
   .bg-login-gradient {
     background: radial-gradient(1722.7% 286.21% at -58.37% 286.21%, #FC7A1E 58.4%, #6355FF 76.82%, #000000 92.13%);
   }

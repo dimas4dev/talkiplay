@@ -49,15 +49,16 @@ export default function Login() {
 
   return (
     <main 
-      className="relative flex min-h-screen items-center justify-center bg-white px-4"
+      className="relative flex min-h-screen items-center justify-center px-4"
       style={{
         backgroundImage: `url(${backgroundImage})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
+        backgroundRepeat: 'no-repeat',
+        backgroundColor: '#FFFFFF'
       }}
     >
-      <section className="w-full max-w-[672px] bg-white rounded-lg p-8 shadow-lg">
+      <section className="w-full max-w-[672px] bg-white  p-10">
         {/* Logo */}
         <figure className="mx-auto mb-8 flex items-center justify-center">
           <img 
@@ -88,7 +89,7 @@ export default function Login() {
               type="email"
               autoComplete="email"
               required
-              className="w-full px-4 py-3 bg-[#F0F0F0] border-0 border-b-2 border-[#2C3035] rounded-none placeholder-gray-400 focus:outline-none focus:border-[#006874] text-[#2C3035] transition-colors"
+              className="w-full px-4 py-3 bg-[#EFF5F6] border-0 border-b-2 border-[#2C3035] rounded-none placeholder-gray-400 focus:outline-none focus:border-[#006874] text-[#2C3035] transition-colors"
               placeholder={t('emailPlaceholder')}
               value={formData.email}
               onChange={handleChange}
@@ -107,7 +108,7 @@ export default function Login() {
                 type="password"
                 autoComplete="current-password"
                 required
-                className="w-full px-4 py-3 bg-[#F0F0F0] border-0 border-b-2 border-[#2C3035] rounded-none placeholder-gray-400 focus:outline-none focus:border-[#006874] text-[#2C3035] pr-12 transition-colors"
+                className="w-full px-4 py-3 bg-[#EFF5F6] border-0 border-b-2 border-[#2C3035] rounded-none placeholder-gray-400 focus:outline-none focus:border-[#006874] text-[#2C3035] pr-12 transition-colors"
                 placeholder={t('passwordPlaceholder')}
                 value={formData.password}
                 onChange={handleChange}
