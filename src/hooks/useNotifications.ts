@@ -104,7 +104,7 @@ export function useNotifications(): NotificationsReturn {
           if ('Notification' in window && Notification.permission === 'granted') {
             new Notification(newNotification.title, {
               body: newNotification.message,
-              icon: '/clipnest.svg'
+              icon: '/talkiplay.svg'
             })
           }
         }

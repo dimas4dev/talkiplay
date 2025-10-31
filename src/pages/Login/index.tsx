@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { useLocation } from 'wouter'
 import { useAuth } from '@/hooks/useAuth'
 import { ROUTES } from '@/constants/routes'
-import clipnestIcon from '@/assets/images/icons/clipnest.svg'
+import talkiplayIcon from '@/assets/images/icons/talkiplay.svg'
+import backgroundImage from '@/assets/images/background.svg'
 
 export default function Login() {
   const { t } = useTranslation('auth')
@@ -47,21 +48,38 @@ export default function Login() {
   }
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center bg-login-gradient px-4">
-      <section className="w-full max-w-[672px]">
+    <main 
+      className="relative flex min-h-screen items-center justify-center bg-white px-4"
+      style={{
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
+      <section className="w-full max-w-[672px] bg-white rounded-lg p-8 shadow-lg">
         {/* Logo */}
-        <figure className="mx-auto mb-10 flex items-center justify-center">
-          <img src={clipnestIcon} alt={t('common:brand')} className="h-[98px] w-[98px] rounded-xl" />
+        <figure className="mx-auto mb-8 flex items-center justify-center">
+          <img 
+            src={talkiplayIcon} 
+            alt={t('common:brand')} 
+            className="rounded-xl"
+            style={{
+              width: '165.67px',
+              height: '25.6px',
+              opacity: 1
+            }}
+          />
         </figure>
         
         {/* Título */}
-        <h1 className="mb-10 text-center text-4xl font-bold text-white">{t('welcomeBack')}</h1>
+        <h1 className="mb-10 text-center text-4xl font-bold text-[#006874]">{t('welcomeBack')}</h1>
         
         {/* Formulario */}
         <form className="w-full" aria-label={t('aria.loginForm')} onSubmit={handleSubmit}>
           {/* Campo Email */}
           <div className="mb-6">
-            <label htmlFor="email" className="block text-sm font-medium text-white mb-2">
+            <label htmlFor="email" className="block text-sm font-medium text-[#2C3035] mb-2">
               {t('email')}
             </label>
             <input
@@ -70,7 +88,7 @@ export default function Login() {
               type="email"
               autoComplete="email"
               required
-              className="w-full px-4 py-3 bg-white border border-white rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white text-gray-900"
+              className="w-full px-4 py-3 bg-[#F0F0F0] border-0 border-b-2 border-[#2C3035] rounded-none placeholder-gray-400 focus:outline-none focus:border-[#006874] text-[#2C3035] transition-colors"
               placeholder={t('emailPlaceholder')}
               value={formData.email}
               onChange={handleChange}
@@ -79,7 +97,7 @@ export default function Login() {
           
           {/* Campo Contraseña */}
           <div className="mb-6">
-            <label htmlFor="password" className="block text-sm font-medium text-white mb-2">
+            <label htmlFor="password" className="block text-sm font-medium text-[#2C3035] mb-2">
               {t('password')}
             </label>
             <div className="relative">
@@ -89,14 +107,14 @@ export default function Login() {
                 type="password"
                 autoComplete="current-password"
                 required
-                className="w-full px-4 py-3 bg-white border border-white rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-white text-gray-900 pr-12"
+                className="w-full px-4 py-3 bg-[#F0F0F0] border-0 border-b-2 border-[#2C3035] rounded-none placeholder-gray-400 focus:outline-none focus:border-[#006874] text-[#2C3035] pr-12 transition-colors"
                 placeholder={t('passwordPlaceholder')}
                 value={formData.password}
                 onChange={handleChange}
               />
               <button
                 type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#848484] hover:text-[#2C3035] transition-colors"
                 onClick={() => {
                   const passwordInput = document.getElementById('password') as HTMLInputElement
                   if (passwordInput) {
@@ -125,15 +143,15 @@ export default function Login() {
                 id="remember-me"
                 name="remember-me"
                 type="checkbox"
-                className="h-4 w-4 text-white border-white rounded focus:ring-white"
+                className="h-4 w-4 text-[#006874] border-[#848484] rounded focus:ring-[#006874]"
               />
-              <label htmlFor="remember-me" className="ml-2 block text-sm text-white">
+              <label htmlFor="remember-me" className="ml-2 block text-sm text-[#2C3035]">
                 {t('rememberMe')}
               </label>
             </div>
             <a 
               href={ROUTES.passwordRecovery} 
-              className="text-sm text-white hover:text-gray-200 underline"
+              className="text-sm text-[#006874] hover:text-[#017F70] underline transition-colors"
               onClick={(e) => {
                 e.preventDefault()
                 setLocation(ROUTES.passwordRecovery)
@@ -147,17 +165,12 @@ export default function Login() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full flex justify-center py-4 px-6 bg-white text-gray-900 font-semibold rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="w-full flex justify-center py-4 px-6 bg-[#006874] text-white font-semibold rounded-lg shadow-sm hover:bg-[#017F70] focus:outline-none focus:ring-2 focus:ring-[#006874] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {isLoading ? t('loggingIn') : t('signIn')}
           </button>
         </form>
       </section>
-      
-      {/* Footer */}
-      <footer className="absolute bottom-6 left-1/2 -translate-x-1/2 text-center text-base font-bold leading-[1.3] text-white">
-        ClipNest
-      </footer>
     </main>
   )
 }

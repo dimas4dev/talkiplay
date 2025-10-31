@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import clipnestIcon from '@/assets/images/icons/clipnest.svg'
+import talkiplayIcon from '@/assets/images/icons/talkiplay.svg'
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/components/ui/input-otp'
 import useVerifyOTP from '@/hooks/useVerifyOTP'
 
@@ -23,7 +23,7 @@ export default function OTP() {
       <section className="w-full max-w-[672px]">
         {/* Logo */}
         <figure className="mx-auto mb-10 flex items-center justify-center">
-          <img src={clipnestIcon} alt={t('common:brand')} className="h-[98px] w-[98px] rounded-xl" />
+          <img src={talkiplayIcon} alt={t('common:brand')} className="h-[98px] w-[98px] rounded-xl" />
         </figure>
         
         {/* Título */}

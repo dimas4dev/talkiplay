@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react'
 import { Link, useLocation } from 'wouter'
 // usando Material Symbols (clase utilitaria .ms)
-import clipnestIcon from '@/assets/images/icons/clipnest.svg'
+import talkiplayIcon from '@/assets/images/icons/talkiplay.svg'
 import { useAuth } from '@/hooks/useAuth'
 import { useNotificationsContext } from '@/contexts/NotificationsContext'
 import { useTranslation } from 'react-i18next'
@@ -30,7 +30,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
     <div className="flex min-h-screen bg-neutral-50">
       <aside className={`sidebar flex w-72 min-w-[18rem] flex-col border-r px-5 pt-6 pb-0 ${SIDEBAR_BORDER} ${SIDEBAR_BG}`}>
         <figure className="mb-8 flex items-center justify-center">
-          <img src={clipnestIcon} alt={tCommon('brand')} className="h-[60px] w-[60px] rounded-xl" />
+          <img src={talkiplayIcon} alt={tCommon('brand')} className="h-[60px] w-[60px] rounded-xl" />
         </figure>
 
         <nav className="flex flex-1 flex-col gap-1">
