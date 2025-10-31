@@ -84,8 +84,7 @@ const resources = {
     },
     sidebar: {
       dashboard: 'Dashboard',
-      memberships: 'Suscripciones',
-      revenues: 'Ingresos',
+      language: 'Gestión de lenguaje',
       metrics: 'Métricas de uso',
       users: 'Usuarios',
       reports: 'Reportes',
@@ -472,8 +471,7 @@ const resources = {
     },
     sidebar: {
       dashboard: 'Dashboard',
-      memberships: 'Memberships',
-      revenues: 'Revenues',
+      language: 'Language management',
       metrics: 'Usage metrics',
       users: 'Users',
       reports: 'Reports',

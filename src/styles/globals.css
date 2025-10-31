@@ -32,6 +32,8 @@
   --color-accent-500: #8B5CF6;
   --color-info-500: #006874; /* Schemes/Primary de Figma */
   --color-input-bg: #EFF5F6; /* Fondo de inputs en auth */
+  --sidebar-bg: #D5EDF3; /* Fondo sidebar */
+  --sidebar-user-bg: #82D3E0; /* Sección usuario sidebar */
 
   /* Colores para gráficos (Recharts) */
   --color-chart-primary: #5459DA; /* Indigo/500 */

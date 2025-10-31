@@ -6,11 +6,8 @@ import ChangePassword from '@/pages/ChangePassword'
 import Dashboard from '@/pages/Dashboard'
 import RequireAuth from '@/components/auth/RequireAuth'
 import Users from '@/pages/Users'
-import Memberships from '@/pages/Memberships'
 import Metrics from '@/pages/Metrics'
 import Reports from '@/pages/Reports'
-import Revenues from '@/pages/Revenues'
-import RevenuePeriod from '@/pages/Revenues/Period'
 import UserReportsPage from '@/pages/Reports/User'
 import Settings from '@/pages/Settings'
 import AppLayout from '@/components/layout/AppLayout'
@@ -58,13 +55,6 @@ export function Routes() {
           </AppLayout>
         </RequireAuth>
       </Route>
-      <Route path={ROUTES.memberships}>
-        <RequireAuth>
-          <AppLayout>
-            <Memberships />
-          </AppLayout>
-        </RequireAuth>
-      </Route>
       <Route path={ROUTES.metrics}>
         <RequireAuth>
           <AppLayout>
@@ -76,20 +66,6 @@ export function Routes() {
         <RequireAuth>
           <AppLayout>
             <Reports />
-          </AppLayout>
-        </RequireAuth>
-      </Route>
-      <Route path={ROUTES.revenues}>
-        <RequireAuth>
-          <AppLayout>
-            <Revenues />
-          </AppLayout>
-        </RequireAuth>
-      </Route>
-      <Route path="/revenues/:period">
-        <RequireAuth>
-          <AppLayout>
-            <RevenuePeriod />
           </AppLayout>
         </RequireAuth>
       </Route>
