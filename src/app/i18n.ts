@@ -21,8 +21,32 @@ const resources = {
       },
       activeUsers: {
         title: 'Usuarios activos',
-        percentOfTotal: '{{percent}}% del total',
         trendVsYesterday: '{{trend}} vs ayer',
+      },
+      averageClicks: {
+        title: 'Promedio de Clicks por familia',
+        trendVsLastMonth: '{{trend}} vs mes anterior',
+      },
+      languages: {
+        title: 'Idiomas',
+        subtitle: '3 idiomas',
+        spanish: 'Español',
+        english: 'Inglés',
+        german: 'Alemán',
+        trendVsLastMonth: '{{trend}} vs mes pasado',
+      },
+      clickSuccessRate: {
+        title: 'Tasa de éxito de Clicks',
+        subtitle: '% de Clicks que resultan en encuentros',
+        successfulMatches: 'Match exitosos',
+        last7days: 'Últimos 7 días',
+        last30days: 'Últimos 30 días',
+        trendVsLastMonth: '{{trend}} vs mes pasado',
+      },
+      newUsers: {
+        title: 'Nuevos usuarios',
+        subtitle: 'Últimos 12 meses',
+        upwardTrend: 'En tendencia alcista este mes',
       },
     },
     common: {

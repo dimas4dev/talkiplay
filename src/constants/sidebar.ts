@@ -14,7 +14,7 @@ export const NAV_ITEMS: SidebarItem[] = [
   { labelKey: 'users', href: ROUTES.users, icon: 'group', colorClass: 'text-[var(--color-neutral-900)]' },
   { labelKey: 'reports', href: ROUTES.reports, icon: 'report', colorClass: 'text-[var(--color-neutral-900)]' },
   // Sección secundaria
-  { labelKey: 'language', href: ROUTES.settings, icon: 'chat_error', colorClass: 'text-[var(--color-neutral-900)]' },
+  { labelKey: 'language', href: ROUTES.language, icon: 'chat_error', colorClass: 'text-[var(--color-neutral-900)]' },
   { labelKey: 'settings', href: ROUTES.settings, icon: 'settings', colorClass: 'text-[var(--color-neutral-900)]' },
 ]
 

@@ -9,6 +9,7 @@ export const ROUTES = {
   metrics: '/metrics',
   reports: '/reports',
   settings: '/settings',
+  language: '/language',
   notifications: '/notifications',
 } as const
 

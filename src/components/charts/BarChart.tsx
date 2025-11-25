@@ -20,36 +20,36 @@ export default function BarChart({
   return (
     <div className="h-full w-full flex flex-col">
       {/* Header */}
-      <header className="mb-4 text-left">
-        <h3 className="text-base font-semibold text-neutral-900">{title}</h3>
+      <header className="mb-1 text-left">
+        <h3 className="text-xs font-semibold text-neutral-900">{title}</h3>
         {subtitle && (
-          <p className="text-sm font-medium text-neutral-500">{subtitle}</p>
+          <p className="text-[9px] font-medium text-neutral-500">{subtitle}</p>
         )}
       </header>
 
       {/* Chart */}
-      <section className="flex-1 min-h-[220px]">
+      <section className="flex-1 min-h-[120px]">
         <ResponsiveContainer width="100%" height="100%">
           <RechartsBarChart
             data={data}
-            margin={{ top: 10, right: 20, left: 10, bottom: 30 }}
+            margin={{ top: 5, right: 10, left: 5, bottom: 20 }}
           >
             <CartesianGrid strokeDasharray="3 3" stroke="var(--color-neutral-200)" />
 
             {/* Eje X */}
             <XAxis
               dataKey="month"
-              tick={{ fill: 'var(--color-neutral-500)', fontSize: 12 }}
+              tick={{ fill: 'var(--color-neutral-500)', fontSize: 9 }}
               tickLine={false}
               axisLine={{ stroke: 'var(--color-neutral-200)' }}
             />
 
             {/* Eje Y */}
             <YAxis
-              tick={{ fill: 'var(--color-neutral-500)', fontSize: 12 }}
+              tick={{ fill: 'var(--color-neutral-500)', fontSize: 9 }}
               tickLine={false}
               axisLine={{ stroke: 'var(--color-neutral-200)' }}
-              width={40}
+              width={30}
             />
 
             {/* Tooltip personalizado */}
@@ -87,9 +87,9 @@ export default function BarChart({
             <Legend
               verticalAlign="bottom"
               align="center"
-              height={36}
+              height={24}
               iconType="rect"
-              wrapperStyle={{ fontSize: '12px', color: 'var(--color-neutral-700)' }}
+              wrapperStyle={{ fontSize: '9px', color: 'var(--color-neutral-700)' }}
             />
 
             {/* Barras */}

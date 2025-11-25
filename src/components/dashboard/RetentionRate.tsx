@@ -24,9 +24,9 @@ export default function RetentionRate({ data }: RetentionRateProps) {
   const cancelledReal = cancelled
 
   const data30Days = [
-    { name: t('renewed'), value: averageRetention, color: 'var(--color-chart-primary)', percentage: `${averageRetention}%` },
-    { name: t('cancelled'), value: cancelledReal, color: 'var(--color-chart-warning)', percentage: `${cancelledReal}%` },
-    { name: t('paymentError'), value: paymentError, color: 'var(--color-chart-error)', percentage: `${paymentError}%` }
+    { name: t('renewed'), value: averageRetention, color: 'var(--color-info-500)', percentage: `${averageRetention}%` },
+    { name: t('cancelled'), value: cancelledReal, color: 'var(--sidebar-user-bg)', percentage: `${cancelledReal}%` },
+    { name: t('paymentError'), value: paymentError, color: 'var(--color-chart-cyan)', percentage: `${paymentError}%` }
   ]
 
   // Para 7 días: el endpoint no provee retención 7d; usar mismo dato como fallback
@@ -36,9 +36,9 @@ export default function RetentionRate({ data }: RetentionRateProps) {
   const sevenDayCancelledReal = sevenDayCancelled
 
   const data7Days = [
-    { name: t('renewed'), value: sevenDayRetention, color: 'var(--color-chart-primary)', percentage: `${sevenDayRetention}%` },
-    { name: t('cancelled'), value: sevenDayCancelledReal, color: 'var(--color-chart-warning)', percentage: `${sevenDayCancelledReal}%` },
-    { name: t('paymentError'), value: sevenDayPaymentError, color: 'var(--color-chart-error)', percentage: `${sevenDayPaymentError}%` }
+    { name: t('renewed'), value: sevenDayRetention, color: 'var(--color-info-500)', percentage: `${sevenDayRetention}%` },
+    { name: t('cancelled'), value: sevenDayCancelledReal, color: 'var(--sidebar-user-bg)', percentage: `${sevenDayCancelledReal}%` },
+    { name: t('paymentError'), value: sevenDayPaymentError, color: 'var(--color-chart-cyan)', percentage: `${sevenDayPaymentError}%` }
   ]
 
   const currentData = activeTab === '30days' ? data30Days : data7Days

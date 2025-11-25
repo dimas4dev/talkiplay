@@ -10,6 +10,7 @@ import Metrics from '@/pages/Metrics'
 import Reports from '@/pages/Reports'
 import UserReportsPage from '@/pages/Reports/User'
 import Settings from '@/pages/Settings'
+import Language from '@/pages/Language'
 import AppLayout from '@/components/layout/AppLayout'
 import { ROUTES } from '@/constants/routes'
 import Notifications from '@/pages/Notifications'
@@ -73,6 +74,13 @@ export function Routes() {
         <RequireAuth>
           <AppLayout>
             <Settings />
+          </AppLayout>
+        </RequireAuth>
+      </Route>
+      <Route path={ROUTES.language}>
+        <RequireAuth>
+          <AppLayout>
+            <Language />
           </AppLayout>
         </RequireAuth>
       </Route>

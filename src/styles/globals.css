@@ -35,6 +35,40 @@
   --sidebar-bg: #D5EDF3; /* Fondo sidebar */
   --sidebar-user-bg: #82D3E0; /* Sección usuario sidebar */
 
+  /* Tipografía - Tamaños de fuente */
+  --font-size-display-large: 2.25rem; /* 36px */
+  --font-size-display-medium: 1.875rem; /* 30px */
+  --font-size-display-small: 1.5rem; /* 24px */
+  --font-size-heading-large: 1.25rem; /* 20px */
+  --font-size-heading-medium: 1.125rem; /* 18px */
+  --font-size-heading-small: 1rem; /* 16px */
+  --font-size-body-large: 1rem; /* 16px */
+  --font-size-body-medium: 0.875rem; /* 14px */
+  --font-size-body-small: 0.75rem; /* 12px */
+  --font-size-label: 0.875rem; /* 14px */
+  --font-size-caption: 0.75rem; /* 12px */
+
+  /* Tipografía - Pesos de fuente */
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Tipografía - Line Height */
+  --line-height-display-large: 1.2;
+  --line-height-display-medium: 1.25;
+  --line-height-display-small: 1.3;
+  --line-height-heading: 1.4;
+  --line-height-body: 1.5;
+  --line-height-tight: 1.3;
+
+  /* Tipografía - Letter Spacing */
+  --letter-spacing-display: -0.02em;
+  --letter-spacing-heading: -0.01em;
+  --letter-spacing-body: 0;
+  --letter-spacing-wide: 0.01em;
+
   /* Colores para gráficos (Recharts) */
   --color-chart-primary: #5459DA; /* Indigo/500 */
   --color-chart-secondary: #CC0077; /* Magenta/500 */
@@ -125,6 +159,63 @@
   /* Sombra para cajas de términos y condiciones */
   .terms-shadow {
     box-shadow: 0px 5px 15px 0px var(--ModalShadow);
+  }
+  
+  /* Tipografía - Utilidades escalables usando variables */
+  .text-display-large {
+    font-size: var(--font-size-display-large);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-display-large);
+    letter-spacing: var(--letter-spacing-display);
+  }
+  
+  .text-display-medium {
+    font-size: var(--font-size-display-medium);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-display-medium);
+    letter-spacing: var(--letter-spacing-display);
+  }
+  
+  .text-display-small {
+    font-size: var(--font-size-display-small);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-display-small);
+    letter-spacing: var(--letter-spacing-display);
+  }
+  
+  .text-heading-large {
+    font-size: var(--font-size-heading-large);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-heading);
+    letter-spacing: var(--letter-spacing-heading);
+  }
+  
+  .text-heading-medium {
+    font-size: var(--font-size-heading-medium);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-heading);
+    letter-spacing: var(--letter-spacing-heading);
+  }
+  
+  .text-body-large {
+    font-size: var(--font-size-body-large);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--line-height-body);
+    letter-spacing: var(--letter-spacing-body);
+  }
+  
+  .text-body-medium {
+    font-size: var(--font-size-body-medium);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--line-height-body);
+    letter-spacing: var(--letter-spacing-body);
+  }
+  
+  .text-label {
+    font-size: var(--font-size-label);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-body);
+    letter-spacing: var(--letter-spacing-body);
   }
 }
 

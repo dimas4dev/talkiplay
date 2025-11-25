@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import LineChart from '../charts/LineChart'
+import BarChart from '../charts/BarChart'
 import type { GrowthRate } from '@/types/dashboard'
 
 interface UserGrowthProps {
@@ -30,15 +30,8 @@ export default function UserGrowth({ data }: UserGrowthProps) {
   const series = [
     {
       dataKey: 'newAccounts',
-      name: t('newAccounts'),
-      color: 'var(--color-chart-warning)',
-      strokeWidth: 2
-    },
-    {
-      dataKey: 'activatedSubscriptions',
-      name: t('activatedSubscriptions'),
-      color: 'var(--color-chart-accent)',
-      strokeWidth: 2
+      name: t('title'),
+      color: 'var(--color-info-500)'
     }
   ]
 
@@ -50,13 +43,12 @@ export default function UserGrowth({ data }: UserGrowthProps) {
   }
 
   return (
-    <LineChart
+    <BarChart
       title={t('title')}
       subtitle={t('subtitle')}
       data={chartData}
       series={series}
-      trend={`+${data.renewal_rate.toFixed(1)}% ${t('trend')}`}
-      summary={calculateSummary()}
+      barRadius={8}
     />
   )
 }

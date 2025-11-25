@@ -18,9 +18,16 @@ export default function StatsCard({
   return (
     <section
       aria-labelledby="stats-title"
-      className={`h-full min-h-[107px] flex flex-col justify-center rounded border border-neutral-200 bg-neutral-50 p-4 transition-colors ${
+      className={`h-[172px] w-full flex flex-col justify-center rounded border transition-colors ${
         onClick ? 'cursor-pointer hover:bg-neutral-100 hover:border-primary-500' : 'hover:bg-neutral-100'
       }`}
+      style={{
+        borderRadius: '4px',
+        borderWidth: '1px',
+        borderColor: '#EEEEEF',
+        backgroundColor: '#FCFCFC',
+        padding: '16px'
+      }}
       onClick={onClick}
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
@@ -32,24 +39,24 @@ export default function StatsCard({
       } : undefined}
     >
       {/* Título */}
-      <header className="text-center leading-tight">
+      <header className="text-center leading-tight mb-0.5">
         <h3
           id="stats-title"
-          className="text-[clamp(12px,1.5vw,16px)] font-medium leading-[1.3] text-neutral-700"
+          className="text-[10px] font-medium leading-[1.2] text-neutral-700"
         >
           {title}
         </h3>
       </header>
 
       {/* Valor principal dinámico */}
-      <p className="text-center font-bold text-neutral-900 text-[clamp(18px,4vw,32px)] leading-tight break-words">
+      <p className="text-center font-bold text-neutral-900 text-xl leading-tight break-words mb-0.5">
         {value}
         {suffix ? ` ${suffix}` : ''}
       </p>
 
       {/* Subtítulo */}
       <p
-        className={`text-center text-[clamp(10px,1.2vw,14px)] font-medium leading-[1.4] text-neutral-500 ${
+        className={`text-center text-[9px] font-medium leading-[1.2] text-neutral-500 ${
           subtitleBelowValue ? '' : 'order-[-1]'
         }`}
       >
