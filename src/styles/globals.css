@@ -11,29 +11,36 @@
   --radius: 0.625rem;
   --ModalShadow: rgba(0, 0, 0, 0.1);
 
-  /* Colores principales - Paleta semántica */
-  --color-primary-500: #5459DA; /* Indigo/500 de Figma */
-  --color-primary-600: #4A4FC7;
-  --color-secondary-500: #6355FF;
-  --color-success-500: #078339; /* Verde de Figma */
-  --color-warning-500: #FEB200; /* M3/key-colors/primary (amarillo/dorado) */
-  --color-danger-500: #EF4444;
-  --color-error-500: #FF0000; /* Error/error-500 de Figma */
-  --color-neutral-50: #FEFEFE; /* Grises/50 de Figma */
-  --color-neutral-100: #FCFCFC; /* White/White de Figma */
-  --color-neutral-200: #F9F9F9; /* Neutral/White de Figma */
-  --color-neutral-300: #F0F0F0; /* Grises/500 de Figma */
-  --color-neutral-400: #D9D9D9; /* Gris claro de Figma */
-  --color-neutral-500: #848484; /* Text secondary / Grises/800 de Figma */
-  --color-neutral-600: #737980; /* Neutral/400 de Figma */
-  --color-neutral-700: #505760; /* Neutral/500 de Figma */
-  --color-neutral-800: #393E44; /* Neutral/700 de Figma */
-  --color-neutral-900: #2C3035; /* Neutral/800 de Figma */
-  --color-accent-500: #8B5CF6;
-  --color-info-500: #006874; /* Schemes/Primary de Figma */
+  /* Colores principales - Material Design 3 (M3) */
+  --color-primary-500: #006874; /* M3 Primary */
+  --color-primary-600: #004F58; /* M3 On Primary Container */
+  --color-primary-container: #9EEFFD; /* M3 Primary Container */
+  --color-primary-fixed: #9EEFFD; /* M3 Primary Fixed */
+  --color-primary-fixed-dim: #82D3E0; /* M3 Primary Fixed Dim */
+  --color-primary-inverse: #82D3E0; /* M3 Inverse Primary */
+  --color-secondary-500: #566422; /* M3 Tertiary */
+  --color-secondary-container: #DAEB99; /* M3 Tertiary Container */
+  --color-success-500: #566422; /* M3 Tertiary */
+  --color-success-container: #DAEB99; /* M3 Tertiary Container */
+  --color-warning-500: #FF8C42;
+  --color-danger-500: #BA1A1A; /* M3 Error */
+  --color-error-500: #BA1A1A; /* M3 Error */
+  --color-error-container: #FFDAD6; /* M3 Error Container */
+  --color-neutral-50: #F5FAFB; /* M3 Background/Surface */
+  --color-neutral-100: #E9EFF0;
+  --color-neutral-200: #DBE4E6; /* M3 Surface Variant */
+  --color-neutral-300: #BFC8CA; /* M3 Outline Variant */
+  --color-neutral-400: #9FA8AA;
+  --color-neutral-500: #6F797A; /* M3 Outline */
+  --color-neutral-600: #3F484A; /* M3 On Surface Variant */
+  --color-neutral-700: #2B3133; /* M3 Inverse Surface */
+  --color-neutral-800: #171D1E; /* M3 On Background/On Surface */
+  --color-neutral-900: #0F1314;
+  --color-accent-500: #006874; /* M3 Primary */
+  --color-info-500: #006874; /* M3 Primary */
   --color-input-bg: #EFF5F6; /* Fondo de inputs en auth */
-  --sidebar-bg: #D5EDF3; /* Fondo sidebar */
-  --sidebar-user-bg: #82D3E0; /* Sección usuario sidebar */
+  --sidebar-bg: #E9EFF0; /* Fondo sidebar basado en M3 Surface */
+  --sidebar-user-bg: #82D3E0; /* M3 Primary Fixed Dim */
 
   /* Tipografía - Tamaños de fuente */
   --font-size-display-large: 2.25rem; /* 36px */
@@ -69,18 +76,18 @@
   --letter-spacing-body: 0;
   --letter-spacing-wide: 0.01em;
 
-  /* Colores para gráficos (Recharts) */
-  --color-chart-primary: #5459DA; /* Indigo/500 */
-  --color-chart-secondary: #CC0077; /* Magenta/500 */
-  --color-chart-accent: #4C51C6;
-  --color-chart-success: #078339; /* Verde de Figma */
-  --color-chart-warning: #FEB200; /* M3/key-colors/primary */
-  --color-chart-danger: #EF4444;
-  --color-chart-error: #FF0000; /* Error/error-500 */
-  --color-chart-info: #006874; /* Schemes/Primary */
+  /* Colores para gráficos (Recharts) - Basados en M3 */
+  --color-chart-primary: #006874; /* M3 Primary */
+  --color-chart-secondary: #566422; /* M3 Tertiary */
+  --color-chart-accent: #82D3E0; /* M3 Primary Fixed Dim */
+  --color-chart-success: #566422; /* M3 Tertiary */
+  --color-chart-warning: #FF8C42;
+  --color-chart-danger: #BA1A1A; /* M3 Error */
+  --color-chart-error: #BA1A1A; /* M3 Error */
+  --color-chart-info: #006874; /* M3 Primary */
   --color-chart-purple: #8B5CF6;
-  --color-chart-orange: #FE9200; /* Naranja de Figma */
-  --color-chart-cyan: #017F70; /* Brand/500 */
+  --color-chart-orange: #FF8C42;
+  --color-chart-cyan: #006874; /* M3 Primary */
 
   /* Colores para badges - Membership */
   --color-membership-premium-bg: #F6E6DA;
@@ -118,7 +125,7 @@
     background-color: #FFFFFF;
   }
   .bg-login-gradient {
-    background: radial-gradient(1722.7% 286.21% at -58.37% 286.21%, #FC7A1E 58.4%, #6355FF 76.82%, #000000 92.13%);
+    background: radial-gradient(1722.7% 286.21% at -58.37% 286.21%, #FC7A1E 58.4%, #006874 76.82%, #000000 92.13%);
   }
   .ms {
     font-family: 'Material Symbols Outlined';

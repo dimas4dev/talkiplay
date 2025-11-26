@@ -154,7 +154,7 @@ export default function Settings() {
                   <span>{t('addSection')}</span>
                 </button>
                 {adding === 'terms' && (
-                  <div className="mb-4 rounded-lg border border-[#F0F0F0] bg-white p-6 terms-shadow">
+                  <div className="mb-4 rounded-lg border border-neutral-300 bg-white p-6 terms-shadow">
                     <div className="mb-3">
                       <input 
                         className="w-full rounded border border-neutral-900 p-3 text-sm focus:outline-none" 
@@ -182,7 +182,7 @@ export default function Settings() {
                         {t('cancel')}
                       </button>
                       <button 
-                        className="rounded border border-[#5459DA] bg-[#5459DA] px-6 py-3 text-white hover:bg-[#4A4FC7] disabled:opacity-50" 
+                        className="rounded border border-primary-500 bg-primary-500 px-6 py-3 text-white hover:bg-primary-600 disabled:opacity-50" 
                         onClick={addSection}
                         disabled={isUpdating || !newTitle.trim() || !newContent.trim()}
                       >
@@ -212,7 +212,7 @@ export default function Settings() {
                   <span>{t('addSection')}</span>
                 </button>
                 {adding === 'policies' && (
-                  <div className="mb-4 rounded-lg border border-[#F0F0F0] bg-white p-6 terms-shadow">
+                  <div className="mb-4 rounded-lg border border-neutral-300 bg-white p-6 terms-shadow">
                     <div className="mb-3">
                       <input 
                         className="w-full rounded border border-neutral-900 p-3 text-sm focus:outline-none" 
@@ -240,7 +240,7 @@ export default function Settings() {
                         {t('cancel')}
                       </button>
                       <button 
-                        className="rounded border border-[#5459DA] bg-[#5459DA] px-6 py-3 text-white hover:bg-[#4A4FC7] disabled:opacity-50" 
+                        className="rounded border border-primary-500 bg-primary-500 px-6 py-3 text-white hover:bg-primary-600 disabled:opacity-50" 
                         onClick={addSection}
                         disabled={isUpdating || !newTitle.trim() || !newContent.trim()}
                       >

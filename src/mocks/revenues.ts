@@ -25,9 +25,9 @@ export const REVENUE_PERIODS: RevenuePeriodRow[] = [
 
 export const REVENUE_SUMMARY: RevenueSummary = {
   payments: [
-    { name: 'GPay', value: 45, color: '#4C51C6' },
-    { name: 'Apple Pay', value: 30, color: '#9AA3E1' },
-    { name: 'Stripe', value: 25, color: '#BFC6F0' },
+    { name: 'GPay', value: 45, color: '#006874' }, // M3 Primary
+    { name: 'Apple Pay', value: 30, color: '#82D3E0' }, // M3 Primary Fixed Dim
+    { name: 'Stripe', value: 25, color: '#9EEFFD' }, // M3 Primary Container
   ],
   series: [
     { month: 'Jan', premium: 12, pro: 8 },

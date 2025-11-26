@@ -24,8 +24,8 @@ export default function StatsCard({
       style={{
         borderRadius: '4px',
         borderWidth: '1px',
-        borderColor: '#EEEEEF',
-        backgroundColor: '#FCFCFC',
+        borderColor: 'var(--color-neutral-300)',
+        backgroundColor: 'var(--color-neutral-50)',
         padding: '16px'
       }}
       onClick={onClick}

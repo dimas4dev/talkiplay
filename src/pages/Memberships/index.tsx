@@ -211,7 +211,7 @@ export default function Memberships() {
             label: t('stats.trial'),
             value: trialSummary.total.toString(),
             iconBackgroundColor: 'bg-transparent',
-            iconTextColor: 'text-[#5459DA]',
+            iconTextColor: 'text-primary-500',
             iconSize: 'ms-24'
           },
           {
@@ -219,7 +219,7 @@ export default function Memberships() {
             label: 'Potencial Premium',
             value: `€${trialSummary.potential_revenue.toFixed(2)}`,
             iconBackgroundColor: 'bg-transparent',
-            iconTextColor: 'text-[#5459DA]',
+            iconTextColor: 'text-primary-500',
             iconSize: 'ms-24'
           },
           {
@@ -227,7 +227,7 @@ export default function Memberships() {
             label: 'Potencial Total',
             value: `€${trialSummary.potential_revenue.toFixed(2)}`,
             iconBackgroundColor: 'bg-transparent',
-            iconTextColor: 'text-[#5459DA]',
+            iconTextColor: 'text-primary-500',
             iconSize: 'ms-24',
             iconFill: true
           }
@@ -251,7 +251,7 @@ export default function Memberships() {
             label: 'Errores de pago',
             value: suspendedSummary.payment_errors.toString(),
             iconBackgroundColor: 'bg-transparent',
-            iconTextColor: 'text-[#5459DA]',
+            iconTextColor: 'text-primary-500',
             iconSize: 'ms-24'
           },
           {
@@ -259,7 +259,7 @@ export default function Memberships() {
             label: 'Vencidas',
             value: suspendedSummary.expired.toString(),
             iconBackgroundColor: 'bg-transparent',
-            iconTextColor: 'text-[#5459DA]',
+            iconTextColor: 'text-primary-500',
             iconSize: 'ms-24'
           }
         ]
@@ -270,7 +270,7 @@ export default function Memberships() {
             label: 'Renovaciones Premium',
             value: renewalsSummary.premium_renewals.toString(),
             iconBackgroundColor: 'bg-transparent',
-            iconTextColor: 'text-[#5459DA]',
+            iconTextColor: 'text-primary-500',
             iconSize: 'ms-24'
           },
           {
@@ -278,7 +278,7 @@ export default function Memberships() {
             label: 'Renovaciones Pro',
             value: renewalsSummary.pro_renewals.toString(),
             iconBackgroundColor: 'bg-transparent',
-            iconTextColor: 'text-[#5459DA]',
+            iconTextColor: 'text-primary-500',
             iconSize: 'ms-24',
             iconFill: true
           },
@@ -287,7 +287,7 @@ export default function Memberships() {
             label: 'Total programado',
             value: renewalsSummary.scheduled.toString(),
             iconBackgroundColor: 'bg-transparent',
-            iconTextColor: 'text-[#5459DA]',
+            iconTextColor: 'text-primary-500',
             iconSize: 'ms-24'
           }
         ]
@@ -310,7 +310,7 @@ export default function Memberships() {
             label: t('stats.trial'),
             value: overview.trial.toString(),
             iconBackgroundColor: 'bg-transparent',
-            iconTextColor: 'text-[#5459DA]',
+            iconTextColor: 'text-primary-500',
             iconSize: 'ms-24'
           }
         ]
