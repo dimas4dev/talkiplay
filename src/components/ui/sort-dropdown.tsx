@@ -9,6 +9,7 @@ interface SortDropdownProps {
   value?: string
   onChange?: (value: string) => void
   className?: string
+  namespace?: string
 }
 
 export default function SortDropdown({ 
@@ -16,9 +17,10 @@ export default function SortDropdown({
   groups = SORT_GROUPS,
   value,
   onChange,
-  className = ''
+  className = '',
+  namespace = 'memberships'
 }: SortDropdownProps) {
-  const { t } = useTranslation('memberships')
+  const { t } = useTranslation(namespace)
   const [open, setOpen] = useState(false)
   const [selected, setSelected] = useState<string>(value ?? groups[0].options[0].value)
   const containerRef = useRef<HTMLDivElement | null>(null)

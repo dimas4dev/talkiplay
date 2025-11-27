@@ -106,8 +106,8 @@
   --color-status-inactive-text: #2C3035; /* Neutral/800 de Figma */
   --color-status-blocked-bg: #FFE5E5;
   --color-status-blocked-text: #9B1C1C;
-  --color-status-suspended-bg: #FFE5E5;
-  --color-status-suspended-text: #9B1C1C;
+  --color-status-suspended-bg: #C9CBCE;
+  --color-status-suspended-text: #2C3035;
   --color-status-expired-bg: #C9CBCE;
   --color-status-expired-text: #2C3035;
   --color-status-payment-error-bg: #DF2525;

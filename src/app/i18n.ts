@@ -417,14 +417,34 @@ const resources = {
         sort: 'Ordenar',
         filter: 'Filtrar',
       },
+      sort: {
+        name: 'Nombre',
+        nameAsc: 'A - Z',
+        nameDesc: 'Z - A',
+        registeredDate: 'Fecha de registro',
+        oldToNew: 'Antiguo a reciente',
+        newToOld: 'Reciente a antiguo',
+      },
+      filter: {
+        status: 'Estado',
+        active: 'Activo',
+        blocked: 'Bloqueado',
+        suspended: 'Suspendido',
+      },
       table: {
         name: 'Nombre',
         registeredAt: 'Fecha registro',
         subscription: 'Suscripción',
+        status: 'Estado',
         subscriptionStatus: {
           active: 'Activo',
           cancelled: 'Cancelado',
           none: 'Sin suscripción',
+        },
+        statusTypes: {
+          active: 'Activo',
+          blocked: 'Bloqueado',
+          suspended: 'Suspendido',
         },
       },
       info: {
@@ -435,6 +455,9 @@ const resources = {
         sending: 'Enviando...',
         sendGreeting: 'Enviar saludo',
         exportUsers: 'Exportar usuarios',
+        warn: 'Advertir',
+        suspend: 'Suspender',
+        block: 'Bloquear',
       },
       export: {
         username: 'Usuario',
@@ -796,14 +819,34 @@ const resources = {
         sort: 'Sort',
         filter: 'Filter',
       },
+      sort: {
+        name: 'Name',
+        nameAsc: 'A - Z',
+        nameDesc: 'Z - A',
+        registeredDate: 'Registration date',
+        oldToNew: 'Oldest to newest',
+        newToOld: 'Newest to oldest',
+      },
+      filter: {
+        status: 'Status',
+        active: 'Active',
+        blocked: 'Blocked',
+        suspended: 'Suspended',
+      },
       table: {
         name: 'Name',
         registeredAt: 'Registration date',
         subscription: 'Subscription',
+        status: 'Status',
         subscriptionStatus: {
           active: 'Active',
           cancelled: 'Cancelled',
           none: 'No subscription',
+        },
+        statusTypes: {
+          active: 'Active',
+          blocked: 'Blocked',
+          suspended: 'Suspended',
         },
       },
       info: {
@@ -814,6 +857,9 @@ const resources = {
         sending: 'Sending...',
         sendGreeting: 'Send greeting',
         exportUsers: 'Export users',
+        warn: 'Warn',
+        suspend: 'Suspend',
+        block: 'Block',
       },
       export: {
         username: 'User',
