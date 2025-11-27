@@ -18,14 +18,14 @@ export default function StatsCard({
   return (
     <section
       aria-labelledby="stats-title"
-      className={`h-[120px] w-full flex flex-col justify-center rounded-lg border transition-colors ${
+      className={`h-[140px] w-full flex flex-col justify-center rounded-md border transition-colors ${
         onClick ? 'cursor-pointer hover:bg-neutral-100 hover:border-primary-500' : 'hover:bg-neutral-100'
       }`}
       style={{
         borderWidth: '1px',
-        borderColor: 'var(--color-neutral-200)',
-        backgroundColor: '#ffffff',
-        padding: '14px'
+        borderColor: 'var(--color-neutral-300)',
+        backgroundColor: 'var(--color-neutral-50)',
+        padding: '12px'
       }}
       onClick={onClick}
       role={onClick ? 'button' : undefined}
