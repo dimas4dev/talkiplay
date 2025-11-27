@@ -38,7 +38,7 @@ export default function StatsCard({
       } : undefined}
     >
       {/* Título */}
-      <header className="text-center leading-tight mb-0.5">
+      <header className="text-center leading-tight mb-1">
         <h3
           id="stats-title"
           className="text-[10px] font-medium leading-[1.2] text-neutral-700"
