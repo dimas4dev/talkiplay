@@ -1,17 +1,24 @@
 import { useTranslation } from 'react-i18next'
+import type { CSSProperties, MouseEvent } from 'react'
 
 type ExportButtonProps = {
   onExport: () => void
   text?: string
   className?: string
   disabled?: boolean
+  style?: CSSProperties
+  onMouseEnter?: (e: MouseEvent<HTMLButtonElement>) => void
+  onMouseLeave?: (e: MouseEvent<HTMLButtonElement>) => void
 }
 
 export function ExportButton({ 
   onExport, 
   text, 
   className = "flex w-full items-center justify-center gap-2 rounded border border-primary-500 bg-primary-50 px-4 py-3 text-primary-600 hover:bg-primary-600 hover:text-white transition-colors",
-  disabled = false 
+  disabled = false,
+  style,
+  onMouseEnter,
+  onMouseLeave
 }: ExportButtonProps) {
   const { t } = useTranslation()
 
@@ -20,6 +27,9 @@ export function ExportButton({
       onClick={onExport}
       disabled={disabled}
       className={`${className} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+      style={style}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       <span className="ms ms-24">file_export</span>
       <span>{text || t('common.export')}</span>

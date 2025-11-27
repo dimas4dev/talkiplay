@@ -64,12 +64,12 @@ export default function DonutChart({
     <div className="w-full h-full flex flex-col">
       {/* Tabs (opcional) - Fuera del contenedor */}
       {tabs && tabs.length > 0 && (
-        <div className="flex justify-evenly mb-2 flex-shrink-0">
+        <div className="flex justify-evenly mb-3 flex-shrink-0">
           {tabs.map((tab) => (
             <button
               key={tab.key}
               onClick={() => onTabChange?.(tab.key)}
-              className={`text-xs font-medium transition-colors pb-1 ${activeTab === tab.key
+              className={`text-sm font-medium transition-colors pb-1 ${activeTab === tab.key
                 ? 'border-b-2 border-primary-500 text-primary-500'
                 : 'text-neutral-600 hover:text-neutral-900'
                 }`}
@@ -82,8 +82,8 @@ export default function DonutChart({
 
       {/* Contenedor de la gráfica */}
       <section aria-labelledby="chart-title" className="flex-1 rounded border border-neutral-200 bg-neutral-50 px-4 py-3 flex flex-col min-h-0">
-        <h3 id="chart-title" className="mb-1 text-center text-sm font-semibold text-neutral-900 flex-shrink-0">{title}</h3>
-        <p className="mb-2 text-center text-xs text-neutral-500 flex-shrink-0">{subtitle}</p>
+        <h3 id="chart-title" className="mb-2 text-center text-lg font-semibold text-neutral-900 flex-shrink-0">{title}</h3>
+        <p className="mb-3 text-center text-sm text-neutral-500 flex-shrink-0">{subtitle}</p>
 
         {/* Donut Chart */}
         <div className="relative mx-auto flex-1 w-full min-h-0">
@@ -93,8 +93,8 @@ export default function DonutChart({
                 data={dataWithPercentage}
                 cx="50%"
                 cy="50%"
-                innerRadius="60%"
-                outerRadius="80%"
+                innerRadius="50%"
+                outerRadius="85%"
                 paddingAngle={0}
                 dataKey="value"
                 activeShape={renderActiveShape}
@@ -112,6 +112,7 @@ export default function DonutChart({
                 <Label
                   value={dataWithPercentage[activeIndex].percentage}
                   position="center"
+                  dy={-8}
                   style={{
                     fontSize: '1.5rem',
                     fontWeight: 'bold',
@@ -121,10 +122,12 @@ export default function DonutChart({
                 <Label
                   value={dataWithPercentage[activeIndex].name}
                   position="center"
-                  dy={18}
+                  dy={12}
                   style={{
                     fontSize: '0.75rem',
                     fill: 'var(--color-neutral-500)',
+                    textAnchor: 'middle',
+                    width: '80%',
                   }}
                 />
               </Pie>
@@ -135,12 +138,12 @@ export default function DonutChart({
                   content={({ payload }) => (
                     <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-3 flex-shrink-0">
                       {payload?.map((entry, index) => (
-                        <div key={`item-${index}`} className="flex items-center gap-1.5">
+                        <div key={`item-${index}`} className="flex items-center gap-2">
                           <span
-                            className="w-2.5 h-2.5 rounded-full"
+                            className="w-3 h-3 rounded-full"
                             style={{ backgroundColor: entry.color }}
                           />
-                          <span className="text-xs text-neutral-800">{entry.value}</span>
+                          <span className="text-sm text-neutral-800">{entry.value}</span>
                         </div>
                       ))}
                     </div>
@@ -154,23 +157,23 @@ export default function DonutChart({
 
 
         {trend && trend !== "+0% vs periodo previo" && (
-          <p className={`text-center text-xs mt-2 flex-shrink-0 ${trend.startsWith('-') ? 'text-red-600' : 'text-emerald-600'}`}>
+          <p className={`text-center text-sm mt-3 flex-shrink-0 ${trend.startsWith('-') ? 'text-red-600' : 'text-emerald-600'}`}>
             {trend} {trend.startsWith('-') ? '▼' : '▲'}
           </p>
         )}
 
         {/* Summary (opcional) */}
         {summary && (
-          <p className="mt-1 text-center text-xs flex-shrink-0 text-neutral-500">{summary}</p>
+          <p className="mt-2 text-center text-sm flex-shrink-0 text-neutral-500">{summary}</p>
         )}
       </section>
 
       {/* Botón fuera del contenedor (opcional) */}
       {buttonText && (
-        <div className="mt-1">
+        <div className="mt-2">
           <button
             onClick={buttonAction}
-            className="flex w-full items-center justify-center gap-1 rounded-lg bg-primary-500 py-1.5 text-[9px] font-medium text-white transition-colors hover:bg-primary-600"
+            className="flex w-full items-center justify-center gap-1 rounded-lg bg-primary-500 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-600"
           >
             {buttonText}
             <span className="ms ms-24">arrow_forward</span>

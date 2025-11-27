@@ -55,8 +55,8 @@ export default function Dashboard() {
                 />
               </div>
 
-              {/* div3 - Tasa de éxito de Clicks (columna 4-9, fila 1-2, span 6 columnas y 2 filas) */}
-              <div className="col-span-6 row-span-2 col-start-4 row-start-1 h-full">
+              {/* div3 - Tasa de éxito de Clicks (columna 4-12, fila 1-2, span 9 columnas y 2 filas) */}
+              <div className="col-span-9 row-span-2 col-start-4 row-start-1 h-full">
                 <ClickSuccessRate successRate={76} />
               </div>
 
@@ -69,8 +69,8 @@ export default function Dashboard() {
                 />
               </div>
 
-              {/* div5 - Nuevos usuarios (columna 4-9, fila 3-4, span 6 columnas y 2 filas) */}
-              <div className="col-span-6 row-span-2 row-start-3 col-start-4 h-full">
+              {/* div5 - Nuevos usuarios (columna 4-12, fila 3-4, span 9 columnas y 2 filas) */}
+              <div className="col-span-9 row-span-2 row-start-3 col-start-4 h-full">
                 <NewUsers />
               </div>
             </div>
@@ -80,7 +80,20 @@ export default function Dashboard() {
               <ExportButton
                 onExport={exportDashboard}
                 text={t('exportMetrics')}
-                className="flex w-full items-center justify-center gap-2 rounded-lg border border-primary-500 bg-primary-50 px-4 py-2 text-xs font-medium text-primary-600 transition-colors hover:bg-primary-600 hover:text-white"
+                className="flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-2 text-xs font-medium transition-colors"
+                style={{
+                  borderColor: 'var(--color-primary-fixed-dim)',
+                  backgroundColor: 'var(--color-primary-fixed-dim)',
+                  color: 'var(--color-neutral-800)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--color-primary-600)'
+                  e.currentTarget.style.color = 'white'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--color-primary-fixed-dim)'
+                  e.currentTarget.style.color = 'var(--color-neutral-800)'
+                }}
               />
             </div>
           </section>

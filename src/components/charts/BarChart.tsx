@@ -20,36 +20,36 @@ export default function BarChart({
   return (
     <div className="h-full w-full flex flex-col min-h-0">
       {/* Header */}
-      <header className="mb-2 text-left flex-shrink-0">
-        <h3 className="text-sm font-semibold text-neutral-900">{title}</h3>
+      <header className="mb-3 text-left flex-shrink-0">
+        <h3 className="text-lg font-semibold text-neutral-900">{title}</h3>
         {subtitle && (
-          <p className="text-xs font-medium text-neutral-500">{subtitle}</p>
+          <p className="text-sm font-medium text-neutral-500">{subtitle}</p>
         )}
       </header>
 
       {/* Chart */}
-      <section className="flex-1 min-h-0">
+      <section className="flex-1 min-h-0 pb-2">
         <ResponsiveContainer width="100%" height="100%">
           <RechartsBarChart
             data={data}
-            margin={{ top: 10, right: 15, left: 5, bottom: 30 }}
+            margin={{ top: 10, right: 15, left: 5, bottom: 20 }}
           >
             <CartesianGrid strokeDasharray="3 3" stroke="var(--color-neutral-200)" />
 
             {/* Eje X */}
             <XAxis
               dataKey="month"
-              tick={{ fill: 'var(--color-neutral-500)', fontSize: 10 }}
+              tick={{ fill: 'var(--color-neutral-500)', fontSize: 14 }}
               tickLine={false}
               axisLine={{ stroke: 'var(--color-neutral-200)' }}
             />
 
             {/* Eje Y */}
             <YAxis
-              tick={{ fill: 'var(--color-neutral-500)', fontSize: 10 }}
+              tick={{ fill: 'var(--color-neutral-500)', fontSize: 14 }}
               tickLine={false}
               axisLine={{ stroke: 'var(--color-neutral-200)' }}
-              width={35}
+              width={40}
             />
 
             {/* Tooltip personalizado */}
@@ -58,16 +58,16 @@ export default function BarChart({
                 if (active && payload && payload.length) {
                   return (
                     <div className="rounded-md border border-gray-200 bg-white p-3 shadow-md">
-                      <p className="font-semibold text-gray-900 text-sm mb-2">
+                      <p className="font-semibold text-gray-900 text-base mb-2">
                         {label}
                       </p>
                       {payload.map((entry, index) => (
                         <div
                           key={index}
-                          className="flex items-center gap-2 text-xs"
+                          className="flex items-center gap-2 text-sm"
                         >
                           <span
-                            className="h-2 w-2 rounded-full"
+                            className="h-2.5 w-2.5 rounded-full"
                             style={{ backgroundColor: entry.color }}
                           />
                           <span className="text-gray-600">{entry.name}:</span>
@@ -87,9 +87,9 @@ export default function BarChart({
             <Legend
               verticalAlign="bottom"
               align="center"
-              height={28}
+              height={32}
               iconType="rect"
-              wrapperStyle={{ fontSize: '10px', color: 'var(--color-neutral-700)' }}
+              wrapperStyle={{ fontSize: '14px', color: 'var(--color-neutral-700)' }}
             />
 
             {/* Barras */}

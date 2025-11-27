@@ -32,7 +32,7 @@ export default function NewUsers({ monthlyData }: NewUsersProps) {
   ]
 
   return (
-    <div className="h-full w-full flex flex-col min-h-0">
+    <div className="h-full w-full flex flex-col">
       <div className="flex-1 min-h-0">
         <BarChart
           title={t('newUsers.title')}
@@ -42,9 +42,6 @@ export default function NewUsers({ monthlyData }: NewUsersProps) {
           barRadius={8}
         />
       </div>
-      <p className="text-center text-xs text-emerald-600 mt-2 flex-shrink-0">
-        ▲ {t('newUsers.upwardTrend')}
-      </p>
     </div>
   )
 }

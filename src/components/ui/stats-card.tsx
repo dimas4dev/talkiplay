@@ -25,7 +25,7 @@ export default function StatsCard({
         borderWidth: '1px',
         borderColor: 'var(--color-neutral-300)',
         backgroundColor: 'var(--color-neutral-50)',
-        padding: '12px'
+        padding: '20px'
       }}
       onClick={onClick}
       role={onClick ? 'button' : undefined}
@@ -38,25 +38,31 @@ export default function StatsCard({
       } : undefined}
     >
       {/* Título */}
-      <header className="text-center leading-tight mb-1">
+      <header className="text-center leading-tight mb-2">
         <h3
           id="stats-title"
-          className="text-[10px] font-medium leading-[1.2] text-neutral-700"
+          className="text-base font-medium leading-[1.2] text-neutral-700"
         >
           {title}
         </h3>
       </header>
 
       {/* Valor principal dinámico */}
-      <p className="text-center font-bold text-neutral-900 text-xl leading-tight break-words mb-0.5">
+      <p className="text-center font-bold text-neutral-900 text-4xl leading-tight break-words mb-1">
         {value}
         {suffix ? ` ${suffix}` : ''}
       </p>
 
       {/* Subtítulo */}
       <p
-        className={`text-center text-[9px] font-medium leading-[1.2] text-neutral-500 ${
+        className={`text-center text-sm font-medium leading-[1.2] ${
           subtitleBelowValue ? '' : 'order-[-1]'
+        } ${
+          subtitle.includes('▲') || subtitle.includes('+')
+            ? 'text-emerald-600'
+            : subtitle.includes('▼') || subtitle.includes('-')
+            ? 'text-red-600'
+            : 'text-neutral-500'
         }`}
       >
         {subtitle}
