@@ -27,11 +27,16 @@ export default function Dashboard() {
         const trendVsLastMonth = `▲ +4 vs mes anterior`
         
         return (
-          <section aria-labelledby="stats-heading" className="space-y-3">
+          <section
+            aria-labelledby="stats-heading"
+            className="space-y-3 max-w-6xl mx-auto px-4"
+          >
             <h2 id="stats-heading" className="sr-only">{t('mainStatsAria')}</h2>
-            <div className="grid grid-cols-5 grid-rows-5 min-h-0 flex-1" style={{ gap: '16px' }}>
+            <div
+              className="grid grid-cols-12 auto-rows-min gap-4"
+            >
               {/* div1 - Usuarios activos */}
-              <div className="col-span-2">
+              <div className="col-span-4">
                 <StatsCard
                   title={t('activeUsers.title')}
                   subtitle={trendVsYesterday}
@@ -39,9 +44,9 @@ export default function Dashboard() {
                   subtitleBelowValue={true}
                 />
               </div>
-              
+
               {/* div2 - Promedio de Clicks por familia */}
-              <div className="col-span-2 row-span-2 col-start-1 row-start-2">
+              <div className="col-span-4">
                 <StatsCard
                   title={t('averageClicks.title')}
                   subtitle={trendVsLastMonth}
@@ -49,24 +54,30 @@ export default function Dashboard() {
                   subtitleBelowValue={true}
                 />
               </div>
-              
+
               {/* div3 - Tasa de éxito de Clicks */}
-              <div className="col-span-3 row-span-4 col-start-3 row-start-1">
-                <ClickSuccessRate successRate={76} />
+              <div className="col-span-8 row-span-2">
+                <div className="h-full min-h-[260px]">
+                  <ClickSuccessRate successRate={76} />
+                </div>
               </div>
-              
+
               {/* div4 - Idiomas */}
-              <div className="col-span-2 row-span-2 row-start-4">
-                <LanguagesDonut
-                  spanish={60}
-                  english={25}
-                  german={15}
-                />
+              <div className="col-span-4 row-span-2">
+                <div className="h-full min-h-[220px]">
+                  <LanguagesDonut
+                    spanish={60}
+                    english={25}
+                    german={15}
+                  />
+                </div>
               </div>
-              
+
               {/* div5 - Nuevos usuarios */}
-              <div className="col-span-3 col-start-3 row-start-5">
-                <NewUsers />
+              <div className="col-span-8">
+                <div className="h-full min-h-[220px]">
+                  <NewUsers />
+                </div>
               </div>
             </div>
             
