@@ -31,7 +31,6 @@ export function ExportButton({
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      <span className="ms ms-24">file_export</span>
       <span>{text || t('common.export')}</span>
     </button>
   )

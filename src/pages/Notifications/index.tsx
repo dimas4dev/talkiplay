@@ -101,13 +101,7 @@ export default function Notifications() {
               {todayNotifications.map((notification) => (
                 <div 
                   key={notification.id} 
-                  className={`relative w-full rounded-lg border px-4 py-6 transition-colors hover:bg-neutral-50 ${
-                    notification.type === 'payment_failed' ? 'border-red-200 bg-red-50' :
-                    notification.type === 'cancel_subscription' ? 'border-yellow-200 bg-yellow-50' :
-                    notification.type === 'payment_success' ? 'border-green-200 bg-green-50' :
-                    notification.type === 'new_report' ? 'border-blue-200 bg-blue-50' :
-                    'border-neutral-200 bg-white'
-                  }`}
+                  className="relative w-full rounded-lg border border-neutral-200 bg-white px-4 py-6 transition-colors hover:bg-neutral-50"
                   onMouseEnter={() => markAsRead(notification.id)}
                 >
                   {notification.title && (
@@ -139,13 +133,7 @@ export default function Notifications() {
               {lastWeekNotifications.map((notification) => (
                 <div 
                   key={notification.id} 
-                  className={`relative w-full rounded-lg border px-4 py-6 transition-colors hover:bg-neutral-50 ${
-                    notification.type === 'payment_failed' ? 'border-red-200 bg-red-50' :
-                    notification.type === 'cancel_subscription' ? 'border-yellow-200 bg-yellow-50' :
-                    notification.type === 'payment_success' ? 'border-green-200 bg-green-50' :
-                    notification.type === 'new_report' ? 'border-blue-200 bg-blue-50' :
-                    'border-neutral-200 bg-white'
-                  }`}
+                  className="relative w-full rounded-lg border border-neutral-200 bg-white px-4 py-6 transition-colors hover:bg-neutral-50"
                   onMouseEnter={() => markAsRead(notification.id)}
                 >
                   {notification.title && (
