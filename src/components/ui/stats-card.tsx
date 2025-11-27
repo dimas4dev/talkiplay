@@ -18,15 +18,14 @@ export default function StatsCard({
   return (
     <section
       aria-labelledby="stats-title"
-      className={`h-[172px] w-full flex flex-col justify-center rounded border transition-colors ${
+      className={`h-[120px] w-full flex flex-col justify-center rounded-lg border transition-colors ${
         onClick ? 'cursor-pointer hover:bg-neutral-100 hover:border-primary-500' : 'hover:bg-neutral-100'
       }`}
       style={{
-        borderRadius: '4px',
         borderWidth: '1px',
-        borderColor: 'var(--color-neutral-300)',
-        backgroundColor: 'var(--color-neutral-50)',
-        padding: '16px'
+        borderColor: 'var(--color-neutral-200)',
+        backgroundColor: '#ffffff',
+        padding: '14px'
       }}
       onClick={onClick}
       role={onClick ? 'button' : undefined}
@@ -39,7 +38,7 @@ export default function StatsCard({
       } : undefined}
     >
       {/* Título */}
-      <header className="text-center leading-tight mb-0.5">
+      <header className="text-center leading-tight mb-1">
         <h3
           id="stats-title"
           className="text-[10px] font-medium leading-[1.2] text-neutral-700"
