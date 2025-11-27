@@ -204,6 +204,13 @@ class ApiClient {
 // Instancia del cliente API
 export const apiClient = new ApiClient(API_BASE_URL)
 
+// Inicializar mocks si están habilitados
+if (import.meta.env.VITE_USE_MOCKS === 'true') {
+  import('../mocks/mockInterceptor').then(({ setupMockInterceptor }) => {
+    setupMockInterceptor(API_BASE_URL)
+  })
+}
+
 // Servicios específicos
 export const authService = {
   // Login

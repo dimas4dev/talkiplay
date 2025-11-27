@@ -18,38 +18,38 @@ export default function BarChart({
   barRadius = 8,
 }: BarChartProps) {
   return (
-    <div className="h-full w-full flex flex-col">
+    <div className="h-full w-full flex flex-col min-h-0">
       {/* Header */}
-      <header className="mb-1 text-left">
-        <h3 className="text-xs font-semibold text-neutral-900">{title}</h3>
+      <header className="mb-2 text-left flex-shrink-0">
+        <h3 className="text-sm font-semibold text-neutral-900">{title}</h3>
         {subtitle && (
-          <p className="text-[9px] font-medium text-neutral-500">{subtitle}</p>
+          <p className="text-xs font-medium text-neutral-500">{subtitle}</p>
         )}
       </header>
 
       {/* Chart */}
-      <section className="flex-1 min-h-[120px]">
+      <section className="flex-1 min-h-0">
         <ResponsiveContainer width="100%" height="100%">
           <RechartsBarChart
             data={data}
-            margin={{ top: 5, right: 10, left: 5, bottom: 20 }}
+            margin={{ top: 10, right: 15, left: 5, bottom: 30 }}
           >
             <CartesianGrid strokeDasharray="3 3" stroke="var(--color-neutral-200)" />
 
             {/* Eje X */}
             <XAxis
               dataKey="month"
-              tick={{ fill: 'var(--color-neutral-500)', fontSize: 9 }}
+              tick={{ fill: 'var(--color-neutral-500)', fontSize: 10 }}
               tickLine={false}
               axisLine={{ stroke: 'var(--color-neutral-200)' }}
             />
 
             {/* Eje Y */}
             <YAxis
-              tick={{ fill: 'var(--color-neutral-500)', fontSize: 9 }}
+              tick={{ fill: 'var(--color-neutral-500)', fontSize: 10 }}
               tickLine={false}
               axisLine={{ stroke: 'var(--color-neutral-200)' }}
-              width={30}
+              width={35}
             />
 
             {/* Tooltip personalizado */}
@@ -87,9 +87,9 @@ export default function BarChart({
             <Legend
               verticalAlign="bottom"
               align="center"
-              height={24}
+              height={28}
               iconType="rect"
-              wrapperStyle={{ fontSize: '9px', color: 'var(--color-neutral-700)' }}
+              wrapperStyle={{ fontSize: '10px', color: 'var(--color-neutral-700)' }}
             />
 
             {/* Barras */}

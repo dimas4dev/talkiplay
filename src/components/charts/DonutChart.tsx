@@ -61,15 +61,15 @@ export default function DonutChart({
   }))
 
   return (
-    <div className="w-full h-full flex flex-col  justify-center">
+    <div className="w-full h-full flex flex-col">
       {/* Tabs (opcional) - Fuera del contenedor */}
       {tabs && tabs.length > 0 && (
-        <div className="flex justify-evenly mb-1">
+        <div className="flex justify-evenly mb-2 flex-shrink-0">
           {tabs.map((tab) => (
             <button
               key={tab.key}
               onClick={() => onTabChange?.(tab.key)}
-              className={`text-[9px] font-medium transition-colors ${activeTab === tab.key
+              className={`text-xs font-medium transition-colors pb-1 ${activeTab === tab.key
                 ? 'border-b-2 border-primary-500 text-primary-500'
                 : 'text-neutral-600 hover:text-neutral-900'
                 }`}
@@ -81,12 +81,12 @@ export default function DonutChart({
       )}
 
       {/* Contenedor de la gráfica */}
-      <section aria-labelledby="chart-title" className="flex-1 rounded border border-neutral-200 bg-neutral-50 px-2 py-2 flex flex-col">
-        <h3 id="chart-title" className="mb-0.5 text-center text-xs font-semibold text-neutral-900">{title}</h3>
-        <p className="mb-1.5 text-center text-[9px] text-neutral-500">{subtitle}</p>
+      <section aria-labelledby="chart-title" className="flex-1 rounded border border-neutral-200 bg-neutral-50 px-4 py-3 flex flex-col min-h-0">
+        <h3 id="chart-title" className="mb-1 text-center text-sm font-semibold text-neutral-900 flex-shrink-0">{title}</h3>
+        <p className="mb-2 text-center text-xs text-neutral-500 flex-shrink-0">{subtitle}</p>
 
         {/* Donut Chart */}
-        <div className="relative mx-auto mb-3 h-full w-full">
+        <div className="relative mx-auto flex-1 w-full min-h-0">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
@@ -113,7 +113,7 @@ export default function DonutChart({
                   value={dataWithPercentage[activeIndex].percentage}
                   position="center"
                   style={{
-                    fontSize: '1rem',
+                    fontSize: '1.5rem',
                     fontWeight: 'bold',
                     fill: 'var(--color-neutral-900)',
                   }}
@@ -121,9 +121,9 @@ export default function DonutChart({
                 <Label
                   value={dataWithPercentage[activeIndex].name}
                   position="center"
-                  dy={12}
+                  dy={18}
                   style={{
-                    fontSize: '0.65rem',
+                    fontSize: '0.75rem',
                     fill: 'var(--color-neutral-500)',
                   }}
                 />
@@ -133,14 +133,14 @@ export default function DonutChart({
                   verticalAlign="bottom"
                   align="center"
                   content={({ payload }) => (
-                    <div className="flex flex-wrap justify-center gap-x-3 gap-y-1 mt-2">
+                    <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-3 flex-shrink-0">
                       {payload?.map((entry, index) => (
-                        <div key={`item-${index}`} className="flex items-center gap-1">
+                        <div key={`item-${index}`} className="flex items-center gap-1.5">
                           <span
-                            className="w-2 h-2 rounded-full"
+                            className="w-2.5 h-2.5 rounded-full"
                             style={{ backgroundColor: entry.color }}
                           />
-                          <span className="text-[9px] text-neutral-800">{entry.value}</span>
+                          <span className="text-xs text-neutral-800">{entry.value}</span>
                         </div>
                       ))}
                     </div>
@@ -154,14 +154,14 @@ export default function DonutChart({
 
 
         {trend && trend !== "+0% vs periodo previo" && (
-          <p className={`text-center text-[9px] ${trend.startsWith('-') ? 'text-red-600' : 'text-emerald-600'}`}>
+          <p className={`text-center text-xs mt-2 flex-shrink-0 ${trend.startsWith('-') ? 'text-red-600' : 'text-emerald-600'}`}>
             {trend} {trend.startsWith('-') ? '▼' : '▲'}
           </p>
         )}
 
         {/* Summary (opcional) */}
         {summary && (
-          <p className="mt-0.5 text-center text-[9px] text-neutral-500">{summary}</p>
+          <p className="mt-1 text-center text-xs flex-shrink-0 text-neutral-500">{summary}</p>
         )}
       </section>
 

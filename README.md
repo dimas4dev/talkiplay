@@ -93,11 +93,15 @@ VITE_API_BASE_URL=/api
 # Recomendado mover el valor hardcodeado de useNotifications a esta variable
 # y ajustar el hook para leerla
 VITE_SOCKET_URL=http://82.180.132.38:3001
+
+# Activar mocks para desarrollo local (sin necesidad de backend)
+VITE_USE_MOCKS=true
 ```
 
 Notas:
 - Los tokens `accessToken` y `refreshToken` se guardan en `localStorage` por el `apiClient` tras login.
 - Algunos hooks (p.ej. notificaciones) usan actualmente una URL de Socket.IO fija; se recomienda migrar a `VITE_SOCKET_URL` en tu entorno.
+- **Mocks**: Si `VITE_USE_MOCKS=true`, la aplicación usará datos mock en lugar de la API real. Ver [MOCKS_GUIDE.md](./MOCKS_GUIDE.md) para más detalles.
 
 ### Endpoints y servicios
 - Los servicios REST están en `src/services/api.ts` y usan `VITE_CLIPNEST_API_URL`.
@@ -107,6 +111,13 @@ Notas:
 ### Ejecución con backend
 - Configura `VITE_CLIPNEST_API_URL` apuntando a tu API.
 - Si usas notificaciones en tiempo real, configura `VITE_SOCKET_URL` y ajusta `useNotifications` para leerla (o mantén el host por defecto si es tu servidor).
+
+### Ejecución con mocks (desarrollo local)
+- Establece `VITE_USE_MOCKS=true` en tu archivo `.env.local`.
+- La aplicación funcionará completamente sin necesidad de backend.
+- Credenciales mock: `admin@talkiplay.com` / `admin123`
+- Código OTP mock: `123456`
+- Ver [MOCKS_GUIDE.md](./MOCKS_GUIDE.md) para documentación completa.
 
 ### Convenciones clave
 - i18n: siempre envolver textos visibles o de accesibilidad con `t()`.
