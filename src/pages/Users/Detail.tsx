@@ -1,14 +1,17 @@
 import { Link, useParams, useLocation } from 'wouter'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Timeline from '@/components/ui/timeline'
-import UserHeaderCard from '@/components/users/UserHeaderCard'
+import Badge from '@/components/ui/badge'
 import { ROUTES } from '@/constants/routes'
 import { useUserById } from '@/hooks/useUsers'
-import { useUserStatus } from '@/hooks/useUserStatus'
 import { useUserDelete } from '@/hooks/useUserDelete'
 import ApiStateHandler from '@/components/ui/ApiStateHandler'
 import { useToast, ToastContainer } from '@/components/ui/toast'
-import { toEuroCurrencyString } from '@/utils/formatters'
+import pinguImage from '@/assets/images/animals/pingu.png'
+import tortugaImage from '@/assets/images/animals/tortuga.png'
+import zorroImage from '@/assets/images/animals/zorro.png'
+import perritoImage from '@/assets/images/animals/Perrito.png'
 
 type RouteParams = { id: string }
 
@@ -16,25 +19,48 @@ export default function UserDetailPage() {
   const { t } = useTranslation('userDetail')
   const params = useParams<RouteParams>()
   const [, setLocation] = useLocation()
-  const { data: user, isLoading, error, refetch } = useUserById(params.id)
-  const { updateUserStatus, isLoading: isUpdatingStatus } = useUserStatus()
+  const { data: userData, isLoading, error } = useUserById(params.id)
   const { deleteUser, isLoading: isDeletingUser } = useUserDelete()
   const { toasts, success, error: showError, removeToast } = useToast()
+  const [adminMenuOpen, setAdminMenuOpen] = useState<string | null>(null)
+  const [headerMenuOpen, setHeaderMenuOpen] = useState(false)
 
-  // Funciones para manejar cambios de estado
+  // Función para obtener el estado del usuario
+  const getUserStatus = (status: string): 'active' | 'blocked' | 'suspended' => {
+    if (!status) return 'active'
+    const statusLower = status.toLowerCase()
+    if (statusLower.includes('bloq')) return 'blocked'
+    if (statusLower.includes('suspen')) return 'suspended'
+    return 'active'
+  }
+
+  // Función para obtener el texto del estado
+  const getStatusText = (status: string): string => {
+    if (!status) return 'Activo'
+    const userStatus = getUserStatus(status)
+    if (userStatus === 'blocked') return 'Bloqueado'
+    if (userStatus === 'suspended') return 'Suspendido'
+    return 'Activo'
+  }
+
+  // Función para obtener la variante del badge
+  const getStatusBadgeVariantLocal = (statusText: string): 'status-active' | 'status-blocked' | 'status-suspended' => {
+    if (statusText === 'Bloqueado') return 'status-blocked'
+    if (statusText === 'Suspendido') return 'status-suspended'
+    return 'status-active'
+  }
 
   const handleDeleteUser = async () => {
-    if (!params.id || !user) {
+    if (!params.id || !userData) {
       return
     }
 
-    const userName = user.user?.username || 'Usuario'
+    const userName = userData.user?.username || 'Usuario'
     
     const result = await deleteUser(params.id)
     
     if (result.success) {
       success(`Usuario eliminado`, `${userName} ha sido eliminado exitosamente`)
-      // Redirigir a la página de usuarios después de un breve delay
       setTimeout(() => {
         setLocation(ROUTES.users)
       }, 1500)
@@ -43,114 +69,35 @@ export default function UserDetailPage() {
     }
   }
 
-  const handleBlockUser = async () => {
-    if (!params.id || !user) {
-      return
-    }
-
-    // Obtener el status actual del usuario
-    const currentStatus = user?.user?.status
-    const newStatus = currentStatus === 'blocked' ? 'active' : 'blocked'
-    const reason = newStatus === 'blocked' ? 'Actividad sospechosa detectada' : 'Usuario reactivado'
-
-    const result = await updateUserStatus(params.id, newStatus, reason)
-
-    if (result.success) {
-      const toastTitle = newStatus === 'blocked' ? t('toasts.userBlocked') : t('toasts.userUnblocked')
-      const toastMessage = newStatus === 'blocked' ? t('toasts.userBlockedSuccess') : t('toasts.userUnblockedSuccess')
-      success(toastTitle, toastMessage)
-      // Recargar los datos del usuario para actualizar la UI
-      await refetch()
-    } else {
-      const errorMessage = newStatus === 'blocked' ? t('toasts.errorBlocking') : t('toasts.errorUnblocking')
-      showError(errorMessage, result.message)
-    }
+  const handleAdminAction = async (adminId: string, action: 'block' | 'suspend' | 'delete') => {
+    setAdminMenuOpen(null)
+    // Aquí implementarías la lógica para cada acción
+    console.log(`Action ${action} for admin ${adminId}`)
   }
-
-  const handleToggleUserStatus = async () => {
-    const currentStatus = user?.user?.status
-    const newStatus = currentStatus === 'blocked' ? 'active' : 'blocked'
-    const reason = newStatus === 'blocked' ? 'Actividad sospechosa detectada' : 'Usuario reactivado'
-
-
-    const result = await updateUserStatus(params.id, newStatus, reason)
-
-    if (result.success) {
-      const toastTitle = newStatus === 'blocked' ? t('toasts.userBlocked') : t('toasts.userUnblocked')
-      const toastMessage = newStatus === 'blocked' ? t('toasts.userBlockedSuccess') : t('toasts.userUnblockedSuccess')
-      success(toastTitle, toastMessage)
-      // Recargar los datos del usuario para actualizar la UI
-      await refetch()
-    } else {
-      const errorMessage = newStatus === 'blocked' ? t('toasts.errorBlocking') : t('toasts.errorUnblocking')
-      showError(errorMessage, result.message)
-    }
-  }
-
 
   // Función para generar elementos del timeline
   const generateTimelineItems = (data: any) => {
-    const items = []
-
-    // Registro del usuario
-    items.push({
-      date: new Date(data.user.created_at).toLocaleDateString('es-ES', {
+    if (!data.history) return []
+    
+    return data.history.map((item: any) => ({
+      date: new Date(item.date).toLocaleDateString('es-ES', {
         day: '2-digit',
         month: 'short',
         year: 'numeric'
       }),
-      content: t('timeline.registered')
-    })
+      content: item.text
+    }))
+  }
 
-    // Si hay suscripción, agregar eventos relacionados
-    if (data.subscription) {
-      const subscription = data.subscription
-
-      // Fecha de inicio de suscripción
-      if (subscription.start_date) {
-        items.push({
-          date: new Date(subscription.start_date).toLocaleDateString('es-ES', {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric'
-          }),
-          content: `${t('timeline.activatedMembership')} ${subscription.plan_type === 'premium' ? t('subscriptionTypes.premium') : t('subscriptionTypes.pro')}`
-        })
-      }
-
-      // Si la suscripción está activa y tiene fecha de fin, agregar renovación
-      if (subscription.status === 'active' && subscription.end_date) {
-        const endDate = new Date(subscription.end_date)
-        const now = new Date()
-        if (endDate > now) {
-          items.push({
-            date: endDate.toLocaleDateString('es-ES', {
-              day: '2-digit',
-              month: 'short',
-              year: 'numeric'
-            }),
-            content: subscription.auto_renew ? t('timeline.autoRenewalScheduled') : t('timeline.subscriptionExpires')
-          })
-        }
-      }
+  // Función para obtener la ruta de la imagen del avatar
+  const getAvatarImage = (avatar: string) => {
+    const images: Record<string, string> = {
+      penguin: pinguImage,
+      turtle: tortugaImage,
+      fox: zorroImage,
+      dog: perritoImage
     }
-
-    // Agregar pagos del historial
-    if (data.payment_history && data.payment_history.length > 0) {
-      data.payment_history.forEach((payment: any) => {
-        items.push({
-          date: new Date(payment.payment_date).toLocaleDateString('es-ES', {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric'
-          }),
-          content: `Pago de ${toEuroCurrencyString(payment.amount)} - ${payment.status === 'success' ? t('timeline.paymentSuccessful') : t('timeline.paymentFailed')}`
-        })
-      })
-    }
-
-    // Ordenar por fecha (más reciente primero)
-    return items.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    return images[avatar] || null
   }
 
   return (
@@ -158,15 +105,16 @@ export default function UserDetailPage() {
       <ApiStateHandler
         isLoading={isLoading}
         error={error}
-        data={user}
+        data={userData}
         loadingText={t('loading')}
         errorTitle={t('errorTitle')}
         emptyText={t('emptyText')}
       >
         {(data) => {
           const user = data.user
-          const subscription = data.subscription
-
+          const familyMembers = data.family_members || []
+          const administrators = data.administrators || []
+          const statusText = getStatusText(user.status || 'active')
 
           return (
             <div className="mx-auto max-w-6xl p-6">
@@ -174,110 +122,220 @@ export default function UserDetailPage() {
               <nav className="mb-4 text-sm text-neutral-500">
                 <Link href={ROUTES.users} className="underline underline-offset-2">{t('breadcrumb')}</Link>
                 <span className="mx-2">/</span>
-                <span className="text-neutral-900">{user.username}</span>
+                <span className="text-neutral-900" style={{ color: '#006874' }}>{user.username}</span>
               </nav>
 
-              {/* Header card */}
-              <UserHeaderCard
-                key={`user-${user.id}-${data.user?.status}`}
-                user={{
-                  id: user.id,
-                  name: user.username,
-                  email: user.email,
-                  userId: user.id.toString(),
-                  subscription: subscription?.plan_type === 'premium' ? t('subscriptionTypes.premium') :
-                    subscription?.plan_type === 'pro' ? t('subscriptionTypes.pro') : t('subscriptionTypes.explorer'),
-                  status: data.user?.status === 'active' ? t('userInfo.statusTypes.active') :
-                    data.user?.status === 'blocked' ? t('userInfo.statusTypes.blocked') :
-                      data.user?.status === 'inactive' ? t('userInfo.statusTypes.inactive') : t('userInfo.statusTypes.active'),
-                   registrationDate: new Date(user.created_at).toLocaleDateString('es-ES', {
-                     day: '2-digit',
-                     month: 'short',
-                     year: 'numeric'
-                   }),
-                  reports: 0,
-                  nextPayment: subscription?.end_date ? new Date(subscription.end_date).toLocaleDateString('es-ES', {
-                    day: '2-digit',
-                    month: 'short',
-                    year: 'numeric'
-                  }) : 'N/A',
-                  history: [
-                    { date: new Date(user.created_at).toLocaleDateString('es-ES'), text: t('timeline.registered') },
-                    ...(subscription?.status === 'active' ?
-                      [{ date: new Date(subscription.start_date).toLocaleDateString('es-ES'), text: t('timeline.activatedSubscription') }] :
-                      [])
-                  ]
-                }}
-                onToggleStatus={handleToggleUserStatus}
-                isUpdatingStatus={isUpdatingStatus}
-                onDeleteUser={handleDeleteUser}
-                isDeletingUser={isDeletingUser}
-                translations={{
-                  subscription: t('subscription'),
-                  userId: t('userInfo.userId'),
-                  email: t('userInfo.email'),
-                  registration: t('userInfo.registration'),
-                  reports: t('userInfo.reports'),
-                  status: t('userInfo.status'),
-                  block: t('menu.block'),
-                  unblock: t('menu.unblock'),
-                  viewReports: t('menu.viewReports'),
-                  deleteAccount: t('menu.deleteAccount'),
-                  updating: t('menu.updating'),
-                }}
-              />
+              {/* Sección superior - Información de la familia */}
+              <section className="mb-6 rounded-lg border border-neutral-200 bg-white p-6 relative">
+                {/* Menú de acciones */}
+                <div className="absolute right-4 top-4" tabIndex={-1} onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setHeaderMenuOpen(false) }}>
+                  <button
+                    className="h-8 w-8 rounded hover:bg-neutral-100 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    onClick={() => setHeaderMenuOpen((prev) => !prev)}
+                  >
+                    <span className="ms text-lg">more_vert</span>
+                  </button>
+                  {headerMenuOpen && (
+                    <div className="absolute right-0 mt-2 w-56 rounded-lg border border-neutral-200 bg-white shadow-md p-2 z-10">
+                      <button
+                        onClick={handleDeleteUser}
+                        disabled={isDeletingUser}
+                        className="flex w-full items-center gap-3 rounded px-3 py-2 text-left hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary-500 text-danger-600"
+                      >
+                        <span className="ms">delete</span>
+                        <span>Eliminar cuenta</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
 
-
-
-              {/* Subscription summary */}
-              <section className="mb-4 rounded-lg border border-neutral-200 bg-white p-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-neutral-900 leading-none" aria-hidden="true">stars</span>
-                    <div>
-                      <div className="text-sm text-neutral-500">{t('subscription')}</div>
-                      <div className="text-lg font-semibold text-neutral-900">
-                        {subscription?.plan_type === 'premium' ? t('subscriptionTypes.premium') :
-                          subscription?.plan_type === 'pro' ? t('subscriptionTypes.pro') : t('subscriptionTypes.explorer')}
+                <div className="flex items-start gap-6">
+                  {/* Avatar + estado */}
+                  <div className="flex w-48 flex-col items-center">
+                    <div className="relative">
+                      <div className="h-32 w-32 rounded-full bg-neutral-100 overflow-hidden flex items-center justify-center">
+                        <img 
+                          src={pinguImage} 
+                          alt="Familia" 
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                    </div>
+                    <div className="mt-4 text-center flex flex-col items-center">
+                      <div className="flex items-center gap-2 text-sm text-neutral-900">
+                        <span className="text-neutral-500">Estado</span>
+                        <Badge variant={getStatusBadgeVariantLocal(statusText)}>{statusText}</Badge>
                       </div>
                     </div>
                   </div>
-                   <div className="text-sm text-neutral-500">
-                     {t('nextPayment')} <span className="ml-2 font-semibold text-neutral-900">
-                       {subscription?.end_date ? new Date(subscription.end_date).toLocaleDateString('es-ES', {
-                         day: '2-digit',
-                         month: 'short',
-                         year: 'numeric'
-                       }) : 'N/A'}
-                     </span>
-                   </div>
+
+                  {/* Información de la familia */}
+                  <div className="flex-1">
+                    <h1 className="mb-4 text-3xl font-semibold text-neutral-900">{user.username}</h1>
+                    <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm text-neutral-900 mb-6">
+                      <div>ID de usuario</div>
+                      <div className="text-right">{user.user_id || '000022'}</div>
+                      <div>Creación</div>
+                      <div className="text-right">
+                        {new Date(user.created_at).toLocaleDateString('es-ES', {
+                          day: '2-digit',
+                          month: 'short',
+                          year: 'numeric'
+                        })}
+                      </div>
+                      <div>Reportes</div>
+                      <div className="text-right">{user.reports || 0}</div>
+                      <div>Clicks</div>
+                      <div className="text-right">{user.clicks || 0}</div>
+                    </div>
+
+                  </div>
                 </div>
               </section>
 
-              {/* Action buttons */}
-              <div className="mb-6 grid grid-cols-2 gap-6">
-                <button
-                  className="w-full rounded border border-primary-500 bg-primary-500 px-4 py-3 text-white hover:bg-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  disabled={isUpdatingStatus}
+              {/* Botones de acción */}
+              <div className="mb-6 grid grid-cols-3 gap-4">
+                <button 
+                  className="w-full rounded-lg border-0 px-4 py-3 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  style={{
+                    backgroundColor: 'var(--color-primary-container)',
+                    color: 'var(--color-primary-600)',
+                  }}
                 >
-                  {t('actions.sendRecoveryEmail')}
+                  Advertir
                 </button>
-                <button
-                  onClick={handleBlockUser}
-                  disabled={isUpdatingStatus}
-                  className="w-full rounded border border-primary-100 bg-primary-50 px-4 py-3 text-primary-600 hover:bg-primary-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary-500"
+                <button 
+                  className="w-full rounded-lg border-0 px-4 py-3 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  style={{
+                    backgroundColor: 'var(--color-primary-500)',
+                  }}
                 >
-                  {isUpdatingStatus ?
-                    (data.user?.status === 'blocked' ? t('actions.unblocking') : t('actions.blocking')) :
-                    (data.user?.status === 'blocked' ? t('actions.unblockUser') : t('actions.blockUser'))
-                  }
+                  Suspender
+                </button>
+                <button 
+                  className="w-full rounded-lg border-0 px-4 py-3 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
+                  style={{
+                    backgroundColor: 'var(--color-error-container)',
+                    color: 'var(--color-error-500)',
+                  }}
+                >
+                  Bloquear
                 </button>
               </div>
 
-              {/* Timeline */}
+              {/* Sección de miembros de la familia */}
+              {familyMembers.length > 0 && (
+                <section className="mb-6">
+                  <h2 className="mb-4 text-xl font-semibold text-neutral-900">Miembros de la familia</h2>
+                  <div className="grid grid-cols-4 gap-4">
+                    {familyMembers.map((member: any) => {
+                      const avatarImage = getAvatarImage(member.avatar)
+                      return (
+                        <div
+                          key={member.id}
+                          className="flex flex-col rounded-lg border border-neutral-200 bg-white overflow-hidden"
+                          style={{ minHeight: '240px' }}
+                        >
+                          <div className="flex items-center justify-center h-44 w-full bg-[#E1D4C2] rounded-t-lg overflow-hidden">
+                            {avatarImage ? (
+                              <img 
+                                src={avatarImage} 
+                                alt={member.name} 
+                                className="h-full w-full object-cover rounded-none"
+                              />
+                            ) : (
+                              <div className="h-full w-full bg-neutral-100 flex items-center justify-center text-4xl">
+                                👤
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex flex-1 flex-col items-center justify-center p-4 text-center">
+                            <div className="font-semibold text-neutral-900">{member.name}</div>
+                            <div className="mt-1 text-sm text-neutral-500">{member.role}</div>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </section>
+              )}
+
+              {/* Tabla de administradores */}
+              {administrators.length > 0 && (
+                <section className="mb-6 rounded-lg border border-neutral-200 bg-white overflow-visible">
+                  <table className="w-full">
+                    <thead className="bg-[var(--color-surface-variant)]">
+                      <tr>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-900">Administrador</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-900">Correo</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-900">Registro</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-900">Estado</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-900"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {administrators.map((admin: any, index: number) => (
+                        <tr key={admin.id} className={index > 0 ? 'border-t border-neutral-200' : ''}>
+                          <td className="px-6 py-4 text-sm text-neutral-900">{admin.name}</td>
+                          <td className="px-6 py-4 text-sm text-neutral-900">{admin.email}</td>
+                          <td className="px-6 py-4 text-sm text-neutral-900">
+                            {new Date(admin.created_at).toLocaleDateString('es-ES', {
+                              day: '2-digit',
+                              month: 'short',
+                              year: 'numeric'
+                            })}
+                          </td>
+                          <td className="px-6 py-4">
+                            <Badge variant={getStatusBadgeVariantLocal(getStatusText(admin.status))}>
+                              {getStatusText(admin.status)}
+                            </Badge>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="relative">
+                              <button
+                                onClick={() => setAdminMenuOpen(adminMenuOpen === admin.id ? null : admin.id)}
+                                className="h-8 w-8 rounded hover:bg-neutral-100 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary-500"
+                              >
+                                <span className="ms text-lg">more_vert</span>
+                              </button>
+                              {adminMenuOpen === admin.id && (
+                                <div className="absolute right-0 mt-2 w-56 rounded-lg border border-neutral-200 bg-white shadow-md p-2 z-10">
+                                  <button
+                                    onClick={() => handleAdminAction(admin.id, 'block')}
+                                    className="flex w-full items-center gap-3 rounded px-3 py-2 text-left hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                  >
+                                    <span className="ms text-neutral-900">block</span>
+                                    <span className="text-neutral-900">Bloquear</span>
+                                  </button>
+                                  <button
+                                    onClick={() => handleAdminAction(admin.id, 'suspend')}
+                                    className="flex w-full items-center gap-3 rounded px-3 py-2 text-left hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                  >
+                                    <span className="ms text-neutral-900">warning</span>
+                                    <span className="text-neutral-900">Suspender</span>
+                                  </button>
+                                  <button
+                                    onClick={() => handleAdminAction(admin.id, 'delete')}
+                                    className="flex w-full items-center gap-3 rounded px-3 py-2 text-left hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-primary-500 text-red-600"
+                                  >
+                                    <span className="ms">delete</span>
+                                    <span>Eliminar cuenta</span>
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </section>
+              )}
+
+              {/* Historial */}
               <section className="rounded-lg border border-neutral-200 bg-white p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-semibold text-neutral-900">{t('history')}</h2>
+                <div className="mb-6 flex items-center justify-between">
+                  <h2 className="text-xl font-semibold text-neutral-900">Historial</h2>
                   <span className="ms text-primary-600">expand_less</span>
                 </div>
                 <Timeline items={generateTimelineItems(data)} />

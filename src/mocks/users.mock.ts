@@ -280,21 +280,79 @@ export const mockUsers = {
       })
     }
 
-    const userHeader: UserHeader = {
-      id: parseInt(user.id),
-      name: user.name,
-      email: user.email,
-      userId: user.id,
-      subscription: user.subscription_type as 'Explorador' | 'Premium' | 'Pro',
-      status: user.status as 'Activo' | 'Bloqueado' | 'Inactivo',
-      registrationDate: user.registrationDate,
-      reports: MOCK_USER_REPORTS[userId]?.length || 0,
-    }
+    // Datos de familia y miembros
+    const familyMembers = [
+      {
+        id: '1',
+        name: 'José Daniel',
+        role: 'Admin',
+        avatar: 'penguin',
+        email: 'jdaniel@mail.com',
+        created_at: '2025-02-24T10:00:00Z',
+        status: 'suspended'
+      },
+      {
+        id: '2',
+        name: 'Fernando',
+        role: 'Admin',
+        avatar: 'turtle',
+        email: 'fersantos@mail.com',
+        created_at: '2025-02-24T10:00:00Z',
+        status: 'active'
+      },
+      {
+        id: '3',
+        name: 'Laura',
+        role: 'Integrante',
+        avatar: 'fox',
+        email: 'laura@mail.com',
+        created_at: '2025-02-24T10:00:00Z',
+        status: 'active'
+      },
+      {
+        id: '4',
+        name: 'Clara Isabel',
+        role: 'Integrante',
+        avatar: 'dog',
+        email: 'clara@mail.com',
+        created_at: '2025-02-24T10:00:00Z',
+        status: 'active'
+      }
+    ]
 
-    const response: ApiResponse<UserHeader> = {
+    const history = [
+      { date: '2024-11-07T10:00:00Z', text: 'Se registró' },
+      { date: '2024-11-08T10:00:00Z', text: 'Fernando se unió al plan familiar' },
+      { date: '2024-11-12T10:00:00Z', text: 'La familia recibió una advertencia' },
+      { date: '2024-11-12T14:00:00Z', text: 'La familia fue bloqueada' },
+      { date: '2024-11-12T16:00:00Z', text: 'La familia fue desbloqueada' }
+    ]
+
+    const response: ApiResponse<any> = {
       success: true,
       message: 'Usuario obtenido exitosamente',
-      data: userHeader,
+      data: {
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          name: user.name,
+          created_at: user.created_at,
+          status: user.status === 'Activo' ? 'active' : user.status === 'Bloqueado' ? 'blocked' : 'suspended',
+          user_id: '000022',
+          clicks: 3,
+          reports: MOCK_USER_REPORTS[userId]?.length || 0,
+        },
+        subscription: {
+          plan_type: user.subscription_status === 'active' ? 'premium' : 'explorer',
+          status: user.subscription_status,
+          start_date: user.created_at,
+          end_date: null
+        },
+        family_members: familyMembers,
+        administrators: familyMembers.filter(m => m.role === 'Admin'),
+        history: history
+      },
     }
     return new Response(JSON.stringify(response), {
       status: 200,
