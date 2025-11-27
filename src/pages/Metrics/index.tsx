@@ -1,82 +1,13 @@
 import { useTranslation } from 'react-i18next'
 import { useAllMetrics } from '@/hooks/useMetrics'
-import { useMetricsExport } from '@/hooks/useMetricsExport'
 import ApiStateHandler from '@/components/ui/ApiStateHandler'
 import StatsCard from '@/components/ui/stats-card'
 import DonutChart from '@/components/charts/DonutChart'
 import BarChart from '@/components/charts/BarChart'
-import HorizontalBarChart from '@/components/charts/HorizontalBarChart'
-import { ExportButton } from '@/components/ui/export-button'
 
 export default function Metrics() {
   const { t } = useTranslation('metrics')
   const { data, isLoading, error } = useAllMetrics()
-  const { exportMetrics } = useMetricsExport(data)
-
-  if (!data) {
-    return (
-      <ApiStateHandler
-        isLoading={isLoading}
-        error={error}
-        data={data}
-        loadingText={t('loading')}
-        errorTitle={t('errorTitle')}
-        emptyText={t('emptyText')}
-      >
-        {() => null}
-      </ApiStateHandler>
-    )
-  }
-
-  const { clip_stats, clips_by_source, pro_feature_usage_overview, pro_features_last_month, clips_by_month } = data
-
-  // Datos para el diseño original
-  const clipsData = clips_by_source.map(source => ({
-    name: source.source_display_name,
-    value: source.total_clips,
-    color: getSourceColor(source.source)
-  }))
-
-  const monthlyClipsData = clips_by_month.slice(0, 12).map(month => ({
-    month: month.month_name.split(' ')[0],
-    clips: month.clips_saved
-  }))
-
-  const proUsageData = [
-    { name: 'Usuarios Pro', value: pro_feature_usage_overview.percentage_users_with_pro, color: 'var(--color-chart-accent)' },
-    { name: 'Usuarios Free', value: 100 - pro_feature_usage_overview.percentage_users_with_pro, color: 'var(--color-neutral-200)' },
-  ]
-
-  const proFeaturesData = pro_features_last_month.slice(0, 4).map(feature => ({
-    name: feature.feature_name,
-    value: feature.unique_users,
-    percentage: feature.percentage
-  }))
-
-  // Calcular el crecimiento de clips promedio
-  const calculateGrowth = () => {
-    if (clips_by_month.length < 2) return t('trends.growthVsPrevMonth', { value: '+0' })
-    const currentMonth = clips_by_month[0]
-    const previousMonth = clips_by_month[1]
-    const currentAvg = currentMonth.clips_saved / currentMonth.active_users
-    const previousAvg = previousMonth.clips_saved / previousMonth.active_users
-    const growth = currentAvg - previousAvg
-    const sign = growth >= 0 ? '+' : ''
-    const value = `${sign}${growth.toFixed(1)}`
-    return t('trends.growthVsPrevMonth', { value })
-  }
-
-  // Calcular el trend de uso de funciones PRO
-  const calculateProTrend = () => {
-    if (clips_by_month.length < 2) return t('trends.percentVsPrevPeriod', { value: '+0%' })
-    const currentMonth = clips_by_month[0]
-    const previousMonth = clips_by_month[1]
-    const userGrowth = ((currentMonth.active_users - previousMonth.active_users) / previousMonth.active_users) * 100
-    const sign = userGrowth >= 0 ? '+' : ''
-    const value = `${sign}${userGrowth.toFixed(1)}%`
-    return t('trends.percentVsPrevPeriod', { value })
-  }
-
 
   return (
     <ApiStateHandler
@@ -87,98 +18,141 @@ export default function Metrics() {
       errorTitle={t('errorTitle')}
       emptyText={t('emptyText')}
     >
-      {() => (
-        <div className="mx-auto max-w-6xl p-6">
-          <div className="grid grid-cols-5 grid-rows-4 gap-4">
-            {/* div1: Clips guardados promedio */}
-            <div className="col-span-2 h-full">
-              <StatsCard
-                title={t('avgClipsSaved')}
-                subtitle={calculateGrowth()}
-                value={clip_stats.avg_clips_per_user.toFixed(0)}
-                subtitleBelowValue
-              />
-            </div>
+      {(data) => {
+        // Datos para las KPI cards
+        const avgPlaydates = data.clip_stats.avg_clips_per_user || 100
+        const conversionTime = 16 // días
+        const avgClicksPerFamily = 3
 
-            {/* div2: Clips guardados donut */}
-            <div className="h-full w-full col-span-3 col-start-3 row-span-2">
-              <section className="h-full w-full rounded-lg border border-neutral-200 bg-white p-6">
-                <DonutChart
-                  title={t('clipsSaved')}
-                  subtitle=""
-                  data={clipsData}
-                  trend=""
+        // Datos para el gráfico de Playdates creados (últimos 12 meses)
+        const playdatesData = data.clips_by_month.slice(0, 12).map(month => ({
+          month: month.month_name.substring(0, 3), // Primeras 3 letras del mes
+          playdates: month.clips_saved
+        }))
+
+        // Datos para el donut de Edad de niños
+        const ageData = data.clips_by_source.map(source => ({
+          name: source.source_display_name,
+          value: source.total_clips,
+          color: getAgeColor(source.source),
+          percentage: `${source.percentage}%`
+        }))
+
+        // Datos para el gráfico de Clicks (últimos 12 meses)
+        // Usar los mismos datos de playdates pero con valores diferentes para clicks
+        const clicksData = [
+          { month: 'Aug', clicks: 2 },
+          { month: 'Apr', clicks: 1 },
+          { month: 'Mar', clicks: 1 },
+          { month: 'Apr', clicks: 1 },
+          { month: 'May', clicks: 4 },
+          { month: 'Jun', clicks: 2 },
+        ]
+
+        return (
+          <section className="space-y-4 w-full h-full">
+            {/* 3 KPI Cards en la parte superior - mantener como estaban */}
+            <div className="grid grid-cols-3 gap-4">
+              {/* KPI 1: Playdates creados en promedio */}
+              <div className="h-full">
+                <StatsCard
+                  title={t('avgPlaydatesCreated')}
+                  subtitle="▲ +4 vs ayer"
+                  value={avgPlaydates}
+                  subtitleBelowValue={true}
                 />
-              </section>
+              </div>
+
+              {/* KPI 2: Tiempo de conversión */}
+              <div className="h-full">
+                <StatsCard
+                  title={t('conversionTime')}
+                  subtitle={t('conversionTimeDescription')}
+                  value={`${conversionTime} días`}
+                  subtitleBelowValue={true}
+                />
+              </div>
+
+              {/* KPI 3: Promedio de clicks por familia */}
+              <div className="h-full">
+                <StatsCard
+                  title={t('avgClicksPerFamily')}
+                  subtitle="▲ +4 vs mes anterior"
+                  value={avgClicksPerFamily}
+                  subtitleBelowValue={true}
+                />
+              </div>
             </div>
 
-            {/* div3: Uso funciones Pro (izquierda) */}
-            <div className="col-span-2 row-span-2 row-start-2">
-              <section className="h-full flex flex-col rounded-lg border border-neutral-200 bg-white p-4">
-                <div className="flex-1 flex items-center justify-center">
-                  <DonutChart
-                    title={t('proUsage')}
-                    subtitle={t('last30days')}
-                    data={proUsageData}
-                    trend={calculateProTrend()}
-                    showLegend={false}
+            {/* Grid para las gráficas: 6 columnas x 6 filas (para dividir en partes iguales) */}
+            <div className="grid grid-cols-6 grid-rows-6 gap-x-8 gap-y-2 h-[calc(100vh-20rem)]">
+              {/* Gráfico 1: Playdates creados - div2: span 6 cols, span 3 rows, start col 1, row 1 */}
+              <div className="col-span-6 col-start-1 row-span-3 row-start-1 h-full">
+                <div className="h-full flex flex-col">
+                  <BarChart
+                    title={t('playdatesCreated')}
+                    subtitle={t('last12Months')}
+                    data={playdatesData}
+                    series={[
+                      { 
+                        dataKey: 'playdates', 
+                        name: t('playdates'), 
+                        color: 'var(--color-primary-500)' // Teal
+                      }
+                    ]}
+                    barRadius={8}
                   />
+
                 </div>
+              </div>
 
-                <p className="text-xs text-neutral-500 mt-2 text-center">
-                  {t('proUsageHint')}
-                </p>
-              </section>
-            </div>
-
-            {/* div4: Clips guardados bar chart */}
-            <div className="col-span-3 col-start-3 row-start-3">
-              <section className="h-full rounded-lg border border-neutral-200 bg-white p-6">
-                <HorizontalBarChart
-                  title={t('proUsage')}
-                  subtitle={t('lastMonth')}
-                  data={proFeaturesData}
+              {/* Gráfico 2: Edad de niños - div3: span 3 cols, span 3 rows, start col 1, row 4 */}
+              <div className="col-span-3 col-start-1 row-span-3 row-start-4 h-full">
+                <DonutChart
+                  title={t('childrenAge')}
+                  subtitle=""
+                  data={ageData}
+                  trend=""
+                  showLegend={true}
+                  centerText={`${data.clip_stats.total_users} ${t('profiles')}`}
                 />
-              </section>
-            </div>
+              </div>
 
-            {/* div5: Uso de funciones Pro (derecha) */}
-            <div className="col-span-5 row-span-1 row-start-4">
-              <section className="h-full rounded-lg border border-neutral-200 bg-white p-6">
-                <BarChart
-                  title={t('clipsSaved')}
-                  subtitle={t('last12Months')}
-                  data={monthlyClipsData}
-                  series={[
-                    { dataKey: 'clips', name: t('clips'), color: 'var(--color-chart-accent)' }
-                  ]}
-                />
-              </section>
+              {/* Gráfico 3: Clicks - div4: span 3 cols, span 3 rows, start col 4, row 4 */}
+              <div className="col-span-3 col-start-4 row-span-3 row-start-4 h-full">
+                <div className="h-full flex flex-col">
+                  <BarChart
+                    title={t('clicks')}
+                    subtitle={t('last12Months')}
+                    data={clicksData}
+                    series={[
+                      { 
+                        dataKey: 'clicks', 
+                        name: t('clicks'), 
+                        color: 'var(--color-primary-fixed-dim)' // Light blue
+                      }
+                    ]}
+                    barRadius={8}
+                  />
+                  <p className="text-center text-sm text-emerald-600 mt-2 flex-shrink-0">
+                    ▲ {t('upwardTrendThisMonth')}
+                  </p>
+                </div>
+              </div>
             </div>
-
-            {/* Botón Exportar métricas */}
-            <div className="col-span-5 row-start-5 mt-4">
-              <ExportButton
-                onExport={exportMetrics}
-                text={t('exportMetrics')}
-              />
-            </div>
-          </div>
-        </div>
-      )}
+          </section>
+        )
+      }}
     </ApiStateHandler>
   )
 }
 
-// Funciones auxiliares para colores
-function getSourceColor(source: string): string {
+// Función auxiliar para colores de edad
+function getAgeColor(source: string): string {
   const colors: Record<string, string> = {
-    'manual': 'var(--color-chart-accent)',
-    'web_extension': 'var(--color-chart-success)',
-    'mobile_app': 'var(--color-chart-warning)',
-    'desktop_app': 'var(--color-chart-danger)',
-    'cloud_sync': 'var(--color-chart-purple)',
-    'import': 'var(--color-chart-info)'
+    'early_childhood': 'var(--color-primary-fixed-dim)', // Light blue - Primera infancia
+    'childhood': 'var(--color-primary-500)', // Teal - Infancia
+    'adolescence': 'var(--color-neutral-700)', // Dark teal/black - Adolescencia
   }
   return colors[source] || 'var(--color-neutral-500)'
 }

@@ -49,7 +49,8 @@ export default function DonutChart({
   activeTab,
   onTabChange,
   showLegend = true,
-  initialActiveIndex = 0
+  initialActiveIndex = 0,
+  centerText
 }: DonutChartProps) {
   const [activeIndex, setActiveIndex] = useState(initialActiveIndex)
 
@@ -110,26 +111,28 @@ export default function DonutChart({
                   />
                 ))}
                 <Label
-                  value={dataWithPercentage[activeIndex].percentage}
+                  value={centerText || dataWithPercentage[activeIndex].percentage}
                   position="center"
-                  dy={-8}
+                  dy={centerText ? 0 : -8}
                   style={{
-                    fontSize: '1.5rem',
+                    fontSize: centerText ? '1.25rem' : '1.5rem',
                     fontWeight: 'bold',
                     fill: 'var(--color-neutral-900)',
                   }}
                 />
-                <Label
-                  value={dataWithPercentage[activeIndex].name}
-                  position="center"
-                  dy={12}
-                  style={{
-                    fontSize: '0.75rem',
-                    fill: 'var(--color-neutral-500)',
-                    textAnchor: 'middle',
-                    width: '80%',
-                  }}
-                />
+                {!centerText && (
+                  <Label
+                    value={dataWithPercentage[activeIndex].name}
+                    position="center"
+                    dy={12}
+                    style={{
+                      fontSize: '0.75rem',
+                      fill: 'var(--color-neutral-500)',
+                      textAnchor: 'middle',
+                      width: '80%',
+                    }}
+                  />
+                )}
               </Pie>
               {showLegend && (
                 <Legend

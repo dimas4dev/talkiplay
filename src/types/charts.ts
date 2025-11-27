@@ -51,6 +51,7 @@ export type DonutChartProps = {
   onTabChange?: (tabKey: string) => void
   showLegend?: boolean
   initialActiveIndex?: number
+  centerText?: string // Texto personalizado para el centro del donut
 }
 
 // Bar Chart Types
