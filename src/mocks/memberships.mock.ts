@@ -1,4 +1,5 @@
-import type { ApiResponse, Subscription, AllSubscriptionsData, TrialSubscriptionsData, SuspendedSubscriptionsData, RenewalSubscriptionsData } from '@/types/dashboard'
+import type { ApiResponse } from '@/types/api'
+import type { Subscription, AllSubscriptionsData, TrialSubscriptionsData, SuspendedSubscriptionsData, RenewalSubscriptionsData } from '@/types/dashboard'
 
 // Datos mock de suscripciones
 const MOCK_SUBSCRIPTIONS: Subscription[] = [

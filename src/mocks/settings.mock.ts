@@ -1,4 +1,5 @@
-import type { ApiResponse, Section } from '@/types/dashboard'
+import type { ApiResponse } from '@/types/api'
+import type { Section } from '@/types/dashboard'
 
 // Datos mock de secciones
 const MOCK_SECTIONS: Section[] = [

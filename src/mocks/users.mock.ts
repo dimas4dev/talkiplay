@@ -1,5 +1,5 @@
-import type { ApiResponse, UserHeader, UserReportsData } from '@/types/dashboard'
-import type { UserReport } from '@/types/dashboard'
+import type { ApiResponse } from '@/types/api'
+import type { UserHeader, UserReportsData, UserReport } from '@/types/dashboard'
 
 // Datos mock de usuarios
 const MOCK_USERS = [

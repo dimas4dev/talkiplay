@@ -1,4 +1,5 @@
-import type { ApiResponse, RevenueData, RevenuePeriodDetail } from '@/types/dashboard'
+import type { ApiResponse } from '@/types/api'
+import type { RevenueData, RevenuePeriodDetail } from '@/types/dashboard'
 import type {
   ActiveSubscriptionsData,
   PaymentMethodsData,

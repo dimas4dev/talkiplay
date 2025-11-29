@@ -35,13 +35,6 @@ export default function UserGrowth({ data }: UserGrowthProps) {
     }
   ]
 
-  // Calcular summary dinámico basado en los datos reales
-  const calculateSummary = () => {
-    const totalRenewals = Math.round(data.renewal_rate)
-    const totalProgrammed = Math.round(data.renewal_rate * 1.2) // Estimación basada en renewal_rate
-    return `${totalRenewals} renovaciones de ${totalProgrammed} programadas`
-  }
-
   return (
     <BarChart
       title={t('title')}

@@ -84,7 +84,7 @@ export const mockAuth = {
     })
   },
 
-  verifyOTP: (email: string, code: string): Response => {
+  verifyOTP: (_email: string, code: string): Response => {
     // Código OTP mock válido
     if (code === '123456') {
       const response: ApiResponse<{ message: string }> = {

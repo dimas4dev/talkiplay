@@ -23,22 +23,6 @@ const originalFetch = window.fetch
 // Función para simular delay de red
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
-// Función para crear respuesta mock exitosa
-const createMockResponse = <T>(data: T, status: number = 200): Response => {
-  const response: ApiResponse<T> = {
-    success: true,
-    message: 'Success',
-    data: data
-  }
-  
-  return new Response(JSON.stringify(response), {
-    status,
-    statusText: 'OK',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-}
 
 // Función para crear respuesta mock de error
 const createMockErrorResponse = (message: string, status: number = 400): Response => {
@@ -176,7 +160,7 @@ const handleAuthEndpoint = (endpoint: string, method: string, init?: RequestInit
   return createMockErrorResponse('Endpoint de auth no encontrado', 404)
 }
 
-const handleDashboardEndpoint = (endpoint: string, method: string, init?: RequestInit): Response => {
+const handleDashboardEndpoint = (endpoint: string, method: string, _init?: RequestInit): Response => {
   if (endpoint === '/api/v1/admin/dashboard/stats' && method === 'GET') {
     return mockDashboard.getStats()
   }
@@ -260,7 +244,7 @@ const handleUsersEndpoint = (endpoint: string, method: string, init?: RequestIni
   return createMockErrorResponse('Endpoint de usuarios no encontrado', 404)
 }
 
-const handleRevenuesEndpoint = (endpoint: string, method: string, init?: RequestInit): Response => {
+const handleRevenuesEndpoint = (endpoint: string, method: string, _init?: RequestInit): Response => {
   if (endpoint === '/api/v1/admin/income' && method === 'GET') {
     return mockRevenues.getRevenues()
   }
@@ -312,7 +296,7 @@ const handleRevenuesEndpoint = (endpoint: string, method: string, init?: Request
   return createMockErrorResponse('Endpoint de ingresos no encontrado', 404)
 }
 
-const handleMetricsEndpoint = (endpoint: string, method: string, init?: RequestInit): Response => {
+const handleMetricsEndpoint = (endpoint: string, method: string, _init?: RequestInit): Response => {
   if (endpoint === '/api/v1/admin/metrics/all' && method === 'GET') {
     return mockMetrics.getAllMetrics()
   }
@@ -439,7 +423,7 @@ const handleReportsEndpoint = (endpoint: string, method: string, init?: RequestI
   return createMockErrorResponse('Endpoint de reportes no encontrado', 404)
 }
 
-const handleNotificationsEndpoint = (endpoint: string, method: string, init?: RequestInit): Response => {
+const handleNotificationsEndpoint = (endpoint: string, method: string, _init?: RequestInit): Response => {
   if (endpoint === '/api/v1/admin/notifications' && method === 'GET') {
     return mockNotifications.getNotifications()
   }

@@ -1,4 +1,5 @@
-import type { ApiResponse, DashboardData } from '@/types/dashboard'
+import type { ApiResponse } from '@/types/api'
+import type { DashboardData } from '@/types/dashboard'
 
 const MOCK_DASHBOARD_DATA: DashboardData = {
   user_activity: {

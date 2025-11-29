@@ -1,4 +1,5 @@
-import type { ApiResponse, UserReport } from '@/types/dashboard'
+import type { ApiResponse } from '@/types/api'
+import type { UserReport } from '@/types/dashboard'
 
 // Datos mock de reportes (coinciden con el diseño de la tabla)
 const MOCK_REPORTS: (UserReport & { user_id?: string; user_name?: string; generated_date?: string; comment?: string })[] = [
@@ -270,7 +271,7 @@ export const mockReports = {
     })
   },
 
-  getUserReports: (userId: string): Response => {
+  getUserReports: (_userId: string): Response => {
     // Filtrar reportes por usuario (simulado)
     const userReports = MOCK_REPORTS.filter((r) => {
       // En un caso real, esto se filtraría por userId
