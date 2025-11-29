@@ -13,7 +13,7 @@ import type {
 import type { ApiResponse, LoginRequest, LoginResponse, RefreshTokenResponse, User } from '@/types/api'
 
 // Configuración base de la API
-const API_BASE_URL = import.meta.env.VITE_CLIPNEST_API_URL || 'https://api.clipnest.com'
+const API_BASE_URL = import.meta.env.VITE_TALKIPLAY_API_URL || 'https://api.talkiplay.com'
 
 // Función utilitaria para filtrar parámetros undefined y construir query string
 function buildQueryString(params?: Record<string, any>): string {

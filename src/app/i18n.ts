@@ -58,7 +58,7 @@ const resources = {
       back: 'Atrás',
       logout: 'Cerrar sesión',
       notifications: 'Notificaciones',
-      brand: 'ClipNest',
+      brand: 'TalkiPlay',
       pagination: 'Paginación',
     },
     auth: {
@@ -520,7 +520,7 @@ const resources = {
       back: 'Back',
       logout: 'Log out',
       notifications: 'Notifications',
-      brand: 'ClipNest',
+      brand: 'TalkiPlay',
       pagination: 'Pagination',
     },
     auth: {

@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useAuthStore, type AuthUser } from '@/stores/auth.store'
 
-const STORAGE_KEY = 'clipnest_auth'
+const STORAGE_KEY = 'talkiplay_auth'
 
 export function useAuthHydration() {
   const login = useAuthStore((s) => s.login)

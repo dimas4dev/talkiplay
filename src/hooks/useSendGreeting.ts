@@ -12,8 +12,8 @@ export function useSendGreeting() {
     try {
       const greetingData = {
         user_ids: userIds,
-        message: "¡Bienvenido a ClipNest! 🎉 Estamos emocionados de tenerte aquí. Esperamos que disfrutes explorando todas las increíbles funcionalidades que tenemos para ti. ¡Que tengas una experiencia fantástica!",
-        title: "¡Bienvenido a ClipNest!"
+        message: "¡Bienvenido a TalkiPlay! 🎉 Estamos emocionados de tenerte aquí. Esperamos que disfrutes explorando todas las increíbles funcionalidades que tenemos para ti. ¡Que tengas una experiencia fantástica!",
+        title: "¡Bienvenido a TalkiPlay!"
       }
 
       const response = await userService.sendGreeting(greetingData)
