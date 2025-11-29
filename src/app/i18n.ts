@@ -341,6 +341,37 @@ const resources = {
         resolved: 'Resuelto',
       },
     },
+    language: {
+      title: 'Gestión de lenguaje',
+      prohibitedWords: {
+        title: 'Palabras prohibidas',
+        addWord: 'Agregar palabra',
+        wordLabel: 'Palabra',
+        wordPlaceholder: 'Escribe la palabra...',
+        strongWord: 'Palabra fuerte',
+        strongWordTooltip: 'Las palabras fuertes suspenderán a los usuarios que las utilicen hasta autorizar su reactivación',
+      },
+      actions: {
+        edit: 'Editar',
+        save: 'Guardar',
+        cancel: 'Cancelar',
+        delete: 'Eliminar',
+      },
+      success: {
+        wordAdded: 'Palabra agregada',
+        wordAddedMessage: 'La palabra prohibida se ha agregado correctamente',
+        wordUpdated: 'Palabra actualizada',
+        wordUpdatedMessage: 'La palabra prohibida se ha actualizado correctamente',
+        wordDeleted: 'Palabra eliminada',
+        wordDeletedMessage: 'La palabra prohibida se ha eliminado correctamente',
+      },
+      errors: {
+        emptyWord: 'Por favor ingresa una palabra',
+      },
+      confirm: {
+        deleteWord: '¿Estás seguro de que deseas eliminar esta palabra?',
+      },
+    },
     settings: {
       loading: 'Cargando configuración...',
       errorTitle: 'Error al cargar la configuración',
@@ -750,6 +781,37 @@ const resources = {
         pending: 'Pending',
         reviewed: 'Reviewed',
         resolved: 'Resolved',
+      },
+    },
+    language: {
+      title: 'Language management',
+      prohibitedWords: {
+        title: 'Prohibited words',
+        addWord: 'Add word',
+        wordLabel: 'Word',
+        wordPlaceholder: 'Enter the word...',
+        strongWord: 'Strong word',
+        strongWordTooltip: 'Strong words will suspend users who use them until reactivation is authorized',
+      },
+      actions: {
+        edit: 'Edit',
+        save: 'Save',
+        cancel: 'Cancel',
+        delete: 'Delete',
+      },
+      success: {
+        wordAdded: 'Word added',
+        wordAddedMessage: 'The prohibited word has been added successfully',
+        wordUpdated: 'Word updated',
+        wordUpdatedMessage: 'The prohibited word has been updated successfully',
+        wordDeleted: 'Word deleted',
+        wordDeletedMessage: 'The prohibited word has been deleted successfully',
+      },
+      errors: {
+        emptyWord: 'Please enter a word',
+      },
+      confirm: {
+        deleteWord: 'Are you sure you want to delete this word?',
       },
     },
     settings: {
