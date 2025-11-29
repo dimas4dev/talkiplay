@@ -396,12 +396,6 @@ const handleMembershipsEndpoint = (endpoint: string, method: string, init?: Requ
 }
 
 const handleReportsEndpoint = (endpoint: string, method: string, init?: RequestInit): Response => {
-  if (endpoint === '/api/v1/admin/reports' && method === 'GET') {
-    const url = new URL(endpoint, 'http://localhost')
-    const params = Object.fromEntries(url.searchParams.entries())
-    return mockReports.getReports(params)
-  }
-
   if (endpoint === '/api/v1/admin/reports/summary' && method === 'GET') {
     return mockReports.getReportsSummary()
   }
@@ -425,6 +419,16 @@ const handleReportsEndpoint = (endpoint: string, method: string, init?: RequestI
   if (endpoint.match(/^\/api\/v1\/admin\/reports\/[^\/]+\/mark-resolved$/) && method === 'POST') {
     const reportId = endpoint.split('/')[5] || ''
     return mockReports.markResolved(reportId)
+  }
+
+  const isReportsList =
+    endpoint === '/api/v1/admin/reports' ||
+    endpoint.startsWith('/api/v1/admin/reports?')
+
+  if (isReportsList && method === 'GET') {
+    const url = new URL(`http://localhost${endpoint}`)
+    const params = Object.fromEntries(url.searchParams.entries())
+    return mockReports.getReports(params)
   }
 
   if (endpoint.startsWith('/api/v1/reports/user/') && method === 'GET') {

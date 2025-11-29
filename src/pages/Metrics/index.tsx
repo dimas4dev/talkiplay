@@ -134,9 +134,6 @@ export default function Metrics() {
                     ]}
                     barRadius={8}
                   />
-                  <p className="text-center text-sm text-emerald-600 mt-2 flex-shrink-0">
-                    ▲ {t('upwardTrendThisMonth')}
-                  </p>
                 </div>
               </div>
             </div>

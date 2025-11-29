@@ -5,16 +5,16 @@ import type { UserReport } from '@/types/dashboard'
 const MOCK_USERS = [
   {
     id: '1',
-    email: 'maria.garcia@example.com',
-    name: 'María García',
+    email: 'msantos@mail.com',
+    name: 'Familia Santos',
     username: 'Familia Santos',
     role: 'user',
     subscription_status: 'active',
     subscription_type: 'Premium',
-    status: 'Suspendido',
-    registrationDate: '2024-01-15T10:00:00Z',
-    created_at: '2024-01-15T10:00:00Z',
-    updated_at: '2024-01-15T10:00:00Z',
+    status: 'Bloqueado',
+    registrationDate: '2024-11-07T10:00:00Z',
+    created_at: '2024-11-07T10:00:00Z',
+    updated_at: '2024-11-07T10:00:00Z',
   },
   {
     id: '2',
@@ -165,38 +165,65 @@ const MOCK_USER_REPORTS: Record<string, UserReport[]> = {
   '1': [
     {
       id: 'report_1',
-      date: '2024-10-01T10:00:00Z',
-      title: 'Problema con la aplicación',
-      author: 'María García',
-      email: 'usuario1@example.com',
-      body: 'La aplicación se cierra inesperadamente al intentar guardar un clip.',
+      date: '2025-09-12T10:00:00Z',
+      title: 'Reporte 1245',
+      author: 'José Manuel',
+      email: 'jmanuel@mail.com',
+      body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       status: 'pending',
-      created_at: '2024-10-01T10:00:00Z',
-      updated_at: '2024-10-01T10:00:00Z',
+      created_at: '2025-09-12T10:00:00Z',
+      updated_at: '2025-09-12T10:00:00Z',
     },
     {
       id: 'report_2',
-      date: '2024-10-05T14:30:00Z',
-      title: 'Error al sincronizar',
-      author: 'María García',
-      email: 'usuario1@example.com',
-      body: 'No puedo sincronizar mis clips entre dispositivos.',
+      date: '2025-09-10T14:30:00Z',
+      title: 'Reporte 1245',
+      author: 'José Manuel',
+      email: 'jmanuel@mail.com',
+      body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       status: 'reviewed',
-      created_at: '2024-10-05T14:30:00Z',
-      updated_at: '2024-10-06T09:00:00Z',
+      created_at: '2025-09-10T14:30:00Z',
+      updated_at: '2025-09-10T14:30:00Z',
     },
   ],
   '2': [
     {
       id: 'report_3',
-      date: '2024-10-03T11:20:00Z',
-      title: 'Solicitud de función',
-      author: 'Juan Pérez',
-      email: 'usuario2@example.com',
-      body: 'Me gustaría poder exportar clips en formato PDF.',
+      date: '2025-09-08T11:20:00Z',
+      title: 'Reporte 1245',
+      author: 'José Manuel',
+      email: 'jmanuel@mail.com',
+      body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       status: 'resolved',
-      created_at: '2024-10-03T11:20:00Z',
-      updated_at: '2024-10-04T16:00:00Z',
+      created_at: '2025-09-08T11:20:00Z',
+      updated_at: '2025-09-08T11:20:00Z',
+    },
+  ],
+}
+
+const MOCK_USER_MANUAL_MESSAGES: Record<string, { sender: string; text: string }[]> = {
+  '1': [
+    { sender: 'Familia Santos', text: 'Lorem ipsum dolor' },
+    { sender: 'Familia Suárez', text: 'Lorem' },
+    {
+      sender: 'Familia Santos',
+      text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla venenatis, ante ac porttitor dictum, metus dui malesuada arcu, at efficitur massa urna bibendum urna.',
+    },
+    { sender: 'Familia Suárez', text: 'Lorem' },
+    {
+      sender: 'Familia Suárez',
+      text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    },
+    { sender: 'Familia Santos', text: 'Lorem ipsum dolor sit amet, consectetur' },
+    { sender: 'Familia Santos', text: 'Lorem ipsum' },
+    {
+      sender: 'Familia Suárez',
+      text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    },
+    { sender: 'Familia Santos', text: 'Lorem ipsum' },
+    {
+      sender: 'Familia Santos',
+      text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla venenatis, ante ac porttitor dictum.',
     },
   ],
 }
@@ -391,6 +418,7 @@ export const mockUsers = {
       data: {
         user: userHeader,
         reports: MOCK_USER_REPORTS[userId] || [],
+        manualMessages: MOCK_USER_MANUAL_MESSAGES[userId] || [],
       },
     }
     return new Response(JSON.stringify(response), {

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Badge from '@/components/ui/badge'
 import { getStatusBadgeVariant } from '@/utils/badgeVariants'
+import type { UserHeader as UserHeaderType } from '@/types/dashboard'
 import { Link } from 'wouter'
 import { ROUTES } from '@/constants/routes'
 
@@ -32,18 +33,27 @@ interface Translations {
 }
 
 interface Props {
-  user: UserHeader
+  user: UserHeader | UserHeaderType
   onToggleStatus?: () => void
   isUpdatingStatus?: boolean
   onDeleteUser?: () => void
   isDeletingUser?: boolean
   translations?: Translations
+  menuMode?: 'full' | 'familyOnly'
 }
 
-export default function UserHeaderCard({ user, onToggleStatus, isUpdatingStatus = false, onDeleteUser, isDeletingUser = false, translations }: Props) {
+export default function UserHeaderCard({
+  user,
+  onToggleStatus,
+  isUpdatingStatus = false,
+  onDeleteUser,
+  isDeletingUser = false,
+  translations,
+  menuMode = 'full',
+}: Props) {
   const [menuOpen, setMenuOpen] = useState(false)
   return (
-    <section className="mb-6 rounded-lg border border-neutral-200 bg-white p-6 relative">
+    <section className="rounded-lg border border-neutral-200 bg-white p-6 relative">
       {/* Opciones */}
       <div className="absolute right-4 top-4" tabIndex={-1} onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setMenuOpen(false) }}>
         <button className="h-10 w-10 rounded hover:bg-neutral-100 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary-500" onClick={() => setMenuOpen((o) => !o)} aria-haspopup="menu" aria-expanded={menuOpen}>
@@ -51,34 +61,57 @@ export default function UserHeaderCard({ user, onToggleStatus, isUpdatingStatus 
         </button>
         {menuOpen && (
           <div className="absolute right-0 mt-2 w-56 rounded-lg border border-neutral-200 bg-white shadow-md p-2 z-10" role="menu">
-            <button 
-              className="flex w-full items-center gap-3 rounded px-3 py-2 text-left hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary-500" 
-              role="menuitem"
-              onClick={onToggleStatus}
-              disabled={isUpdatingStatus}
-            >
-              <span className="ms text-neutral-900">
-                {user.status === 'Bloqueado' ? 'lock_open' : 'block'}
-              </span>
-              <span className="text-neutral-900">
-                {isUpdatingStatus ? (translations?.updating || 'Actualizando...') : user.status === 'Bloqueado' ? (translations?.unblock || 'Desbloquear') : (translations?.block || 'Bloquear')}
-              </span>
-            </button>
-            <Link href={`${ROUTES.reports}/${user.id}`} className="flex w-full items-center gap-3 rounded px-3 py-2 text-left hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-primary-500" role="menuitem">
-              <span className="ms text-neutral-900">visibility</span>
-              <span className="text-neutral-900">{translations?.viewReports || 'Ver reportes'}</span>
-            </Link>
-            <button 
-              className="flex w-full items-center gap-3 rounded px-3 py-2 text-left hover:bg-danger-50 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary-500" 
-              role="menuitem"
-              onClick={onDeleteUser}
-              disabled={isDeletingUser || isUpdatingStatus}
-            >
-              <span className="ms text-danger-600">delete</span>
-              <span className="text-danger-600">
-                {isDeletingUser ? (translations?.updating || 'Eliminando...') : (translations?.deleteAccount || 'Eliminar cuenta')}
-              </span>
-            </button>
+            {menuMode === 'full' ? (
+              <>
+                <button
+                  className="flex w-full items-center gap-3 rounded px-3 py-2 text-left hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  role="menuitem"
+                  onClick={onToggleStatus}
+                  disabled={isUpdatingStatus}
+                >
+                  <span className="ms text-neutral-900">
+                    {user.status === 'Bloqueado' ? 'lock_open' : 'block'}
+                  </span>
+                  <span className="text-neutral-900">
+                    {isUpdatingStatus
+                      ? (translations?.updating || 'Actualizando...')
+                      : user.status === 'Bloqueado'
+                        ? (translations?.unblock || 'Desbloquear')
+                        : (translations?.block || 'Bloquear')}
+                  </span>
+                </button>
+                <Link
+                  href={`${ROUTES.reports}/${user.id}`}
+                  className="flex w-full items-center gap-3 rounded px-3 py-2 text-left hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  role="menuitem"
+                >
+                  <span className="ms text-neutral-900">visibility</span>
+                  <span className="text-neutral-900">{translations?.viewReports || 'Ver reportes'}</span>
+                </Link>
+                <button
+                  className="flex w-full items-center gap-3 rounded px-3 py-2 text-left hover:bg-danger-50 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  role="menuitem"
+                  onClick={onDeleteUser}
+                  disabled={isDeletingUser || isUpdatingStatus}
+                >
+                  <span className="ms text-danger-600">delete</span>
+                  <span className="text-danger-600">
+                    {isDeletingUser
+                      ? (translations?.updating || 'Eliminando...')
+                      : (translations?.deleteAccount || 'Eliminar cuenta')}
+                  </span>
+                </button>
+              </>
+            ) : (
+              <Link
+                href={`${ROUTES.users}/${user.userId}`}
+                className="flex w-full items-center gap-3 rounded px-3 py-2 text-left hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                role="menuitem"
+              >
+                <span className="ms text-neutral-900">visibility</span>
+                <span className="text-neutral-900">{translations?.viewReports || 'Ver familia'}</span>
+              </Link>
+            )}
           </div>
         )}
       </div>
@@ -86,9 +119,8 @@ export default function UserHeaderCard({ user, onToggleStatus, isUpdatingStatus 
       <div className="flex items-start gap-6">
         {/* Avatar + estado */}
         <div className="flex w-48 flex-col items-center">
-          <div className="relative">
-            <div className="h-40 w-40 rounded-full bg-neutral-100" />
-            <span className="material-symbols-outlined absolute top-1 left-1 text-[22px] text-primary-600 leading-none" aria-hidden="true">stars</span>
+          <div className="h-40 w-40 overflow-hidden rounded-full bg-neutral-100">
+            {/* Aquí podríamos inyectar un avatar real en el futuro */}
           </div>
           <div className="mt-4 text-center">
             <span className="mr-2 text-sm text-neutral-900">{translations?.status || 'Estado'}:</span>
@@ -97,18 +129,18 @@ export default function UserHeaderCard({ user, onToggleStatus, isUpdatingStatus 
         </div>
 
         <div className="flex-1">
-          <h1 className="mb-2 text-3xl font-semibold text-neutral-900">{user.name}</h1>
-          <div className="grid grid-cols-2 gap-2 text-sm text-neutral-900">
-            <div>{translations?.subscription || 'Suscripción'}</div>
-            <div className="text-right">{user.subscription}</div>
+          <h1 className="mb-4 text-3xl font-semibold text-neutral-900">{user.name}</h1>
+          <div className="grid grid-cols-2 gap-y-1 text-sm text-neutral-900">
             <div>{translations?.userId || 'ID de usuario'}</div>
             <div className="text-right">{user.userId}</div>
-            <div>{translations?.email || 'Correo'}</div>
-            <div className="text-right">{user.email}</div>
-            <div>{translations?.registration || 'Registro'}</div>
+            <div>{translations?.registration || 'Creación'}</div>
             <div className="text-right">{user.registrationDate}</div>
             <div>{translations?.reports || 'Reportes'}</div>
             <div className="text-right">{user.reports ?? 0}</div>
+            <div>Clicks</div>
+            <div className="text-right">
+              {('clicks' in user && typeof (user as any).clicks === 'number') ? (user as any).clicks : 0}
+            </div>
           </div>
         </div>
       </div>

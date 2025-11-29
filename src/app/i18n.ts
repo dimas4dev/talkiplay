@@ -289,20 +289,25 @@ const resources = {
       loading: 'Cargando reportes...',
       errorTitle: 'Error al cargar los reportes',
       emptyText: 'No hay reportes',
+      tabs: {
+        incidents: 'Incidentes',
+        suggestions: 'Sugerencias de mejora',
+      },
       stats: {
+        reportsThisMonth: 'Reportes este mes',
         total: 'Total',
         unread: 'No leídos',
         resolved: 'Resueltos',
+        marked: 'Marcados',
       },
       filters: {
         status: 'Estado',
-        subscription: 'Suscripción',
         marked: 'Marcado',
         read: 'Leído',
         unread: 'No leído',
-        explorer: 'Explorador',
-        premium: 'Premium',
-        pro: 'Pro',
+        type: 'Tipo',
+        automatic: 'Automático',
+        manual: 'Manual',
       },
       table: {
         name: 'Nombre',
@@ -321,9 +326,14 @@ const resources = {
         unread: 'No leído',
         marked: 'Marcado',
       },
+      userTabs: {
+        sent: 'Enviados',
+        manual: 'Manuales',
+      },
       tableLabels: {
         fullName: 'Nombre completo',
         email: 'Correo electrónico',
+        user: 'Usuario',
       },
       statusLabels: {
         pending: 'Pendiente',
@@ -696,20 +706,25 @@ const resources = {
       loading: 'Loading reports...',
       errorTitle: 'Error loading reports',
       emptyText: 'No reports',
+      tabs: {
+        incidents: 'Incidents',
+        suggestions: 'Improvement suggestions',
+      },
       stats: {
+        reportsThisMonth: 'Reports this month',
         total: 'Total',
         unread: 'Unread',
         resolved: 'Resolved',
+        marked: 'Marked',
       },
       filters: {
         status: 'Status',
-        subscription: 'Subscription',
         marked: 'Marked',
         read: 'Read',
         unread: 'Unread',
-        explorer: 'Explorer',
-        premium: 'Premium',
-        pro: 'Pro',
+        type: 'Type',
+        automatic: 'Automatic',
+        manual: 'Manual',
       },
       table: {
         name: 'Name',
@@ -722,6 +737,10 @@ const resources = {
         read: 'Read',
         unread: 'Unread',
         marked: 'Marked',
+      },
+      userTabs: {
+        sent: 'Sent',
+        manual: 'Manual',
       },
       tableLabels: {
         fullName: 'Full name',

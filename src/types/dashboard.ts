@@ -292,10 +292,12 @@ export interface UserHeader {
   status: 'Activo' | 'Bloqueado' | 'Inactivo'
   registrationDate: string
   reports: number
+  clicks?: number
 }
 
 export interface UserReportsData {
   user: UserHeader
   reports: UserReport[]
+  manualMessages?: { sender: string; text: string }[]
 }
 

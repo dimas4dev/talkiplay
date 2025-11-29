@@ -8,10 +8,8 @@ import { useUserById } from '@/hooks/useUsers'
 import { useUserDelete } from '@/hooks/useUserDelete'
 import ApiStateHandler from '@/components/ui/ApiStateHandler'
 import { useToast, ToastContainer } from '@/components/ui/toast'
+import FamilyMemberCard from '@/components/users/FamilyMemberCard'
 import pinguImage from '@/assets/images/animals/pingu.png'
-import tortugaImage from '@/assets/images/animals/tortuga.png'
-import zorroImage from '@/assets/images/animals/zorro.png'
-import perritoImage from '@/assets/images/animals/Perrito.png'
 
 type RouteParams = { id: string }
 
@@ -89,16 +87,6 @@ export default function UserDetailPage() {
     }))
   }
 
-  // Función para obtener la ruta de la imagen del avatar
-  const getAvatarImage = (avatar: string) => {
-    const images: Record<string, string> = {
-      penguin: pinguImage,
-      turtle: tortugaImage,
-      fox: zorroImage,
-      dog: perritoImage
-    }
-    return images[avatar] || null
-  }
 
   return (
     <>
@@ -228,34 +216,15 @@ export default function UserDetailPage() {
                 <section className="mb-6">
                   <h2 className="mb-4 text-xl font-semibold text-neutral-900">Miembros de la familia</h2>
                   <div className="grid grid-cols-4 gap-4">
-                    {familyMembers.map((member: any) => {
-                      const avatarImage = getAvatarImage(member.avatar)
-                      return (
-                        <div
-                          key={member.id}
-                          className="flex flex-col rounded-lg border border-neutral-200 bg-white overflow-hidden"
-                          style={{ minHeight: '240px' }}
-                        >
-                          <div className="flex items-center justify-center h-44 w-full bg-[#E1D4C2] rounded-t-lg overflow-hidden">
-                            {avatarImage ? (
-                              <img 
-                                src={avatarImage} 
-                                alt={member.name} 
-                                className="h-full w-full object-cover rounded-none"
-                              />
-                            ) : (
-                              <div className="h-full w-full bg-neutral-100 flex items-center justify-center text-4xl">
-                                👤
-                              </div>
-                            )}
-                          </div>
-                          <div className="flex flex-1 flex-col items-center justify-center p-4 text-center">
-                            <div className="font-semibold text-neutral-900">{member.name}</div>
-                            <div className="mt-1 text-sm text-neutral-500">{member.role}</div>
-                          </div>
-                        </div>
-                      )
-                    })}
+                    {familyMembers.map((member: any) => (
+                      <FamilyMemberCard
+                        key={member.id}
+                        name={member.name}
+                        role={member.role}
+                        avatar={member.avatar}
+                        size="large"
+                      />
+                    ))}
                   </div>
                 </section>
               )}

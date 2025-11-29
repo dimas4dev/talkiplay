@@ -8,6 +8,7 @@ import RequireAuth from '@/components/auth/RequireAuth'
 import Users from '@/pages/Users'
 import Metrics from '@/pages/Metrics'
 import Reports from '@/pages/Reports'
+import UserSuggestionReportsPage from '@/pages/Reports/Suggestion'
 import UserReportsPage from '@/pages/Reports/User'
 import Settings from '@/pages/Settings'
 import Language from '@/pages/Language'
@@ -60,6 +61,13 @@ export function Routes() {
         <RequireAuth>
           <AppLayout>
             <Metrics />
+          </AppLayout>
+        </RequireAuth>
+      </Route>
+      <Route path="/reports/suggestions/:id">
+        <RequireAuth>
+          <AppLayout>
+            <UserSuggestionReportsPage />
           </AppLayout>
         </RequireAuth>
       </Route>

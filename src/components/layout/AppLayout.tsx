@@ -87,7 +87,10 @@ export default function AppLayout({ children }: AppLayoutProps) {
           <h1 className="justify-self-center text-xl font-semibold text-neutral-900">
             {tSidebar(
               (NAV_ITEMS.find((i) => i.href === location)?.labelKey) ||
-                (location === '/settings' ? 'settings' : 'dashboard')
+                (location.startsWith('/reports') ? 'reports'
+                  : location === '/settings'
+                    ? 'settings'
+                    : 'dashboard')
             )}
           </h1>
           <div className="justify-self-end">
