@@ -381,6 +381,7 @@ const resources = {
       addSection: 'Agregar sección',
       cancel: 'Cancelar',
       save: 'Guardar',
+      delete: 'Eliminar',
       saving: 'Guardando...',
       sectionTitlePlaceholder: 'Título sección',
       descriptionPlaceholder: 'Descripción',

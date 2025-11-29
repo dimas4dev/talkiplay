@@ -11,23 +11,32 @@ function CollapsibleItem({ section, onChange, onDelete }: { section: Section; on
   const [draft, setDraft] = useState(section.description)
   const { t } = useTranslation('settings')
   return (
-    <div className="rounded-lg border border-neutral-200 bg-white terms-shadow">
+    <div className="rounded-[12px] border border-neutral-200 bg-white">
       <div
         className="flex w-full items-center justify-between px-4 py-3 cursor-pointer"
-        onClick={() => setOpen((o) => !o)}
+        onClick={() => !isEditing && setOpen((o) => !o)}
       >
         <span className="text-neutral-900 font-medium">{section.title}</span>
-        <div className="flex items-center gap-4">
-          <button className="rounded p-1 hover:bg-neutral-100 focus:outline-none focus:ring-2 focus:ring-primary-500" onClick={(e) => { e.stopPropagation(); setOpen(true); setIsEditing(true) }}>
-            <span className="ms ms-24">edit</span>
+        <div className="flex items-center gap-2">
+          <button 
+            className="rounded p-1 hover:bg-neutral-100 focus:outline-none focus:ring-2 focus:ring-primary-500" 
+            onClick={(e) => { 
+              e.stopPropagation()
+              setOpen(true)
+              setIsEditing(true)
+            }}
+          >
+            <span className="ms ms-24 text-lg">edit</span>
           </button>
-          {onDelete && (
-            <button className="rounded p-1 hover:bg-danger-50 text-danger-600 focus:outline-none focus:ring-2 focus:ring-primary-500" onClick={(e) => { e.stopPropagation(); onDelete(section.id) }}>
-              <span className="ms ms-24">delete</span>
-            </button>
-          )}
-          <button className="rounded p-1 hover:bg-neutral-100 focus:outline-none focus:ring-2 focus:ring-primary-500" onClick={(e) => { e.stopPropagation(); setOpen((o) => !o) }} aria-expanded={open}>
-            <span className="ms ms-24">{open ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}</span>
+          <button 
+            className="rounded p-1 hover:bg-neutral-100 focus:outline-none focus:ring-2 focus:ring-primary-500" 
+            onClick={(e) => { 
+              e.stopPropagation()
+              setOpen((o) => !o)
+            }} 
+            aria-expanded={open}
+          >
+            <span className="ms ms-24 text-lg">{open ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}</span>
           </button>
         </div>
       </div>
@@ -36,18 +45,35 @@ function CollapsibleItem({ section, onChange, onDelete }: { section: Section; on
           {isEditing ? (
             <>
               <textarea 
-                className="h-32 w-full resize-none rounded border border-neutral-200 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="h-32 w-full resize-none rounded-[12px] border border-neutral-200 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 value={draft} 
                 onChange={(e) => setDraft(e.target.value)}
                 placeholder={t('descriptionPlaceholder')}
               />
-              <div className="mt-3 flex justify-end gap-3">
-                <button className="rounded border border-neutral-300 bg-white px-3 py-2 hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-primary-500" onClick={() => { setIsEditing(false); setDraft(section.description) }}>{t('cancel')}</button>
-                <button className="rounded border border-primary-500 bg-primary-500 px-3 py-2 text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500" onClick={() => { onChange({ ...section, description: draft }); setIsEditing(false) }}>{t('save')}</button>
+              <div className="mt-3 flex justify-evenly gap-3">
+                <button 
+                  className="flex-1 rounded-[12px] border border-[var(--color-primary-fixed-dim)] bg-[var(--color-primary-fixed-dim)] px-4 py-2 text-white hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary-500" 
+                  onClick={() => { 
+                    if (onDelete) {
+                      onDelete(section.id)
+                    }
+                  }}
+                >
+                  {t('delete')}
+                </button>
+                <button 
+                  className="flex-1 rounded-[12px] border border-[var(--color-primary-500)] bg-[var(--color-primary-500)] px-4 py-2 text-white hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary-500" 
+                  onClick={() => { 
+                    onChange({ ...section, description: draft })
+                    setIsEditing(false)
+                  }}
+                >
+                  {t('save')}
+                </button>
               </div>
             </>
           ) : (
-            <p>{section.description}</p>
+            <p className="text-neutral-700">{section.description}</p>
           )}
         </div>
       )}
@@ -146,18 +172,18 @@ export default function Settings() {
               <div>
                 <h2 className="mb-4 text-xl font-semibold text-neutral-900">{t('termsTitle')}</h2>
                 <button 
-                  className="mb-4 flex w-full items-center justify-center gap-2 rounded border border-primary-500 bg-primary-50 px-4 py-3 text-primary-600 hover:bg-primary-100 transition-colors disabled:opacity-50" 
+                  className="mb-4 flex w-full items-center justify-center gap-2 rounded-[12px] border border-[var(--color-primary-500)] bg-[var(--color-primary-500)] px-4 py-3 text-white hover:opacity-90 transition-colors disabled:opacity-50" 
                   onClick={() => { setAdding('terms'); setNewTitle(''); setNewContent('') }}
                   disabled={isUpdating}
                 >
-                  <span className="ms ms-24">add</span>
+                  <span className="ms ms-24 text-lg">add</span>
                   <span>{t('addSection')}</span>
                 </button>
                 {adding === 'terms' && (
-                  <div className="mb-4 rounded-lg border border-neutral-300 bg-white p-6 terms-shadow">
+                  <div className="mb-4 rounded-[12px] border border-neutral-200 bg-white p-6">
                     <div className="mb-3">
                       <input 
-                        className="w-full rounded border border-neutral-900 p-3 text-sm focus:outline-none" 
+                        className="w-full rounded-[12px] border border-neutral-200 bg-neutral-50 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500" 
                         placeholder={t('sectionTitlePlaceholder')} 
                         value={newTitle} 
                         onChange={(e) => setNewTitle(e.target.value)}
@@ -166,23 +192,23 @@ export default function Settings() {
                     </div>
                     <div className="mb-4">
                       <textarea 
-                        className="h-40 w-full resize-none rounded border border-neutral-900 p-3 text-sm focus:outline-none" 
+                        className="h-40 w-full resize-none rounded-[12px] border border-neutral-200 bg-neutral-50 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500" 
                         placeholder={t('descriptionPlaceholder')} 
                         value={newContent} 
                         onChange={(e) => setNewContent(e.target.value)}
                         disabled={isUpdating}
                       />
                     </div>
-                    <div className="flex justify-end gap-2">
+                    <div className="flex justify-evenly gap-3">
                       <button 
-                        className="rounded border border-gray-300 bg-white px-4 py-2 text-gray-700 hover:bg-gray-50 disabled:opacity-50" 
+                        className="flex-1 rounded-[12px] border border-[var(--color-primary-fixed-dim)] bg-[var(--color-primary-fixed-dim)] px-4 py-2 text-white hover:opacity-90 disabled:opacity-50" 
                         onClick={() => { setAdding(null); setNewTitle(''); setNewContent('') }}
                         disabled={isUpdating}
                       >
                         {t('cancel')}
                       </button>
                       <button 
-                        className="rounded border border-primary-500 bg-primary-500 px-6 py-3 text-white hover:bg-primary-600 disabled:opacity-50" 
+                        className="flex-1 rounded-[12px] border border-[var(--color-primary-500)] bg-[var(--color-primary-500)] px-4 py-2 text-white hover:opacity-90 disabled:opacity-50" 
                         onClick={addSection}
                         disabled={isUpdating || !newTitle.trim() || !newContent.trim()}
                       >
@@ -204,18 +230,18 @@ export default function Settings() {
               <div>
                 <h2 className="mb-4 text-xl font-semibold text-neutral-900">{t('policiesTitle')}</h2>
                 <button 
-                  className="mb-4 flex w-full items-center justify-center gap-2 rounded border border-primary-500 bg-primary-50 px-4 py-3 text-primary-600 hover:bg-primary-100 transition-colors disabled:opacity-50" 
+                  className="mb-4 flex w-full items-center justify-center gap-2 rounded-[12px] border border-[var(--color-primary-500)] bg-[var(--color-primary-500)] px-4 py-3 text-white hover:opacity-90 transition-colors disabled:opacity-50" 
                   onClick={() => { setAdding('policies'); setNewTitle(''); setNewContent('') }}
                   disabled={isUpdating}
                 >
-                  <span className="ms ms-24">add</span>
+                  <span className="ms ms-24 text-lg">add</span>
                   <span>{t('addSection')}</span>
                 </button>
                 {adding === 'policies' && (
-                  <div className="mb-4 rounded-lg border border-neutral-300 bg-white p-6 terms-shadow">
+                  <div className="mb-4 rounded-[12px] border border-neutral-200 bg-white p-6">
                     <div className="mb-3">
                       <input 
-                        className="w-full rounded border border-neutral-900 p-3 text-sm focus:outline-none" 
+                        className="w-full rounded-[12px] border border-neutral-200 bg-neutral-50 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500" 
                         placeholder={t('sectionTitlePlaceholder')} 
                         value={newTitle} 
                         onChange={(e) => setNewTitle(e.target.value)}
@@ -224,23 +250,23 @@ export default function Settings() {
                     </div>
                     <div className="mb-4">
                       <textarea 
-                        className="h-40 w-full resize-none rounded border border-neutral-900 p-3 text-sm focus:outline-none" 
+                        className="h-40 w-full resize-none rounded-[12px] border border-neutral-200 bg-neutral-50 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500" 
                         placeholder={t('descriptionPlaceholder')} 
                         value={newContent} 
                         onChange={(e) => setNewContent(e.target.value)}
                         disabled={isUpdating}
                       />
                     </div>
-                    <div className="flex justify-end gap-2">
+                    <div className="flex justify-evenly gap-3">
                       <button 
-                        className="rounded border border-gray-300 bg-white px-4 py-2 text-gray-700 hover:bg-gray-50 disabled:opacity-50" 
+                        className="flex-1 rounded-[12px] border border-[var(--color-primary-fixed-dim)] bg-[var(--color-primary-fixed-dim)] px-4 py-2 text-white hover:opacity-90 disabled:opacity-50" 
                         onClick={() => { setAdding(null); setNewTitle(''); setNewContent('') }}
                         disabled={isUpdating}
                       >
                         {t('cancel')}
                       </button>
                       <button 
-                        className="rounded border border-primary-500 bg-primary-500 px-6 py-3 text-white hover:bg-primary-600 disabled:opacity-50" 
+                        className="flex-1 rounded-[12px] border border-[var(--color-primary-500)] bg-[var(--color-primary-500)] px-4 py-2 text-white hover:opacity-90 disabled:opacity-50" 
                         onClick={addSection}
                         disabled={isUpdating || !newTitle.trim() || !newContent.trim()}
                       >
