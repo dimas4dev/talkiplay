@@ -63,44 +63,44 @@ export default function UserHeaderCard({
           <div className="absolute right-0 mt-2 w-56 rounded-lg border border-neutral-200 bg-white shadow-md p-2 z-10" role="menu">
             {menuMode === 'full' ? (
               <>
-                <button
-                  className="flex w-full items-center gap-3 rounded px-3 py-2 text-left hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  role="menuitem"
-                  onClick={onToggleStatus}
-                  disabled={isUpdatingStatus}
-                >
-                  <span className="ms text-neutral-900">
-                    {user.status === 'Bloqueado' ? 'lock_open' : 'block'}
-                  </span>
-                  <span className="text-neutral-900">
+            <button 
+              className="flex w-full items-center gap-3 rounded px-3 py-2 text-left hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary-500" 
+              role="menuitem"
+              onClick={onToggleStatus}
+              disabled={isUpdatingStatus}
+            >
+              <span className="ms text-neutral-900">
+                {user.status === 'Bloqueado' ? 'lock_open' : 'block'}
+              </span>
+              <span className="text-neutral-900">
                     {isUpdatingStatus
                       ? (translations?.updating || 'Actualizando...')
                       : user.status === 'Bloqueado'
                         ? (translations?.unblock || 'Desbloquear')
                         : (translations?.block || 'Bloquear')}
-                  </span>
-                </button>
+              </span>
+            </button>
                 <Link
                   href={`${ROUTES.reports}/${user.id}`}
                   className="flex w-full items-center gap-3 rounded px-3 py-2 text-left hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-primary-500"
                   role="menuitem"
                 >
-                  <span className="ms text-neutral-900">visibility</span>
-                  <span className="text-neutral-900">{translations?.viewReports || 'Ver reportes'}</span>
-                </Link>
-                <button
-                  className="flex w-full items-center gap-3 rounded px-3 py-2 text-left hover:bg-danger-50 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  role="menuitem"
-                  onClick={onDeleteUser}
-                  disabled={isDeletingUser || isUpdatingStatus}
-                >
-                  <span className="ms text-danger-600">delete</span>
-                  <span className="text-danger-600">
+              <span className="ms text-neutral-900">visibility</span>
+              <span className="text-neutral-900">{translations?.viewReports || 'Ver reportes'}</span>
+            </Link>
+            <button 
+              className="flex w-full items-center gap-3 rounded px-3 py-2 text-left hover:bg-danger-50 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary-500" 
+              role="menuitem"
+              onClick={onDeleteUser}
+              disabled={isDeletingUser || isUpdatingStatus}
+            >
+              <span className="ms text-danger-600">delete</span>
+              <span className="text-danger-600">
                     {isDeletingUser
                       ? (translations?.updating || 'Eliminando...')
                       : (translations?.deleteAccount || 'Eliminar cuenta')}
-                  </span>
-                </button>
+              </span>
+            </button>
               </>
             ) : (
               <Link

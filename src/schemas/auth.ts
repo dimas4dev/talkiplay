@@ -11,7 +11,6 @@ export const forgotPasswordSchema = z.object({
 })
 
 export const verifyOTPSchema = z.object({
-  email: z.string().min(1, 'Email requerido').email('Email inválido'),
   code: z.string().min(6, 'El código debe tener 6 dígitos').max(6, 'El código debe tener 6 dígitos').regex(/^\d{6}$/, 'El código debe contener solo números'),
 })
 

@@ -71,12 +71,12 @@ export default function UserDetailPage() {
     setAdminMenuOpen(null)
     // Aquí implementarías la lógica para cada acción
     console.log(`Action ${action} for admin ${adminId}`)
-  }
+    }
 
   // Función para generar elementos del timeline
   const generateTimelineItems = (data: any) => {
     if (!data.history) return []
-    
+
     return data.history.map((item: any) => ({
       date: new Date(item.date).toLocaleDateString('es-ES', {
         day: '2-digit',
@@ -166,9 +166,9 @@ export default function UserDetailPage() {
                       <div>Creación</div>
                       <div className="text-right">
                         {new Date(user.created_at).toLocaleDateString('es-ES', {
-                          day: '2-digit',
-                          month: 'short',
-                          year: 'numeric'
+                         day: '2-digit',
+                         month: 'short',
+                         year: 'numeric'
                         })}
                       </div>
                       <div>Reportes</div>
@@ -177,7 +177,7 @@ export default function UserDetailPage() {
                       <div className="text-right">{user.clicks || 0}</div>
                     </div>
 
-                  </div>
+                   </div>
                 </div>
               </section>
 
@@ -192,7 +192,7 @@ export default function UserDetailPage() {
                 >
                   Advertir
                 </button>
-                <button 
+                <button
                   className="w-full rounded-lg border-0 px-4 py-3 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500"
                   style={{
                     backgroundColor: 'var(--color-primary-500)',
@@ -200,7 +200,7 @@ export default function UserDetailPage() {
                 >
                   Suspender
                 </button>
-                <button 
+                <button
                   className="w-full rounded-lg border-0 px-4 py-3 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
                   style={{
                     backgroundColor: 'var(--color-error-container)',
