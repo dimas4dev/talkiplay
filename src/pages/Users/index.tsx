@@ -214,6 +214,7 @@ export default function Users() {
               <input 
                 type="checkbox" 
                 className="rounded border-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary-500" 
+                style={{ accentColor: 'var(--color-primary-500)' }}
                 checked={selectedUsers.length > 0 && selectedUsers.length === (data?.users?.length || 0) && data?.users?.length > 0}
                 onChange={(e) => handleSelectAll(e.target.checked, data?.users)}
               />
@@ -223,6 +224,7 @@ export default function Users() {
               <input 
                 type="checkbox" 
                 className="rounded border-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary-500" 
+                style={{ accentColor: 'var(--color-primary-500)' }}
                 checked={selectedUsers.includes(user.id)}
                 onChange={(e) => handleUserSelection(user.id, e.target.checked)}
               />
@@ -357,6 +359,7 @@ export default function Users() {
               columns={columns as any}
               data={data.users}
               className="w-full"
+              headerStyle={{ backgroundColor: 'var(--color-surface-variant)' }}
             />
           </div>
 

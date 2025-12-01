@@ -62,6 +62,16 @@ const MOCK_DASHBOARD_DATA: DashboardData = {
     month_6: 78.9,
     average_retention: 84.6,
   },
+  click_success_rate: {
+    success_rate: 76,
+    trend: '+5.2% vs mes pasado',
+  },
+  languages: {
+    spanish: 60,
+    english: 25,
+    german: 15,
+    trend: '+5.2% vs mes pasado',
+  },
 }
 
 export const mockDashboard = {

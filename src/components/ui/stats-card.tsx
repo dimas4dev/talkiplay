@@ -23,7 +23,7 @@ export default function StatsCard({
       }`}
       style={{
         borderWidth: '1px',
-        borderColor: 'var(--color-neutral-300)',
+        borderColor: 'var(--color-card-border)',
         backgroundColor: 'var(--color-neutral-50)',
         padding: '20px'
       }}

@@ -42,7 +42,7 @@ export type DonutChartProps = {
   title: string
   subtitle: string
   data: DonutData[]
-  trend: string
+  trend?: string
   summary?: string
   buttonText?: string
   buttonAction?: () => void

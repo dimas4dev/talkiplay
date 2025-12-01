@@ -46,6 +46,18 @@ export interface RetentionRate {
   average_retention: number
 }
 
+export interface ClickSuccessRate {
+  success_rate: number
+  trend?: string // Texto de tendencia (ej: "+5.2% vs mes pasado")
+}
+
+export interface LanguagesData {
+  spanish: number
+  english: number
+  german: number
+  trend?: string // Texto de tendencia (ej: "+5.2% vs mes pasado")
+}
+
 export interface DashboardData {
   user_activity: UserActivity
   failed_payments_24h: FailedPayment[]
@@ -53,6 +65,8 @@ export interface DashboardData {
   subscription_distribution: SubscriptionDistribution
   growth_rate: GrowthRate
   retention_rate: RetentionRate
+  click_success_rate?: ClickSuccessRate
+  languages?: LanguagesData
 }
 
 export interface RevenueStats {

@@ -31,6 +31,8 @@
   --color-neutral-100: #E9EFF0;
   --color-neutral-200: #DBE4E6; /* M3 Surface Variant */
   --color-neutral-300: #BFC8CA; /* M3 Outline Variant */
+  --color-card-border: #EEEEEF; /* Color de borde para tarjetas del Dashboard */
+  --color-search-bg: #0000000D; /* Color de fondo para barra de búsqueda */
   --color-neutral-400: #9FA8AA;
   --color-neutral-500: #6F797A; /* M3 Outline */
   --color-neutral-600: #3F484A; /* M3 On Surface Variant */

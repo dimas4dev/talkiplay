@@ -101,8 +101,8 @@ export default function Notifications() {
               {todayNotifications.map((notification) => (
                 <div 
                   key={notification.id} 
-                  className="relative w-full rounded-lg border border-neutral-200 bg-white px-4 py-6 transition-colors hover:bg-neutral-50"
-                  onMouseEnter={() => markAsRead(notification.id)}
+                  className="relative w-full rounded-lg border border-neutral-200 bg-white px-4 py-6 transition-colors hover:bg-neutral-50 cursor-pointer"
+                  onClick={() => markAsRead(notification.id)}
                 >
                   {notification.title && (
                     <h3 className="text-sm font-semibold text-neutral-900 mb-1">{notification.title}</h3>
@@ -133,8 +133,8 @@ export default function Notifications() {
               {lastWeekNotifications.map((notification) => (
                 <div 
                   key={notification.id} 
-                  className="relative w-full rounded-lg border border-neutral-200 bg-white px-4 py-6 transition-colors hover:bg-neutral-50"
-                  onMouseEnter={() => markAsRead(notification.id)}
+                  className="relative w-full rounded-lg border border-neutral-200 bg-white px-4 py-6 transition-colors hover:bg-neutral-50 cursor-pointer"
+                  onClick={() => markAsRead(notification.id)}
                 >
                   {notification.title && (
                     <h3 className="text-sm font-semibold text-neutral-900 mb-1">{notification.title}</h3>

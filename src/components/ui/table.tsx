@@ -6,7 +6,8 @@ export default function Table<T>({
   data,
   className = '',
   headerPaddingClass = 'p-4',
-  headerBgClass = 'bg-neutral-50'
+  headerBgClass = 'bg-neutral-50',
+  headerStyle
 }: TableProps<T>) {
   return (
     <div className={`overflow-hidden rounded-lg border border-neutral-200 bg-white ${className}`}>
@@ -14,7 +15,10 @@ export default function Table<T>({
       <div className={headerPaddingClass}>
         <table className="w-full table-fixed">
           <thead>
-            <tr className={`${headerBgClass} text-left text-neutral-900`}>
+            <tr 
+              className={`${headerBgClass} text-left text-neutral-900`}
+              style={headerStyle}
+            >
               {columns.map((col) => (
                 <th key={String(col.key)} className={`px-4 py-4 ${col.widthClass ?? ''}`}>
                   {col.header}

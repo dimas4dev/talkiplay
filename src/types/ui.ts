@@ -37,5 +37,6 @@ export interface TableProps<T> {
   className?: string
   headerPaddingClass?: string
   headerBgClass?: string
+  headerStyle?: React.CSSProperties
 }
 

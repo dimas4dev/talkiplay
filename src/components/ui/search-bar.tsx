@@ -26,7 +26,8 @@ export default function SearchBar({
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange?.(e.target.value)}
-        className="w-full h-10 pl-10 pr-10 rounded-lg text-neutral-900 placeholder:text-neutral-500 bg-neutral-50 border border-neutral-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+        className="w-full h-10 pl-10 pr-10 rounded-lg text-neutral-900 placeholder:text-neutral-500 border border-neutral-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+        style={{ backgroundColor: 'var(--color-search-bg)' }}
       />
     </div>
   )

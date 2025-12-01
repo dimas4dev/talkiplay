@@ -5,9 +5,10 @@ interface LanguagesDonutProps {
   spanish: number
   english: number
   german: number
+  trend?: string
 }
 
-export default function LanguagesDonut({ spanish, english, german }: LanguagesDonutProps) {
+export default function LanguagesDonut({ spanish, english, german, trend }: LanguagesDonutProps) {
   const { t } = useTranslation('dashboard')
   
   const total = spanish + english + german || 1
@@ -37,15 +38,12 @@ export default function LanguagesDonut({ spanish, english, german }: LanguagesDo
     }
   ]
 
-  // Trend calculado (simulado para mostrar +5.2%)
-  const trendText = `+5.2% vs mes pasado`
-
   return (
     <DonutChart
       title={t('languages.title')}
       subtitle={t('languages.subtitle')}
       data={chartData}
-      trend={trendText}
+      trend={trend}
     />
   )
 }

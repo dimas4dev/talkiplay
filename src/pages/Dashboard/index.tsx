@@ -57,15 +57,19 @@ export default function Dashboard() {
 
               {/* div3 - Tasa de éxito de Clicks (columna 4-12, fila 1-2, span 9 columnas y 2 filas) */}
               <div className="col-span-9 row-span-2 col-start-4 row-start-1 h-full">
-                <ClickSuccessRate successRate={76} />
+                <ClickSuccessRate 
+                  successRate={data.click_success_rate?.success_rate || 76} 
+                  trend={data.click_success_rate?.trend}
+                />
               </div>
 
               {/* div4 - Idiomas (columna 1-3, fila 3-4, span 3 columnas y 2 filas) */}
               <div className="col-span-3 row-span-2 row-start-3 col-start-1 h-full">
                 <LanguagesDonut
-                  spanish={60}
-                  english={25}
-                  german={15}
+                  spanish={data.languages?.spanish || 60}
+                  english={data.languages?.english || 25}
+                  german={data.languages?.german || 15}
+                  trend={data.languages?.trend}
                 />
               </div>
 

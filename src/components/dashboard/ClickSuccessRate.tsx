@@ -3,10 +3,11 @@ import { useTranslation } from 'react-i18next'
 import DonutChart from '../charts/DonutChart'
 
 interface ClickSuccessRateProps {
-  successRate: number // Porcentaje de éxito (ej: 76)
+  successRate: number
+  trend?: string
 }
 
-export default function ClickSuccessRate({ successRate }: ClickSuccessRateProps) {
+export default function ClickSuccessRate({ successRate, trend }: ClickSuccessRateProps) {
   const { t } = useTranslation('dashboard')
   const [activeTab, setActiveTab] = useState('30days')
 
@@ -39,15 +40,12 @@ export default function ClickSuccessRate({ successRate }: ClickSuccessRateProps)
 
   const currentData = activeTab === '30days' ? data30Days : data7Days
 
-  // Trend fijo según la imagen (+5.2%)
-  const trendText = `+5.2% vs mes pasado`
-
   return (
     <DonutChart
       title={t('clickSuccessRate.title')}
       subtitle={t('clickSuccessRate.subtitle')}
       data={currentData}
-      trend={trendText}
+      trend={trend}
       tabs={tabs}
       activeTab={activeTab}
       onTabChange={setActiveTab}

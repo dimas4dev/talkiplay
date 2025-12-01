@@ -82,7 +82,15 @@ export default function DonutChart({
       )}
 
       {/* Contenedor de la gráfica */}
-      <section aria-labelledby="chart-title" className="flex-1 rounded border border-neutral-200 bg-neutral-50 px-4 py-3 flex flex-col min-h-0">
+      <section 
+        aria-labelledby="chart-title" 
+        className="flex-1 rounded bg-neutral-50 px-4 py-3 flex flex-col min-h-0"
+        style={{
+          borderWidth: '1px',
+          borderStyle: 'solid',
+          borderColor: 'var(--color-card-border)'
+        }}
+      >
         <h3 id="chart-title" className="mb-2 text-center text-lg font-semibold text-neutral-900 flex-shrink-0">{title}</h3>
         <p className="mb-3 text-center text-sm text-neutral-500 flex-shrink-0">{subtitle}</p>
 
