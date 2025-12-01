@@ -7,7 +7,7 @@ import FilterDropdown from '@/components/ui/filter-dropdown'
 import Table from '@/components/ui/table'
 import Badge from '@/components/ui/badge'
 import ApiStateHandler from '@/components/ui/ApiStateHandler'
-import { useUsers } from '@/hooks/useUsers'
+import { useAdminUsers } from '@/hooks/useAdminUsers'
 import Pagination from '@/components/ui/pagination'
 
 export default function Users() {
@@ -55,19 +55,9 @@ export default function Users() {
 
   // Función para obtener el estado del usuario
   const getUserStatus = (user: any): 'active' | 'blocked' | 'suspended' => {
-    // Si el usuario tiene un campo status, usarlo
-    if (user.status) {
-      const status = user.status.toLowerCase()
-      if (status.includes('bloq')) return 'blocked'
-      if (status.includes('suspen')) return 'suspended'
-      return 'active'
-    }
-    // Si no, derivar del subscription_status
-    if (user.subscription_status === 'cancelled' || user.subscription_status === 'suspended') {
-      return 'suspended'
-    }
-    if (user.subscription_status === 'blocked') {
-      return 'blocked'
+    // Usar accountStatus directamente del API de admin
+    if (user.accountStatus) {
+      return user.accountStatus
     }
     return 'active'
   }
@@ -79,126 +69,54 @@ export default function Users() {
     return 'status-active'
   }
 
-  // Query simple sin filtros ya que el API no los acepta
-  const query = useMemo(() => ({
-    page: 1,
-    limit: 1000, // Obtener todos los usuarios para filtrar localmente
-  }), [])
-
-  const { data: allUsersData, isLoading, error } = useUsers(query)
-  
-  // Aplicar filtros localmente
-  const filteredAndPaginatedData = useMemo(() => {
-    if (!allUsersData?.users) return { users: [], totals: allUsersData?.totals || {} }
-
-    let filteredUsers = [...allUsersData.users]
-
-    // Aplicar búsqueda
-    if (searchTerm && searchTerm.trim()) {
-      const searchLower = searchTerm.toLowerCase().trim()
-      filteredUsers = filteredUsers.filter(user => 
-        user.username?.toLowerCase().includes(searchLower) ||
-        user.email?.toLowerCase().includes(searchLower)
-      )
-    }
-
-    // Aplicar filtros de stats-cards
-    const adminFilter = filters.find(f => f === 'admin')
-    if (adminFilter) {
-      filteredUsers = filteredUsers.filter(user => user.role === 'admin')
-    }
-
-    const regularFilter = filters.find(f => f === 'regular')
-    if (regularFilter) {
-      filteredUsers = filteredUsers.filter(user => user.role !== 'admin')
-    }
-
-    // Aplicar filtros existentes
-    const membershipFilter = filters.find(f => ['explorer', 'premium', 'pro'].includes(f))
-    if (membershipFilter) {
-      filteredUsers = filteredUsers.filter(user => {
-        // Por ahora, mapear basado en subscription_status hasta que tengamos más datos
-        if (membershipFilter === 'explorer') {
-          return !user.subscription_status || user.subscription_status === 'none'
-        } else if (membershipFilter === 'premium') {
-          return user.subscription_status === 'active' // Asumir que 'active' incluye premium
-        } else if (membershipFilter === 'pro') {
-          return user.subscription_status === 'active' // Asumir que 'active' incluye pro
-        }
-        return false
-      })
-    }
-
-    // Aplicar filtros de estado (pueden ser múltiples)
+  // Query para obtener usuarios con filtros
+  const query = useMemo(() => {
+    // Mapear filtros de estado
+    let status: 'active' | 'suspended' | 'blocked' | undefined
     const statusFilters = filters.filter(f => ['active', 'blocked', 'suspended'].includes(f))
-    if (statusFilters.length > 0) {
-      filteredUsers = filteredUsers.filter(user => {
-        const userStatus = getUserStatus(user)
-        return statusFilters.includes(userStatus)
-      })
+    if (statusFilters.length === 1) {
+      status = statusFilters[0] as 'active' | 'suspended' | 'blocked'
     }
-
-    // Aplicar ordenamiento
-    filteredUsers.sort((a, b) => {
-      let aValue, bValue
-      
-      switch (sortValue) {
-        case 'username':
-          aValue = (a.username || '').toLowerCase()
-          bValue = (b.username || '').toLowerCase()
-          break
-        case 'role':
-          aValue = (a.role || '').toLowerCase()
-          bValue = (b.role || '').toLowerCase()
-          break
-        case 'created_at':
-        default:
-          // Asegurar que las fechas se parseen correctamente
-          const dateA = new Date(a.created_at)
-          const dateB = new Date(b.created_at)
-          
-          
-          // Verificar que las fechas sean válidas
-          if (isNaN(dateA.getTime()) || isNaN(dateB.getTime())) {
-            console.warn('Fecha inválida encontrada:', { a: a.created_at, b: b.created_at })
-            return 0
-          }
-          
-          aValue = dateA.getTime()
-          bValue = dateB.getTime()
-          break
-      }
-
-      // Ordenamiento más robusto
-      if (aValue < bValue) {
-        return sortOrder === 'asc' ? -1 : 1
-      } else if (aValue > bValue) {
-        return sortOrder === 'asc' ? 1 : -1
-      } else {
-        return 0
-      }
-    })
-
-    // Aplicar paginación
-    const startIndex = (page - 1) * pageSize
-    const endIndex = startIndex + pageSize
-    const paginatedUsers = filteredUsers.slice(startIndex, endIndex)
 
     return {
-      users: paginatedUsers,
+      status,
+      search: searchTerm || undefined,
+      page,
+      limit: pageSize,
+    }
+  }, [filters, searchTerm, page, pageSize])
+
+  const { data: adminUsersData, isLoading, error } = useAdminUsers(query)
+  
+  // Transformar datos de adminUsers a formato esperado por la página
+  const filteredAndPaginatedData = useMemo(() => {
+    if (!adminUsersData?.data) return { users: [], totals: {}, pagination: { total: 0, page: 1, limit: pageSize, total_pages: 0 } }
+
+    // Transformar AdminUserListItem a formato esperado
+    const users = adminUsersData.data.map(user => ({
+      id: user.id,
+      username: user.email, // Usar email como username temporalmente
+      email: user.email,
+      created_at: user.createdAt,
+      accountStatus: user.accountStatus,
+      warnings: user.warnings,
+      reportCount: user.reportCount,
+    }))
+
+    return {
+      users,
       totals: {
-        ...allUsersData.totals,
-        total_users: filteredUsers.length,
-        filtered_users: filteredUsers.length
+        total_users: adminUsersData.total,
       },
       pagination: {
-        total: filteredUsers.length,
-        page,
-        limit: pageSize,
-        total_pages: Math.ceil(filteredUsers.length / pageSize)
+        total: adminUsersData.total,
+        page: adminUsersData.page,
+        limit: adminUsersData.limit,
+        total_pages: adminUsersData.totalPages,
       }
     }
-  }, [allUsersData, searchTerm, filters, sortValue, sortOrder, page, pageSize])
+  }, [adminUsersData, pageSize])
+
 
   const data = filteredAndPaginatedData
 
@@ -240,7 +158,7 @@ export default function Users() {
                 className="underline hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-primary-500 rounded transition-opacity"
                 style={{ color: '#006874' }}
               >
-                {user.username}
+                {user.email}
               </Link>
             )
           },
@@ -291,7 +209,10 @@ export default function Users() {
             <div className="flex-1">
               <SearchBar
                 value={searchTerm}
-                onChange={(v) => { setPage(1); setSearchTerm(v) }}
+                onChange={(v) => { 
+                  setPage(1)
+                  setSearchTerm(v)
+                }}
                 placeholder={t('toolbar.search')}
               />
             </div>

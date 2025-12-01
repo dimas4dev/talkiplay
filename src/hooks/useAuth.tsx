@@ -1,12 +1,13 @@
 import { useState, useEffect, createContext, useContext, type ReactNode } from 'react'
 import { useLocation } from 'wouter'
-// TODO: Importar tipos y servicios de autenticación cuando se implementen
+import { authService } from '@/services/api'
+import type { LoginRequest } from '@/types/api'
 
 interface AuthContextType {
   isAuthenticated: boolean
   isLoading: boolean
   user: string | null
-  login: (credentials: { email: string; password: string }) => Promise<boolean>
+  login: (credentials: LoginRequest) => Promise<boolean>
   logout: () => void
 }
 
@@ -18,30 +19,124 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<string | null>(null)
   const [, setLocation] = useLocation()
 
-  useEffect(() => {
-    // TODO: Implementar verificación de autenticación
-    const accessToken = localStorage.getItem('accessToken')
-    const refreshToken = localStorage.getItem('refreshToken')
+  // Función para verificar si el token está expirado
+  const isTokenExpired = (token: string): boolean => {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]))
+      const currentTime = Date.now() / 1000
+      return payload.exp < currentTime
+    } catch {
+      return true
+    }
+  }
+
+  // Función para verificar token
+  const checkToken = async () => {
+    const accessToken = authService.getAccessToken()
     
-    if (!accessToken || !refreshToken) {
-      setIsAuthenticated(false)
-      setUser(null)
-      setIsLoading(false)
-      return
+    if (!accessToken) {
+      return false
     }
 
-    // TODO: Verificar token con el backend
-    setIsLoading(false)
+    // Si el access token está expirado, cerrar sesión
+    if (isTokenExpired(accessToken)) {
+      authService.logout()
+      return false
+    }
+    
+    return true
+  }
+
+  // Función para obtener información del usuario
+  const getUserInfo = async () => {
+    try {
+      const response = await authService.getUserProfile()
+      if (response.success && response.data) {
+        return response.data.username || response.data.email
+      }
+      return null
+    } catch (error) {
+      console.error('Error obteniendo información del usuario:', error)
+      return null
+    }
+  }
+
+  // Función para verificar autenticación con el backend
+  const verifyAuthentication = async () => {
+    try {
+      const isValid = await checkToken()
+      if (isValid) {
+        setIsAuthenticated(true)
+        const userName = await getUserInfo()
+        if (userName) {
+          setUser(userName)
+          try {
+            localStorage.setItem('username', userName)
+          } catch {}
+        } else {
+          setUser(prev => prev ?? 'Usuario autenticado')
+        }
+      } else {
+        setIsAuthenticated(false)
+        setUser(null)
+        setLocation('/login')
+      }
+    } catch (error) {
+      console.error('Error verificando autenticación:', error)
+      setIsAuthenticated(false)
+      setUser(null)
+      setLocation('/login')
+    }
+  }
+
+  useEffect(() => {
+    const initializeAuth = async () => {
+      setIsLoading(true)
+      
+      // Hidratar el nombre de usuario desde localStorage inmediatamente
+      try {
+        const savedUsername = localStorage.getItem('username')
+        if (savedUsername) {
+          setUser(savedUsername)
+        }
+      } catch {}
+
+      const accessToken = authService.getAccessToken()
+      
+      if (!accessToken) {
+        setIsAuthenticated(false)
+        setUser(null)
+        setIsLoading(false)
+        return
+      }
+
+      // Verificar autenticación con el backend
+      await verifyAuthentication()
+      setIsLoading(false)
+    }
+
+    initializeAuth()
+
+    // Verificar autenticación cada 5 minutos
+    const interval = setInterval(verifyAuthentication, 5 * 60 * 1000)
+    
+    return () => clearInterval(interval)
   }, [])
 
-  const login = async (credentials: { email: string; password: string }): Promise<boolean> => {
+  const login = async (credentials: LoginRequest): Promise<boolean> => {
     try {
       setIsLoading(true)
-      // TODO: Implementar llamada a API de login
-      // const response = await authService.login(credentials)
+      const response = await authService.login(credentials)
       
-      // Placeholder - reemplazar con implementación real
-      console.warn('Login no implementado aún')
+      if (response.success && response.data) {
+        setIsAuthenticated(true)
+        const userName = response.data.user.username || response.data.user.email
+        setUser(userName)
+        try {
+          localStorage.setItem('username', userName)
+        } catch {}
+        return true
+      }
       return false
     } catch (error) {
       console.error('Error en el login:', error)
@@ -52,11 +147,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const logout = () => {
-    localStorage.removeItem('accessToken')
-    localStorage.removeItem('refreshToken')
-    localStorage.removeItem('username')
+    authService.logout()
     setIsAuthenticated(false)
     setUser(null)
+    try {
+      localStorage.removeItem('username')
+    } catch {}
     setLocation('/login')
   }
 

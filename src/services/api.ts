@@ -1,5 +1,22 @@
 // Cliente base para peticiones HTTP
-// TODO: Implementar servicios de API desde cero
+import type {
+  LoginRequest,
+  LoginResponse,
+  ForgotPasswordResponse,
+  VerifyOTPResponse,
+  ResetPasswordRequest,
+  ResetPasswordResponse,
+  ApiResponse,
+  AdminUsersQueryParams,
+  AdminUsersResponse,
+  AdminUserStats,
+  AdminUserDetail,
+  WarnUserPayload,
+  SuspendUserPayload,
+  BlockUserPayload,
+  ActivateUserPayload,
+  BulkActionPayload,
+} from '@/types/api'
 
 // Configuración base de la API
 const API_BASE_URL = import.meta.env.VITE_TALKIPLAY_API_URL || 'https://api.talkiplay.com'
@@ -39,19 +56,6 @@ class ApiClient {
     }
   }
 
-  // Método para establecer el refresh token
-  setRefreshToken(token: string | null) {
-    if (token) {
-      localStorage.setItem('refreshToken', token)
-    } else {
-      localStorage.removeItem('refreshToken')
-    }
-  }
-
-  // Método para obtener el refresh token
-  getRefreshToken(): string | null {
-    return localStorage.getItem('refreshToken')
-  }
 
   // Método para obtener el token de acceso
   getAccessToken(): string | null {
@@ -137,6 +141,97 @@ class ApiClient {
 
 // Instancia única del cliente API
 const apiClient = new ApiClient(API_BASE_URL)
+
+// --- Servicios de Autenticación ---
+export const authService = {
+  // Login
+  async login(credentials: LoginRequest): Promise<ApiResponse<LoginResponse>> {
+    const response = await apiClient.post<ApiResponse<LoginResponse>>('/api/v1/auth/login', credentials)
+    
+    if (response.success && response.data) {
+      // Guardar access token
+      apiClient.setAccessToken(response.data.accessToken)
+    }
+    
+    return response
+  },
+
+  // Olvido de contraseña
+  async forgotPassword(email: string): Promise<ApiResponse<ForgotPasswordResponse>> {
+    return apiClient.post<ApiResponse<ForgotPasswordResponse>>('/api/v1/auth/forgot-password', { email })
+  },
+
+  // Verificar OTP
+  async verifyOTP(email: string, code: string): Promise<ApiResponse<VerifyOTPResponse>> {
+    return apiClient.post<ApiResponse<VerifyOTPResponse>>('/api/v1/auth/verify-otp', { email, code })
+  },
+
+  // Reset password
+  async resetPassword(payload: ResetPasswordRequest): Promise<ApiResponse<ResetPasswordResponse>> {
+    return apiClient.post<ApiResponse<ResetPasswordResponse>>('/api/v1/auth/reset-password', payload)
+  },
+
+
+  // Obtener perfil de usuario
+  async getUserProfile(): Promise<ApiResponse<any>> {
+    return apiClient.get<ApiResponse<any>>('/api/v1/auth/profile')
+  },
+
+  // Logout (limpiar tokens)
+  logout(): void {
+    apiClient.setAccessToken(null)
+    localStorage.removeItem('username')
+  },
+
+  // Método auxiliar para obtener access token
+  getAccessToken(): string | null {
+    return apiClient.getAccessToken()
+  },
+}
+
+// --- Servicios de Administración de Usuarios ---
+export const adminUserService = {
+  // Listar usuarios con filtros y paginación
+  async getUsers(params: AdminUsersQueryParams): Promise<AdminUsersResponse> {
+    const query = buildQueryString(params as Record<string, any>)
+    return apiClient.get<AdminUsersResponse>(`/api/admin/users${query}`)
+  },
+
+  // Obtener estadísticas de usuarios
+  async getStats(): Promise<AdminUserStats> {
+    return apiClient.get<AdminUserStats>('/api/admin/users/stats')
+  },
+
+  // Obtener detalle de usuario por ID
+  async getById(id: string): Promise<AdminUserDetail> {
+    return apiClient.get<AdminUserDetail>(`/api/admin/users/${id}`)
+  },
+
+  // Advertir usuario
+  async warn(id: string, payload: WarnUserPayload): Promise<{ message: string }> {
+    return apiClient.post<{ message: string }>(`/api/admin/users/${id}/warn`, payload)
+  },
+
+  // Suspender usuario
+  async suspend(id: string, payload: SuspendUserPayload): Promise<{ message: string }> {
+    return apiClient.post<{ message: string }>(`/api/admin/users/${id}/suspend`, payload)
+  },
+
+  // Bloquear usuario
+  async block(id: string, payload: BlockUserPayload): Promise<{ message: string }> {
+    return apiClient.post<{ message: string }>(`/api/admin/users/${id}/block`, payload)
+  },
+
+  // Activar usuario
+  async activate(id: string, payload: ActivateUserPayload): Promise<{ message: string }> {
+    return apiClient.post<{ message: string }>(`/api/admin/users/${id}/activate`, payload)
+  },
+
+  // Acción masiva sobre usuarios
+  async bulkAction(payload: BulkActionPayload): Promise<{ message: string }> {
+    return apiClient.post<{ message: string }>('/api/admin/users/bulk-action', payload)
+  },
+}
 
 export default apiClient
 export { buildQueryString }
