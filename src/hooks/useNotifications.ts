@@ -1,7 +1,8 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import type { Notification, NotificationFilter, NotificationStats, NotificationsReturn } from '@/types/websocket'
-import { notificationsService } from '@/services/api'
+import { notificationsService, authService } from '@/services/api'
 import type { AdminNotification, AdminNotificationsStats } from '@/types/api'
+import { io, type Socket } from 'socket.io-client'
 
 export function useNotifications(): NotificationsReturn {
   const [notifications, setNotifications] = useState<Notification[]>([])
@@ -11,6 +12,7 @@ export function useNotifications(): NotificationsReturn {
   const [isConnected, setIsConnected] = useState(false)
   const [isConnecting, setIsConnecting] = useState(false)
   const [apiStats, setApiStats] = useState<AdminNotificationsStats | null>(null)
+  const socketRef = useRef<Socket | null>(null)
 
   const markAsRead = useCallback(async (notificationId: string) => {
     try {
@@ -93,7 +95,7 @@ export function useNotifications(): NotificationsReturn {
   }, [])
 
   // Mapear notificación del API admin -> tipo Notification usado en la UI
-  const mapAdminNotification = (apiNotification: AdminNotification): Notification => {
+  function mapAdminNotification(apiNotification: AdminNotification): Notification {
     return {
       id: apiNotification.id,
       type: apiNotification.type as any,
@@ -133,17 +135,67 @@ export function useNotifications(): NotificationsReturn {
   }, [])
 
   const connect = useCallback(() => {
-    // TODO: Implementar conexión WebSocket
+    if (socketRef.current || isConnecting) return
+
+    const baseUrl = (import.meta.env.VITE_TALKIPLAY_API_URL || '').replace(/\/+$/, '')
+    const token = authService.getAccessToken()
+
+    if (!baseUrl || !token) {
+      console.error('No hay URL base o token para conectar al WebSocket de notificaciones')
+      return
+    }
+
     setIsConnecting(true)
-    setTimeout(() => {
+
+    const socket = io(`${baseUrl}/admin-notifications`, {
+      auth: { token },
+      transports: ['websocket', 'polling'],
+    })
+
+    socketRef.current = socket
+
+    socket.on('connect', () => {
       setIsConnected(true)
       setIsConnecting(false)
-    }, 100)
-  }, [])
+    })
+
+    socket.on('disconnect', () => {
+      setIsConnected(false)
+    })
+
+    socket.on('connect_error', (err) => {
+      console.error('Error de conexión al WebSocket de notificaciones:', err)
+      setError(err instanceof Error ? err.message : 'Error de conexión al WebSocket')
+      setIsConnecting(false)
+      setIsConnected(false)
+    })
+
+    // Nueva notificación en tiempo real
+    socket.on('newNotification', (apiNotification: AdminNotification) => {
+      const mapped = mapAdminNotification(apiNotification)
+      setNotifications((prev) => [mapped, ...prev])
+      setApiStats((prev) =>
+        prev
+          ? { ...prev, total: prev.total + 1, unread: prev.unread + (mapped.is_read ? 0 : 1) }
+          : { total: 1, unread: mapped.is_read ? 0 : 1 }
+      )
+    })
+
+    // Actualización del contador de no leídas
+    socket.on('unreadCount', (data: { count: number }) => {
+      setApiStats((prev) =>
+        prev ? { ...prev, unread: data.count } : { total: notifications.length, unread: data.count }
+      )
+    })
+  }, [isConnecting, notifications.length])
 
   const disconnect = useCallback(() => {
-    // TODO: Implementar desconexión WebSocket
+    if (socketRef.current) {
+      socketRef.current.disconnect()
+      socketRef.current = null
+    }
     setIsConnected(false)
+    setIsConnecting(false)
   }, [])
 
   return {
