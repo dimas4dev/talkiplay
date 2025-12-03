@@ -50,6 +50,8 @@ export default function BarChart({
               tickLine={false}
               axisLine={{ stroke: 'var(--color-neutral-200)' }}
               width={40}
+              domain={[0, 'auto']}
+              allowDecimals={false}
             />
 
             {/* Tooltip personalizado */}

@@ -16,6 +16,11 @@ import type {
   BlockUserPayload,
   ActivateUserPayload,
   BulkActionPayload,
+  ForbiddenWord,
+  ForbiddenWordsResponse,
+  CreateForbiddenWordPayload,
+  UpdateForbiddenWordPayload,
+  DashboardAnalyticsResponse,
 } from '@/types/api'
 
 // Configuración base de la API
@@ -230,6 +235,72 @@ export const adminUserService = {
   // Acción masiva sobre usuarios
   async bulkAction(payload: BulkActionPayload): Promise<{ message: string }> {
     return apiClient.post<{ message: string }>('/api/admin/users/bulk-action', payload)
+  },
+}
+
+// --- Servicios de Palabras Prohibidas (Moderation) ---
+export const forbiddenWordsService = {
+  // Listar todas las palabras prohibidas
+  async getAll(): Promise<ForbiddenWordsResponse | ForbiddenWord[]> {
+    const response = await apiClient.get<any>('/api/moderation/forbidden-words')
+    
+    // Si la respuesta es un array directo, convertirlo al formato esperado
+    if (Array.isArray(response)) {
+      return {
+        data: response,
+        total: response.length,
+      }
+    }
+    
+    // Si ya viene en el formato esperado, retornarlo tal cual
+    return response as ForbiddenWordsResponse
+  },
+
+  // Crear una nueva palabra prohibida
+  async create(payload: CreateForbiddenWordPayload): Promise<ApiResponse<ForbiddenWord> | ForbiddenWord> {
+    const response = await apiClient.post<any>('/api/moderation/forbidden-words', payload)
+    
+    // Si la respuesta es directamente un ForbiddenWord (sin wrapper ApiResponse)
+    if (response && typeof response === 'object' && 'word' in response && 'isStrong' in response) {
+      return {
+        success: true,
+        message: 'Palabra creada exitosamente',
+        data: response as ForbiddenWord,
+      }
+    }
+    
+    // Si ya viene en formato ApiResponse, retornarlo tal cual
+    return response as ApiResponse<ForbiddenWord>
+  },
+
+  // Actualizar una palabra prohibida
+  async update(id: string, payload: UpdateForbiddenWordPayload): Promise<ApiResponse<ForbiddenWord> | ForbiddenWord> {
+    const response = await apiClient.put<any>(`/api/moderation/forbidden-words/${id}`, payload)
+    
+    // Si la respuesta es directamente un ForbiddenWord (sin wrapper ApiResponse)
+    if (response && typeof response === 'object' && 'word' in response && 'isStrong' in response) {
+      return {
+        success: true,
+        message: 'Palabra actualizada exitosamente',
+        data: response as ForbiddenWord,
+      }
+    }
+    
+    // Si ya viene en formato ApiResponse, retornarlo tal cual
+    return response as ApiResponse<ForbiddenWord>
+  },
+
+  // Eliminar una palabra prohibida
+  async delete(id: string): Promise<ApiResponse<{ message: string }>> {
+    return apiClient.delete<ApiResponse<{ message: string }>>(`/api/moderation/forbidden-words/${id}`)
+  },
+}
+
+// --- Servicios de Dashboard Analytics ---
+export const dashboardService = {
+  // Obtener datos del dashboard
+  async getDashboard(): Promise<DashboardAnalyticsResponse> {
+    return apiClient.get<DashboardAnalyticsResponse>('/api/analytics/dashboard')
   },
 }
 

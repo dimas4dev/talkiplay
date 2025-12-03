@@ -23,8 +23,8 @@ export default function Dashboard() {
       emptyText={t('emptyText')}
     >
       {(data) => {
-        const trendVsYesterday = `▲ +4 vs ayer`
-        const trendVsLastMonth = `▲ +4 vs mes anterior`
+        // Generar texto de tendencia para usuarios activos
+        const activeUsersTrend = data.activeUsersTrend || `▲ +${data.user_activity?.active_users || 0} usuarios activos`
         
         return (
           <section
@@ -39,8 +39,8 @@ export default function Dashboard() {
               <div className="col-span-3 col-start-1 row-start-1 h-full">
                 <StatsCard
                   title={t('activeUsers.title')}
-                  subtitle={trendVsYesterday}
-                  value={data.user_activity?.active_users || 100}
+                  subtitle={activeUsersTrend}
+                  value={data.user_activity?.active_users || 0}
                   subtitleBelowValue={true}
                 />
               </div>
@@ -49,8 +49,8 @@ export default function Dashboard() {
               <div className="col-span-3 col-start-1 row-start-2 h-full">
                 <StatsCard
                   title={t('averageClicks.title')}
-                  subtitle={trendVsLastMonth}
-                  value={3}
+                  subtitle={data.averageClicksPerFamily?.trend || 'Sin datos'}
+                  value={data.averageClicksPerFamily?.average || 0}
                   subtitleBelowValue={true}
                 />
               </div>
@@ -58,7 +58,7 @@ export default function Dashboard() {
               {/* div3 - Tasa de éxito de Clicks (columna 4-12, fila 1-2, span 9 columnas y 2 filas) */}
               <div className="col-span-9 row-span-2 col-start-4 row-start-1 h-full">
                 <ClickSuccessRate 
-                  successRate={data.click_success_rate?.success_rate || 76} 
+                  successRate={data.click_success_rate?.success_rate || 0} 
                   trend={data.click_success_rate?.trend}
                 />
               </div>
@@ -66,16 +66,17 @@ export default function Dashboard() {
               {/* div4 - Idiomas (columna 1-3, fila 3-4, span 3 columnas y 2 filas) */}
               <div className="col-span-3 row-span-2 row-start-3 col-start-1 h-full">
                 <LanguagesDonut
-                  spanish={data.languages?.spanish || 60}
-                  english={data.languages?.english || 25}
-                  german={data.languages?.german || 15}
+                  stats={data.languages?.stats || []}
                   trend={data.languages?.trend}
                 />
               </div>
 
               {/* div5 - Nuevos usuarios (columna 4-12, fila 3-4, span 9 columnas y 2 filas) */}
               <div className="col-span-9 row-span-2 row-start-3 col-start-4 h-full">
-                <NewUsers />
+                <NewUsers 
+                  monthlyData={data.newUsers?.monthlyData} 
+                  trendMessage={data.newUsers?.trendMessage}
+                />
               </div>
             </div>
             

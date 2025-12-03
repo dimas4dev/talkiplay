@@ -350,6 +350,7 @@ const resources = {
         wordPlaceholder: 'Escribe la palabra...',
         strongWord: 'Palabra fuerte',
         strongWordTooltip: 'Las palabras fuertes suspenderán a los usuarios que las utilicen hasta autorizar su reactivación',
+        empty: 'No hay palabras prohibidas',
       },
       actions: {
         edit: 'Editar',

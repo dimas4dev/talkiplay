@@ -51,11 +51,19 @@ export interface ClickSuccessRate {
   trend?: string // Texto de tendencia (ej: "+5.2% vs mes pasado")
 }
 
+export interface LanguageStat {
+  language: string
+  count: number
+  percentage: number
+}
+
 export interface LanguagesData {
-  spanish: number
-  english: number
-  german: number
+  stats: LanguageStat[]
   trend?: string // Texto de tendencia (ej: "+5.2% vs mes pasado")
+  // Mantener compatibilidad con el formato antiguo (opcional)
+  spanish?: number
+  english?: number
+  german?: number
 }
 
 export interface DashboardData {
@@ -67,6 +75,15 @@ export interface DashboardData {
   retention_rate: RetentionRate
   click_success_rate?: ClickSuccessRate
   languages?: LanguagesData
+  newUsers?: {
+    monthlyData: Array<{ month: string; value: number }>
+    trendMessage: string
+  }
+  averageClicksPerFamily?: {
+    average: number
+    trend: string
+  }
+  activeUsersTrend?: string
 }
 
 export interface RevenueStats {

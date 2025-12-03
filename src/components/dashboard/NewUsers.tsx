@@ -3,9 +3,10 @@ import BarChart from '../charts/BarChart'
 
 interface NewUsersProps {
   monthlyData?: Array<{ month: string; value: number }>
+  trendMessage?: string
 }
 
-export default function NewUsers({ monthlyData }: NewUsersProps) {
+export default function NewUsers({ monthlyData, trendMessage }: NewUsersProps) {
   const { t } = useTranslation('dashboard')
 
   // Datos según la imagen: Aug, Apr, Mar, Apr, May, Jun, Jul
@@ -19,8 +20,12 @@ export default function NewUsers({ monthlyData }: NewUsersProps) {
     { month: 'Jul', newUsers: 3 }
   ]
 
-  const chartData = monthlyData 
-    ? monthlyData.map(d => ({ name: d.month, newUsers: d.value }))
+  // Mapear datos del API: convertir month y value a month y newUsers
+  const chartData = monthlyData && monthlyData.length > 0
+    ? monthlyData.map(d => ({ 
+        month: d.month, 
+        newUsers: d.value || 0 
+      }))
     : defaultData
 
   const series = [
@@ -36,7 +41,7 @@ export default function NewUsers({ monthlyData }: NewUsersProps) {
       <div className="flex-1 min-h-0">
         <BarChart
           title={t('newUsers.title')}
-          subtitle={t('newUsers.subtitle')}
+          subtitle={trendMessage || t('newUsers.subtitle')}
           data={chartData}
           series={series}
           barRadius={8}

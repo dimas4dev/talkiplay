@@ -168,3 +168,86 @@ export interface BulkActionPayload {
   reason: string
   days?: number
 }
+
+// --- Palabras Prohibidas (Moderation) ---
+
+export interface ForbiddenWord {
+  id: string
+  word: string
+  isStrong: boolean
+  createdAt?: string
+  updatedAt?: string
+}
+
+export interface ForbiddenWordsResponse {
+  data: ForbiddenWord[]
+  total: number
+}
+
+export interface CreateForbiddenWordPayload {
+  word: string
+  isStrong: boolean
+}
+
+export interface UpdateForbiddenWordPayload {
+  word: string
+  isStrong: boolean
+}
+
+// --- Dashboard Analytics ---
+
+export interface TrendData {
+  current: number
+  previous: number
+  change: number
+  percentageChange: number
+  isUpward: boolean
+}
+
+export interface ActiveUsersData {
+  count: number
+  trend: TrendData
+}
+
+export interface MonthlyDataPoint {
+  month: string
+  year: number
+  value: number
+}
+
+export interface NewUsersData {
+  monthlyData: MonthlyDataPoint[]
+  totalThisMonth: number
+  trendMessage: string
+}
+
+export interface ClickSuccessRateData {
+  percentage: number
+  matchCount: number
+  clickCount: number
+  trend: TrendData
+}
+
+export interface AverageClicksPerFamilyData {
+  average: number
+  trend: TrendData
+}
+
+export interface LanguageStat {
+  language: string
+  count: number
+  percentage: number
+}
+
+export interface LanguagesData {
+  stats: LanguageStat[]
+  trend: TrendData
+}
+
+export interface DashboardAnalyticsResponse {
+  activeUsers: ActiveUsersData
+  newUsers: NewUsersData
+  clickSuccessRate: ClickSuccessRateData
+  averageClicksPerFamily: AverageClicksPerFamilyData
+  languages: LanguagesData
+}

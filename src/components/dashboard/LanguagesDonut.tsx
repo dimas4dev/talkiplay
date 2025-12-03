@@ -1,42 +1,53 @@
 import { useTranslation } from 'react-i18next'
 import DonutChart from '../charts/DonutChart'
 
+interface LanguageStat {
+  language: string
+  count: number
+  percentage: number
+}
+
 interface LanguagesDonutProps {
-  spanish: number
-  english: number
-  german: number
+  stats: LanguageStat[]
   trend?: string
 }
 
-export default function LanguagesDonut({ spanish, english, german, trend }: LanguagesDonutProps) {
+// Colores para los diferentes idiomas
+const LANGUAGE_COLORS: Record<string, string> = {
+  'español': 'var(--color-info-500)', // Teal oscuro
+  'spanish': 'var(--color-info-500)',
+  'inglés': 'var(--color-success-500)', // Verde claro
+  'english': 'var(--color-success-500)',
+  'portugués': 'var(--color-chart-info)', // Azul claro
+  'portuguese': 'var(--color-chart-info)',
+  'alemán': 'var(--color-warning-500)', // Amarillo/Naranja
+  'german': 'var(--color-warning-500)',
+}
+
+// Colores por defecto si el idioma no está en el mapa
+const DEFAULT_COLORS = [
+  'var(--color-info-500)',
+  'var(--color-success-500)',
+  'var(--color-chart-info)',
+  'var(--color-warning-500)',
+  'var(--color-error-500)',
+]
+
+export default function LanguagesDonut({ stats, trend }: LanguagesDonutProps) {
   const { t } = useTranslation('dashboard')
   
-  const total = spanish + english + german || 1
-  const safePct = (value: number) => {
-    if (!total || total <= 0) return '0%'
-    return `${Math.round((value / total) * 100)}%`
-  }
-
-  const chartData = [
-    { 
-      name: t('languages.spanish'), 
-      value: spanish, 
-      color: 'var(--color-info-500)', // Teal oscuro
-      percentage: safePct(spanish)
-    },
-    { 
-      name: t('languages.english'), 
-      value: english, 
-      color: 'var(--color-success-500)', // Verde claro
-      percentage: safePct(english)
-    },
-    { 
-      name: t('languages.german'), 
-      value: german, 
-      color: 'var(--color-chart-info)', // Azul claro
-      percentage: safePct(german)
+  // Mapear los stats del API al formato del gráfico
+  const chartData = stats.map((stat, index) => {
+    const languageKey = stat.language.toLowerCase()
+    const color = LANGUAGE_COLORS[languageKey] || DEFAULT_COLORS[index % DEFAULT_COLORS.length]
+    
+    return {
+      name: stat.language,
+      value: stat.count,
+      color,
+      percentage: `${stat.percentage}%`
     }
-  ]
+  })
 
   return (
     <DonutChart

@@ -69,31 +69,20 @@ export default function Users() {
     return 'status-active'
   }
 
-  // Query para obtener usuarios con filtros
-  const query = useMemo(() => {
-    // Mapear filtros de estado
-    let status: 'active' | 'suspended' | 'blocked' | undefined
-    const statusFilters = filters.filter(f => ['active', 'blocked', 'suspended'].includes(f))
-    if (statusFilters.length === 1) {
-      status = statusFilters[0] as 'active' | 'suspended' | 'blocked'
-    }
-
-    return {
-      status,
-      search: searchTerm || undefined,
-      page,
-      limit: pageSize,
-    }
-  }, [filters, searchTerm, page, pageSize])
+  // Query para obtener todos los usuarios (sin filtros, para filtrar localmente)
+  const query = useMemo(() => ({
+    page: 1,
+    limit: 1000, // Obtener una cantidad grande para filtrar localmente
+  }), [])
 
   const { data: adminUsersData, isLoading, error } = useAdminUsers(query)
   
-  // Transformar datos de adminUsers a formato esperado por la página
+  // Transformar y aplicar filtros localmente
   const filteredAndPaginatedData = useMemo(() => {
     if (!adminUsersData?.data) return { users: [], totals: {}, pagination: { total: 0, page: 1, limit: pageSize, total_pages: 0 } }
 
     // Transformar AdminUserListItem a formato esperado
-    const users = adminUsersData.data.map(user => ({
+    let filteredUsers = adminUsersData.data.map(user => ({
       id: user.id,
       username: user.email, // Usar email como username temporalmente
       email: user.email,
@@ -103,19 +92,73 @@ export default function Users() {
       reportCount: user.reportCount,
     }))
 
+    // Aplicar búsqueda
+    if (searchTerm && searchTerm.trim()) {
+      const searchLower = searchTerm.toLowerCase().trim()
+      filteredUsers = filteredUsers.filter(user => 
+        user.email?.toLowerCase().includes(searchLower)
+      )
+    }
+
+    // Aplicar filtros de estado (pueden ser múltiples)
+    const statusFilters = filters.filter(f => ['active', 'blocked', 'suspended'].includes(f))
+    if (statusFilters.length > 0) {
+      filteredUsers = filteredUsers.filter(user => {
+        const userStatus = user.accountStatus
+        return statusFilters.includes(userStatus)
+      })
+    }
+
+    // Aplicar ordenamiento local
+    filteredUsers.sort((a, b) => {
+      let aValue, bValue
+      
+      switch (sortValue) {
+        case 'username':
+          aValue = (a.email || '').toLowerCase()
+          bValue = (b.email || '').toLowerCase()
+          break
+        case 'created_at':
+        default:
+          const dateA = new Date(a.created_at)
+          const dateB = new Date(b.created_at)
+          
+          if (isNaN(dateA.getTime()) || isNaN(dateB.getTime())) {
+            return 0
+          }
+          
+          aValue = dateA.getTime()
+          bValue = dateB.getTime()
+          break
+      }
+
+      if (aValue < bValue) {
+        return sortOrder === 'asc' ? -1 : 1
+      } else if (aValue > bValue) {
+        return sortOrder === 'asc' ? 1 : -1
+      } else {
+        return 0
+      }
+    })
+
+    // Aplicar paginación local
+    const startIndex = (page - 1) * pageSize
+    const endIndex = startIndex + pageSize
+    const paginatedUsers = filteredUsers.slice(startIndex, endIndex)
+
     return {
-      users,
+      users: paginatedUsers,
       totals: {
-        total_users: adminUsersData.total,
+        total_users: filteredUsers.length,
       },
       pagination: {
-        total: adminUsersData.total,
-        page: adminUsersData.page,
-        limit: adminUsersData.limit,
-        total_pages: adminUsersData.totalPages,
+        total: filteredUsers.length,
+        page,
+        limit: pageSize,
+        total_pages: Math.ceil(filteredUsers.length / pageSize),
       }
     }
-  }, [adminUsersData, pageSize])
+  }, [adminUsersData, searchTerm, filters, sortValue, sortOrder, page, pageSize])
 
 
   const data = filteredAndPaginatedData
