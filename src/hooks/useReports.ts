@@ -1,5 +1,6 @@
 import { useApiData } from './useApiData'
-// TODO: Implementar servicio de reportes cuando esté disponible
+import { feedbackService, reportsService } from '@/services/api'
+import type { FeedbackListResponse, ReportListResponse } from '@/types/api'
 
 export type ReportsQuery = {
   page?: number
@@ -10,12 +11,79 @@ export type ReportsQuery = {
 }
 
 export function useAdminReports(params: ReportsQuery) {
-  return useApiData<any>({
+  return useApiData<{
+    reports: any[]
+    pagination: { total: number; page: number; limit: number; total_pages: number }
+  }>({
     fetchFn: async () => {
-      // TODO: Implementar llamada a API
-      throw new Error('Servicio de reportes no implementado aún')
+      const response: ReportListResponse = await reportsService.list({
+        page: params.page,
+        limit: params.limit,
+        status: params.status,
+        type: params.type,
+      })
+
+      const reports = response.data.map((item) => ({
+        id: item.id,
+        user_id: item.reportedUser?.id || item.id,
+        author: item.family?.familyName || item.reportedUser?.email || '-',
+        email: item.reportedUser?.email || '-',
+        comment: item.offensiveContent || item.reason || '-',
+        body: item.offensiveContent || item.reason || '-',
+        status: item.status,
+        created_at: item.createdAt,
+      }))
+
+      return {
+        reports,
+        pagination: {
+          total: response.total,
+          page: response.page,
+          limit: response.limit,
+          total_pages: response.totalPages,
+        },
+      }
     },
-    enabled: false, // Deshabilitado hasta que se implemente
+    dependencies: [params.page, params.limit, params.status, params.type],
+  })
+}
+
+// Lista de sugerencias de mejora (feedback)
+export function useFeedbackList(params: ReportsQuery) {
+  return useApiData<{
+    reports: any[]
+    pagination: { total: number; page: number; limit: number; total_pages: number }
+  }>({
+    fetchFn: async () => {
+      const response: FeedbackListResponse = await feedbackService.list({
+        page: params.page,
+        limit: params.limit,
+        status: params.status,
+        search: params.search,
+      })
+
+      const reports = response.data.map((item) => ({
+        id: item.id,
+        user_id: item.user.id,
+        author: item.fullName || item.user.name,
+        email: item.email,
+        comment: item.comments,
+        body: item.comments,
+        status: item.status,
+        created_at: item.createdAt,
+      }))
+
+      return {
+        reports,
+        pagination: {
+          total: response.total,
+          page: response.page,
+          limit: response.limit,
+          total_pages: response.totalPages,
+        },
+      }
+    },
+    dependencies: [params.page, params.limit, params.status, params.search],
   })
 }
 

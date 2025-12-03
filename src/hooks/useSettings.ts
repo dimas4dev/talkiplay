@@ -43,26 +43,50 @@ function mapLegalDocumentsToSettingsData(docs: LegalDocument[]): SettingsData {
 export function useSettings() {
   return useApiData<SettingsData>({
     fetchFn: async () => {
-      const docs = await settingsService.getActiveLegalDocuments()
-      return mapLegalDocumentsToSettingsData(docs)
+      // Llamar a ambos endpoints en paralelo
+      const [termsDocs, privacyDocs] = await Promise.all([
+        settingsService.getTerms(),
+        settingsService.getPrivacy(),
+      ])
+      
+      // Combinar ambos arrays y mapear al formato esperado
+      const allDocs = [...termsDocs, ...privacyDocs]
+      return mapLegalDocumentsToSettingsData(allDocs)
     },
   })
 }
 
-// Por ahora las operaciones de sección son no-op porque aún no tenemos endpoints de escritura
+// Operaciones de sección (crear, actualizar, eliminar)
 export function useSectionOperations() {
   return {
-    createSection: async (_payload: SectionCreateRequest) => {
-      // TODO: integrar endpoints de creación cuando estén disponibles
-      return
+    createSection: async (payload: SectionCreateRequest) => {
+      const { title, description, section_type } = payload
+      
+      if (section_type === 'terms_and_conditions') {
+        return await settingsService.createTermsSection({
+          title,
+          content: description,
+        })
+      } else {
+        return await settingsService.createPrivacySection({
+          title,
+          content: description,
+        })
+      }
     },
-    updateSection: async (_id: string, _payload: SectionUpdateRequest) => {
-      // TODO: integrar endpoints de actualización cuando estén disponibles
-      return
+    
+    updateSection: async (id: string, payload: SectionUpdateRequest) => {
+      const updatePayload: { title?: string; content?: string; isActive?: boolean } = {}
+      
+      if (payload.title !== undefined) updatePayload.title = payload.title
+      if (payload.description !== undefined) updatePayload.content = payload.description
+      if (payload.is_active !== undefined) updatePayload.isActive = payload.is_active
+      
+      return await settingsService.updateSection(id, updatePayload)
     },
-    deleteSection: async (_id: string) => {
-      // TODO: integrar endpoint de eliminación cuando esté disponible
-      return
+    
+    deleteSection: async (id: string) => {
+      await settingsService.deleteSection(id)
     },
   }
 }

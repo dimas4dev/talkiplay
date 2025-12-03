@@ -347,3 +347,106 @@ export interface AdminNotificationsStats {
 export interface AdminUnreadCount {
   unread: number
 }
+
+// --- Feedback & Sugerencias (/api/feedback) ---
+
+export type FeedbackStatus = 'unread' | 'read' | string
+
+export interface FeedbackUser {
+  id: string
+  email: string
+  name: string
+  profileImage?: string
+}
+
+export interface FeedbackItem {
+  id: string
+  fullName: string
+  email: string
+  comments: string
+  status: FeedbackStatus
+  user: FeedbackUser
+  createdAt: string
+}
+
+export interface FeedbackListResponse {
+  data: FeedbackItem[]
+  total: number
+  page: number
+  limit: number
+  totalPages: number
+}
+
+export interface FeedbackDetail extends FeedbackItem {
+  reviewedBy: string | null
+  reviewedAt: string | null
+}
+
+// --- Reportes de incidentes (/api/reports) ---
+
+export type ReportStatus = 'unread' | 'read' | 'marked' | string
+export type ReportType = 'automatic' | 'manual' | string
+
+export interface ReportListItem {
+  id: string
+  type: ReportType
+  status: ReportStatus
+  reason: string
+  offensiveContent?: string
+  detectedWords?: string[]
+  reportedUser: {
+    id: string
+    email: string
+    name?: string
+  }
+  family: {
+    id: string
+    familyName: string
+  }
+  createdAt: string
+}
+
+export interface ReportListResponse {
+  data: ReportListItem[]
+  total: number
+  page: number
+  limit: number
+  totalPages: number
+}
+
+export interface ReportLastMessage {
+  id: string
+  sender: {
+    id: string
+    familyName: string
+  }
+  content: string
+  createdAt: string
+}
+
+export interface ReportDetail {
+  id: string
+  type: ReportType
+  status: ReportStatus
+  reason: string
+  reportedUser: {
+    id: string
+    email: string
+    name: string
+  }
+  family: {
+    id: string
+    familyName: string
+    profileImage?: string
+    userId?: string
+    userEmail?: string
+  }
+  reporter: {
+    id: string
+    email: string
+    name: string
+  }
+  lastMessages: ReportLastMessage[]
+  forbiddenWordInfo: any | null
+  createdAt: string
+}

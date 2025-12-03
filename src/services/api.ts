@@ -26,6 +26,10 @@ import type {
   AdminNotificationsResponse,
   AdminNotificationsStats,
   AdminUnreadCount,
+  FeedbackListResponse,
+  FeedbackDetail,
+  ReportListResponse,
+  ReportDetail,
 } from '@/types/api'
 
 // Configuración base de la API
@@ -92,6 +96,11 @@ class ApiClient {
     return this.request<T>('DELETE', endpoint)
   }
 
+  // Método base para hacer peticiones PATCH
+  async patch<T>(endpoint: string, data?: any): Promise<T> {
+    return this.request<T>('PATCH', endpoint, data)
+  }
+
   // Método privado para hacer peticiones HTTP
   private async request<T>(
     method: string,
@@ -115,7 +124,7 @@ class ApiClient {
       headers,
     }
 
-    if (data && (method === 'POST' || method === 'PUT')) {
+    if (data && (method === 'POST' || method === 'PUT' || method === 'PATCH')) {
       options.body = JSON.stringify(data)
     }
 
@@ -316,9 +325,77 @@ export const dashboardService = {
 
 // --- Servicios de Settings ---
 export const settingsService = {
-  // Obtener documentos legales activos (términos y políticas)
-  async getActiveLegalDocuments(): Promise<LegalDocument[]> {
-    return apiClient.get<LegalDocument[]>('/api/settings/legal-documents/active')
+  // Obtener todas las secciones de Términos y Condiciones
+  async getTerms(): Promise<LegalDocument[]> {
+    return apiClient.get<LegalDocument[]>('/api/settings/legal-documents/terms')
+  },
+
+  // Obtener todas las secciones de Política de Privacidad
+  async getPrivacy(): Promise<LegalDocument[]> {
+    return apiClient.get<LegalDocument[]>('/api/settings/legal-documents/privacy')
+  },
+
+  // Crear nueva sección de Términos y Condiciones (admin)
+  async createTermsSection(payload: { title: string; content: string }): Promise<LegalDocument> {
+    return apiClient.post<LegalDocument>('/api/settings/legal-documents/terms', payload)
+  },
+
+  // Crear nueva sección de Política de Privacidad (admin)
+  async createPrivacySection(payload: { title: string; content: string }): Promise<LegalDocument> {
+    return apiClient.post<LegalDocument>('/api/settings/legal-documents/privacy', payload)
+  },
+
+  // Actualizar sección (admin)
+  async updateSection(id: string, payload: { title?: string; content?: string; isActive?: boolean }): Promise<LegalDocument> {
+    return apiClient.patch<LegalDocument>(`/api/settings/legal-documents/${id}`, payload)
+  },
+
+  // Eliminar sección (admin)
+  async deleteSection(id: string): Promise<void> {
+    await apiClient.delete<void>(`/api/settings/legal-documents/${id}`)
+  },
+}
+
+// --- Servicios de Feedback & Sugerencias ---
+export const feedbackService = {
+  // Listar feedback con paginación y filtros
+  async list(params?: { page?: number; limit?: number; status?: string; search?: string }): Promise<FeedbackListResponse> {
+    const query = buildQueryString(params as Record<string, any> | undefined)
+    return apiClient.get<FeedbackListResponse>(`/api/feedback${query}`)
+  },
+
+  // Obtener detalle de feedback por ID
+  async getById(id: string): Promise<FeedbackDetail> {
+    return apiClient.get<FeedbackDetail>(`/api/feedback/${id}`)
+  },
+
+  // Marcar feedback como leído
+  async markAsRead(id: string): Promise<void> {
+    await apiClient.put<void>(`/api/feedback/${id}/read`)
+  },
+
+  // Actualizar estado de feedback
+  async updateStatus(id: string, status: string): Promise<void> {
+    await apiClient.put<void>(`/api/feedback/${id}/status`, { status })
+  },
+}
+
+// --- Servicios de Reportes de incidentes ---
+export const reportsService = {
+  // Listar reportes con filtros
+  async list(params?: { page?: number; limit?: number; status?: string; type?: string }): Promise<ReportListResponse> {
+    const query = buildQueryString(params as Record<string, any> | undefined)
+    return apiClient.get<ReportListResponse>(`/api/reports${query}`)
+  },
+
+  // Obtener reporte por ID
+  async getById(id: string): Promise<ReportDetail> {
+    return apiClient.get<ReportDetail>(`/api/reports/${id}`)
+  },
+
+  // Eliminar reporte
+  async delete(id: string): Promise<void> {
+    await apiClient.delete<void>(`/api/reports/${id}`)
   },
 }
 

@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'wouter'
 import { ROUTES } from '@/constants/routes'
 import ApiStateHandler from '@/components/ui/ApiStateHandler'
-import { useAdminReports, useAdminReportsSummary } from '@/hooks/useReports'
+import { useAdminReports, useAdminReportsSummary, useFeedbackList } from '@/hooks/useReports'
 
 type TabKey = 'incidents' | 'suggestions'
 
@@ -27,12 +27,18 @@ export default function Reports() {
 
     const statusFilter = statusFilters[0]
     const apiStatus =
-      statusFilter === 'marcado'
-        ? 'pending'
+      activeTab === 'incidents'
+        ? statusFilter === 'marcado'
+          ? 'pending'
+          : statusFilter === 'no_leido'
+            ? 'reviewed'
+            : statusFilter === 'leido'
+              ? 'resolved'
+              : undefined
         : statusFilter === 'no_leido'
-          ? 'reviewed'
+          ? 'unread'
           : statusFilter === 'leido'
-            ? 'resolved'
+            ? 'read'
             : undefined
 
     return {
@@ -43,9 +49,14 @@ export default function Reports() {
       sort_by: sort,
       sort_order: sortOrder,
     }
-  }, [filters, page, pageSize, search, sort, sortOrder])
+  }, [activeTab, filters, page, pageSize, search, sort, sortOrder])
 
   const { data, isLoading, error } = useAdminReports(query)
+  const {
+    data: feedbackData,
+    isLoading: isFeedbackLoading,
+    error: feedbackError,
+  } = useFeedbackList(query)
   const { data: summaryData } = useAdminReportsSummary()
 
   const handleTotalClick = () => {
@@ -112,8 +123,19 @@ export default function Reports() {
 
   const getReportComment = (report: any) => report.comment || report.body || '-'
 
+  const currentData = activeTab === 'suggestions' ? feedbackData : data
+  const currentLoading = activeTab === 'suggestions' ? isFeedbackLoading : isLoading
+  const currentError = activeTab === 'suggestions' ? feedbackError : error
+
   return (
-    <ApiStateHandler isLoading={isLoading} error={error} data={data} loadingText={t('loading')} errorTitle={t('errorTitle')} emptyText={t('emptyText')}>
+    <ApiStateHandler
+      isLoading={currentLoading}
+      error={currentError}
+      data={currentData}
+      loadingText={t('loading')}
+      errorTitle={t('errorTitle')}
+      emptyText={t('emptyText')}
+    >
       {(data) => (
         <div className="mx-auto max-w-6xl p-6 space-y-6">
           {/* Tabs */}
