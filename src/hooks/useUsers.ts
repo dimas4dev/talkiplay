@@ -1,5 +1,6 @@
 import { useApiData } from './useApiData'
-// TODO: Implementar servicio de usuarios cuando esté disponible
+import { adminFamilyService } from '@/services/api'
+import type { AdminFamilyDetail } from '@/types/api'
 
 export type UsersQuery = {
   page?: number
@@ -14,7 +15,7 @@ export type UsersQuery = {
 export function useUsers(params: UsersQuery) {
   return useApiData<any>({
     fetchFn: async () => {
-      // TODO: Implementar llamada a API
+      // TODO: Implementar llamada a API si es necesario
       throw new Error('Servicio de usuarios no implementado aún')
     },
     enabled: false, // Deshabilitado hasta que se implemente
@@ -22,13 +23,12 @@ export function useUsers(params: UsersQuery) {
 }
 
 export function useUserById(userId: string) {
-  return useApiData<any>({
+  return useApiData<AdminFamilyDetail>({
     fetchFn: async () => {
-      // TODO: Implementar llamada a API
-      throw new Error('Servicio de usuario por ID no implementado aún')
+      return await adminFamilyService.getById(userId)
     },
     dependencies: [userId],
-    enabled: false, // Deshabilitado hasta que se implemente
+    enabled: !!userId,
   })
 }
 

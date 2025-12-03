@@ -3,7 +3,7 @@ import UserHeaderCard from '@/components/users/UserHeaderCard'
 import { ROUTES } from '@/constants/routes'
 import ApiStateHandler from '@/components/ui/ApiStateHandler'
 import { ToastContainer, useToast } from '@/components/ui/toast'
-import { useUserReports } from '@/hooks/useUserReports'
+import { useUserSuggestions } from '@/hooks/useUserReports'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import FamilyMemberCard from '@/components/users/FamilyMemberCard'
@@ -13,7 +13,7 @@ type RouteParams = { id: string }
 export default function UserSuggestionReportsPage() {
   const { t } = useTranslation('reports')
   const { id } = useParams<RouteParams>()
-  const { data, isLoading, error } = useUserReports(id || '')
+  const { data, isLoading, error } = useUserSuggestions(id || '')
   const { toasts, removeToast } = useToast()
   const [flaggedIds, setFlaggedIds] = useState<string[]>([])
 

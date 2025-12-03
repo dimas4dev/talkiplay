@@ -53,13 +53,20 @@ export default function Users() {
     }
   }
 
+  // Función para normalizar el estado del usuario
+  const normalizeStatus = (status: string): 'active' | 'blocked' | 'suspended' => {
+    if (!status) return 'active'
+    const statusLower = status.toLowerCase()
+    if (statusLower.includes('bloq') || statusLower === 'blocked') return 'blocked'
+    if (statusLower.includes('suspen') || statusLower === 'suspended') return 'suspended'
+    return 'active'
+  }
+
   // Función para obtener el estado del usuario
   const getUserStatus = (user: any): 'active' | 'blocked' | 'suspended' => {
-    // Usar accountStatus directamente del API de admin
-    if (user.accountStatus) {
-      return user.accountStatus
-    }
-    return 'active'
+    // Normalizar el estado que viene de la API
+    const status = user.accountStatus || user.status
+    return normalizeStatus(status)
   }
 
   // Función para obtener la variante del badge según el estado
@@ -81,22 +88,32 @@ export default function Users() {
   const filteredAndPaginatedData = useMemo(() => {
     if (!adminUsersData?.data) return { users: [], totals: {}, pagination: { total: 0, page: 1, limit: pageSize, total_pages: 0 } }
 
-    // Transformar AdminUserListItem a formato esperado
-    let filteredUsers = adminUsersData.data.map(user => ({
-      id: user.id,
-      username: user.email, // Usar email como username temporalmente
-      email: user.email,
-      created_at: user.createdAt,
-      accountStatus: user.accountStatus,
-      warnings: user.warnings,
-      reportCount: user.reportCount,
-    }))
+    // Transformar AdminFamilyListItem a formato esperado
+    let filteredUsers = adminUsersData.data.map(family => {
+      // Normalizar el estado
+      const status = family.status || family.accountStatus || 'active'
+      const normalizedStatus = normalizeStatus(status)
+      
+      return {
+        id: family.id,
+        username: family.name || family.email, // Usar name como username, fallback a email
+        email: family.email,
+        familyName: family.name,
+        created_at: family.registrationDate || family.createdAt, // Usar registrationDate primero
+        accountStatus: normalizedStatus, // Estado normalizado
+        status: status, // Mantener el estado original también
+        warnings: family.warnings || 0,
+        reportCount: family.reportCount || 0,
+      }
+    })
 
     // Aplicar búsqueda
     if (searchTerm && searchTerm.trim()) {
       const searchLower = searchTerm.toLowerCase().trim()
       filteredUsers = filteredUsers.filter(user => 
-        user.email?.toLowerCase().includes(searchLower)
+        user.email?.toLowerCase().includes(searchLower) ||
+        user.familyName?.toLowerCase().includes(searchLower) ||
+        user.username?.toLowerCase().includes(searchLower)
       )
     }
 
@@ -210,7 +227,9 @@ export default function Users() {
             header: t('table.registeredAt'),
             widthClass: 'w-[20%]',
             render: (user: any) => {
+              if (!user.created_at) return '-'
               const date = new Date(user.created_at)
+              if (isNaN(date.getTime())) return '-'
               return date.toLocaleDateString('es-ES', {
                 day: '2-digit',
                 month: 'short',

@@ -51,7 +51,7 @@ export interface ResetPasswordResponse {
   message: string
 }
 
-// --- Administración de Usuarios ---
+// --- Administración de Usuarios (Legacy - mantener para compatibilidad) ---
 
 export type AdminUserStatus = 'active' | 'suspended' | 'blocked'
 
@@ -86,6 +86,60 @@ export interface AdminUserStats {
   suspended: number
   blocked: number
   withWarnings: number
+}
+
+// --- Administración de Familias (/api/admin/families) ---
+
+export interface AdminFamilyListItem {
+  id: string
+  name: string
+  email: string
+  status: string
+  registrationDate: string
+  userId: string
+  warnings?: number
+  reportCount?: number
+  profileImage?: string | null
+  createdAt?: string
+  accountStatus?: AdminUserStatus
+}
+
+export interface AdminFamiliesResponse {
+  data: AdminFamilyListItem[]
+  total: number
+  page: number
+  limit: number
+  totalPages: number
+}
+
+export interface AdminFamiliesQueryParams {
+  status?: AdminUserStatus
+  search?: string
+  hasWarnings?: boolean
+  page?: number
+  limit?: number
+}
+
+export interface AdminFamilyStats {
+  total: number
+  active: number
+  suspended: number
+  blocked: number
+  withWarnings: number
+}
+
+export interface AdminFamilyDetail extends AdminFamily {
+  accountStatus: AdminUserStatus
+  suspendedUntil: string | null
+  suspensionReason: string | null
+  warnings: number
+  lastWarningDate: string | null
+  blockReason: string | null
+  lastActivityDate: string | null
+  reportCount: number
+  recentReports: any[]
+  clicksCount: number
+  history: AdminUserHistoryItem[]
 }
 
 export interface AdminFamilyMember {

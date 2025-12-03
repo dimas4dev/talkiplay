@@ -1,23 +1,21 @@
 import { useState, useCallback } from 'react'
 import { useApiData } from './useApiData'
-import { adminUserService } from '@/services/api'
+import { adminFamilyService } from '@/services/api'
 import type {
-  AdminUsersQueryParams,
-  AdminUsersResponse,
-  AdminUserStats,
-  AdminUserDetail,
+  AdminFamiliesQueryParams,
+  AdminFamiliesResponse,
+  AdminFamilyDetail,
   WarnUserPayload,
   SuspendUserPayload,
   BlockUserPayload,
   ActivateUserPayload,
-  BulkActionPayload,
 } from '@/types/api'
 
-// Hook para listar usuarios con filtros y paginación
-export function useAdminUsers(params: AdminUsersQueryParams) {
-  return useApiData<AdminUsersResponse>({
+// Hook para listar familias con filtros y paginación
+export function useAdminUsers(params: AdminFamiliesQueryParams) {
+  return useApiData<AdminFamiliesResponse>({
     fetchFn: async () => {
-      const res = await adminUserService.getUsers(params)
+      const res = await adminFamilyService.getFamilies(params)
       return res
     },
     dependencies: [
@@ -30,22 +28,12 @@ export function useAdminUsers(params: AdminUsersQueryParams) {
   })
 }
 
-// Hook para estadísticas de usuarios
-export function useAdminUserStats() {
-  return useApiData<AdminUserStats>({
-    fetchFn: async () => {
-      const res = await adminUserService.getStats()
-      return res
-    },
-  })
-}
-
-// Hook para detalle de usuario por ID
+// Hook para detalle de familia por ID
 export function useAdminUserDetail(id: string | null) {
-  return useApiData<AdminUserDetail>({
+  return useApiData<AdminFamilyDetail>({
     fetchFn: async () => {
-      if (!id) throw new Error('User id is required')
-      const res = await adminUserService.getById(id)
+      if (!id) throw new Error('Family id is required')
+      const res = await adminFamilyService.getById(id)
       return res
     },
     dependencies: [id],
@@ -53,7 +41,7 @@ export function useAdminUserDetail(id: string | null) {
   })
 }
 
-// Hook para advertir usuario
+// Hook para advertir familia
 export function useWarnAdminUser() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -65,11 +53,11 @@ export function useWarnAdminUser() {
     setIsSuccess(false)
 
     try {
-      await adminUserService.warn(id, payload)
+      await adminFamilyService.warn(id, payload)
       setIsSuccess(true)
       return { success: true }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Error al advertir usuario'
+      const errorMessage = err instanceof Error ? err.message : 'Error al advertir familia'
       setError(errorMessage)
       throw err
     } finally {
@@ -86,7 +74,7 @@ export function useWarnAdminUser() {
   return { warn, isLoading, error, isSuccess, reset }
 }
 
-// Hook para suspender usuario
+// Hook para suspender familia
 export function useSuspendAdminUser() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -98,11 +86,11 @@ export function useSuspendAdminUser() {
     setIsSuccess(false)
 
     try {
-      await adminUserService.suspend(id, payload)
+      await adminFamilyService.suspend(id, payload)
       setIsSuccess(true)
       return { success: true }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Error al suspender usuario'
+      const errorMessage = err instanceof Error ? err.message : 'Error al suspender familia'
       setError(errorMessage)
       throw err
     } finally {
@@ -119,7 +107,7 @@ export function useSuspendAdminUser() {
   return { suspend, isLoading, error, isSuccess, reset }
 }
 
-// Hook para bloquear usuario
+// Hook para bloquear familia
 export function useBlockAdminUser() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -131,11 +119,11 @@ export function useBlockAdminUser() {
     setIsSuccess(false)
 
     try {
-      await adminUserService.block(id, payload)
+      await adminFamilyService.block(id, payload)
       setIsSuccess(true)
       return { success: true }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Error al bloquear usuario'
+      const errorMessage = err instanceof Error ? err.message : 'Error al bloquear familia'
       setError(errorMessage)
       throw err
     } finally {
@@ -152,7 +140,7 @@ export function useBlockAdminUser() {
   return { block, isLoading, error, isSuccess, reset }
 }
 
-// Hook para activar/reactivar usuario
+// Hook para activar/reactivar familia
 export function useActivateAdminUser() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -164,11 +152,11 @@ export function useActivateAdminUser() {
     setIsSuccess(false)
 
     try {
-      await adminUserService.activate(id, payload)
+      await adminFamilyService.activate(id, payload)
       setIsSuccess(true)
       return { success: true }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Error al activar usuario'
+      const errorMessage = err instanceof Error ? err.message : 'Error al activar familia'
       setError(errorMessage)
       throw err
     } finally {
@@ -183,38 +171,5 @@ export function useActivateAdminUser() {
   }, [])
 
   return { activate, isLoading, error, isSuccess, reset }
-}
-
-// Hook para acción masiva sobre usuarios
-export function useBulkActionAdminUsers() {
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [isSuccess, setIsSuccess] = useState(false)
-
-  const bulkAction = useCallback(async (payload: BulkActionPayload) => {
-    setIsLoading(true)
-    setError(null)
-    setIsSuccess(false)
-
-    try {
-      await adminUserService.bulkAction(payload)
-      setIsSuccess(true)
-      return { success: true }
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Error al ejecutar acción masiva'
-      setError(errorMessage)
-      throw err
-    } finally {
-      setIsLoading(false)
-    }
-  }, [])
-
-  const reset = useCallback(() => {
-    setIsLoading(false)
-    setError(null)
-    setIsSuccess(false)
-  }, [])
-
-  return { bulkAction, isLoading, error, isSuccess, reset }
 }
 

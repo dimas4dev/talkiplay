@@ -1,19 +1,19 @@
 import { useState, useCallback } from 'react'
-// TODO: Implementar servicio de eliminación de usuario cuando esté disponible
+import { adminFamilyService } from '@/services/api'
 
 export function useUserDelete() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const deleteUser = useCallback(async (userId: string) => {
+  const deleteUser = useCallback(async (familyId: string) => {
     setIsLoading(true)
     setError(null)
 
     try {
-      // TODO: Implementar llamada a API
-      throw new Error('Servicio de eliminación de usuario no implementado aún')
+      await adminFamilyService.delete(familyId)
+      return { success: true }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Error al eliminar usuario'
+      const errorMessage = err instanceof Error ? err.message : 'Error al eliminar familia'
       setError(errorMessage)
       throw err
     } finally {

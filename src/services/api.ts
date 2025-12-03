@@ -11,6 +11,10 @@ import type {
   AdminUsersResponse,
   AdminUserStats,
   AdminUserDetail,
+  AdminFamiliesQueryParams,
+  AdminFamiliesResponse,
+  AdminFamilyStats,
+  AdminFamilyDetail,
   WarnUserPayload,
   SuspendUserPayload,
   BlockUserPayload,
@@ -110,8 +114,13 @@ class ApiClient {
     const url = `${this.baseURL}${endpoint}`
 
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
       'Accept': 'application/json',
+    }
+
+    // Si los datos son FormData, no establecer Content-Type (el navegador lo hará automáticamente)
+    const isFormData = data instanceof FormData
+    if (!isFormData) {
+      headers['Content-Type'] = 'application/json'
     }
 
     // Agregar token de autorización si existe
@@ -125,7 +134,7 @@ class ApiClient {
     }
 
     if (data && (method === 'POST' || method === 'PUT' || method === 'PATCH')) {
-      options.body = JSON.stringify(data)
+      options.body = isFormData ? data : JSON.stringify(data)
     }
 
     try {
@@ -208,7 +217,58 @@ export const authService = {
   },
 }
 
-// --- Servicios de Administración de Usuarios ---
+// --- Servicios de Administración de Familias (/api/admin/families) ---
+export const adminFamilyService = {
+  // Listar todas las familias con filtros y paginación
+  async getFamilies(params?: AdminFamiliesQueryParams): Promise<AdminFamiliesResponse> {
+    const query = buildQueryString(params as Record<string, any> | undefined)
+    return apiClient.get<AdminFamiliesResponse>(`/api/admin/families${query}`)
+  },
+
+  // Obtener familia por ID
+  async getById(id: string): Promise<AdminFamilyDetail> {
+    return apiClient.get<AdminFamilyDetail>(`/api/admin/families/${id}`)
+  },
+
+  // Eliminar cuenta de familia
+  async delete(id: string): Promise<{ message: string }> {
+    return apiClient.delete<{ message: string }>(`/api/admin/families/${id}`)
+  },
+
+  // Advertir a una familia
+  async warn(id: string, payload: WarnUserPayload): Promise<{ message: string }> {
+    return apiClient.post<{ message: string }>(`/api/admin/families/${id}/warn`, payload)
+  },
+
+  // Suspender a una familia
+  async suspend(id: string, payload: SuspendUserPayload): Promise<{ message: string }> {
+    return apiClient.post<{ message: string }>(`/api/admin/families/${id}/suspend`, payload)
+  },
+
+  // Bloquear a una familia
+  async block(id: string, payload: BlockUserPayload): Promise<{ message: string }> {
+    return apiClient.post<{ message: string }>(`/api/admin/families/${id}/block`, payload)
+  },
+
+  // Activar/Desbloquear a una familia
+  async activate(id: string, payload: ActivateUserPayload): Promise<{ message: string }> {
+    return apiClient.post<{ message: string }>(`/api/admin/families/${id}/activate`, payload)
+  },
+
+  // Actualizar imagen de perfil de familia (admin)
+  async updateProfileImage(id: string, imageFile: File): Promise<AdminFamilyDetail> {
+    const formData = new FormData()
+    formData.append('image', imageFile)
+    return apiClient.patch<AdminFamilyDetail>(`/api/admin/families/${id}/profile-image`, formData)
+  },
+
+  // Eliminar imagen de perfil de familia (admin)
+  async deleteProfileImage(id: string): Promise<{ message: string }> {
+    return apiClient.delete<{ message: string }>(`/api/admin/families/${id}/profile-image`)
+  },
+}
+
+// --- Servicios de Administración de Usuarios (Legacy - mantener para compatibilidad) ---
 export const adminUserService = {
   // Listar usuarios con filtros y paginación
   async getUsers(params: AdminUsersQueryParams): Promise<AdminUsersResponse> {
@@ -420,6 +480,19 @@ export const notificationsService = {
   // Obtener solo el conteo de no leídas (optimizado para badges en header, etc.)
   async getUnreadCount(): Promise<AdminUnreadCount> {
     return apiClient.get<AdminUnreadCount>('/api/admin/notifications/unread-count')
+  },
+}
+
+// --- Servicios de Reportes de Usuario ---
+export const userReportsService = {
+  // Obtener reportes de un usuario
+  async getUserReports(userId: string): Promise<any> {
+    return apiClient.get<any>(`/api/admin/users/${userId}/reports`)
+  },
+
+  // Obtener sugerencias/feedback de un usuario
+  async getUserSuggestions(userId: string): Promise<any> {
+    return apiClient.get<any>(`/api/admin/users/${userId}/suggestions`)
   },
 }
 
