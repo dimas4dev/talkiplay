@@ -19,35 +19,37 @@ export default function Metrics() {
       emptyText={t('emptyText')}
     >
       {(data) => {
-        // Datos para las KPI cards
-        const avgPlaydates = data.clip_stats.avg_clips_per_user || 100
-        const conversionTime = 16 // días
-        const avgClicksPerFamily = 3
+        // KPI 1: Playdates creados en promedio
+        const avgPlaydates = data.playdatesCreated.average
+        const playdatesTrendText = data.playdatesCreated.trendText
 
-        // Datos para el gráfico de Playdates creados (últimos 12 meses)
-        const playdatesData = data.clips_by_month.slice(0, 12).map(month => ({
-          month: month.month_name.substring(0, 3), // Primeras 3 letras del mes
-          playdates: month.clips_saved
+        // KPI 2: Tiempo de conversión
+        const conversionTimeDays = data.conversionTime.averageDays
+        const conversionDescription = data.conversionTime.description
+
+        // KPI 3: Promedio de clicks por familia
+        const avgClicksPerFamily = data.clicksPerFamily.average
+        const clicksPerFamilyTrendText = data.clicksPerFamily.trendText
+
+        // Gráfico de Playdates creados (últimos 12 meses)
+        const playdatesData = data.playdatesCreated.monthlyData.map((item) => ({
+          month: item.month,
+          playdates: item.value,
         }))
 
-        // Datos para el donut de Edad de niños
-        const ageData = data.clips_by_source.map(source => ({
-          name: source.source_display_name,
-          value: source.total_clips,
-          color: getAgeColor(source.source),
-          percentage: `${source.percentage}%`
+        // Donut de Edad de niños
+        const ageData = data.ageGroups.stats.map((group) => ({
+          name: group.ageGroup,
+          value: group.count,
+          color: getAgeColor(group.ageGroup),
+          percentage: `${group.percentage}%`,
         }))
 
-        // Datos para el gráfico de Clicks (últimos 12 meses)
-        // Usar los mismos datos de playdates pero con valores diferentes para clicks
-        const clicksData = [
-          { month: 'Aug', clicks: 2 },
-          { month: 'Apr', clicks: 1 },
-          { month: 'Mar', clicks: 1 },
-          { month: 'Apr', clicks: 1 },
-          { month: 'May', clicks: 4 },
-          { month: 'Jun', clicks: 2 },
-        ]
+        // Gráfico de Clicks mensuales
+        const clicksData = data.clicksMonthly.monthlyData.map((item) => ({
+          month: item.month,
+          clicks: item.value,
+        }))
 
         return (
           <section className="space-y-4 w-full h-full">
@@ -57,7 +59,7 @@ export default function Metrics() {
               <div className="h-full">
                 <StatsCard
                   title={t('avgPlaydatesCreated')}
-                  subtitle="▲ +4 vs ayer"
+                  subtitle={playdatesTrendText}
                   value={avgPlaydates}
                   subtitleBelowValue={true}
                 />
@@ -67,8 +69,8 @@ export default function Metrics() {
               <div className="h-full">
                 <StatsCard
                   title={t('conversionTime')}
-                  subtitle={t('conversionTimeDescription')}
-                  value={`${conversionTime} días`}
+                  subtitle={conversionDescription || t('conversionTimeDescription')}
+                  value={`${conversionTimeDays} días`}
                   subtitleBelowValue={true}
                 />
               </div>
@@ -77,7 +79,7 @@ export default function Metrics() {
               <div className="h-full">
                 <StatsCard
                   title={t('avgClicksPerFamily')}
-                  subtitle="▲ +4 vs mes anterior"
+                  subtitle={clicksPerFamilyTrendText}
                   value={avgClicksPerFamily}
                   subtitleBelowValue={true}
                 />
@@ -114,7 +116,7 @@ export default function Metrics() {
                   data={ageData}
                   trend=""
                   showLegend={true}
-                  centerText={`${data.clip_stats.total_users} ${t('profiles')}`}
+                  centerText={`${data.ageGroups.totalProfiles} ${t('profiles')}`}
                 />
               </div>
 
@@ -145,11 +147,12 @@ export default function Metrics() {
 }
 
 // Función auxiliar para colores de edad
-function getAgeColor(source: string): string {
+function getAgeColor(ageGroup: string): string {
   const colors: Record<string, string> = {
-    'early_childhood': 'var(--color-primary-fixed-dim)', // Light blue - Primera infancia
-    'childhood': 'var(--color-primary-500)', // Teal - Infancia
-    'adolescence': 'var(--color-neutral-700)', // Dark teal/black - Adolescencia
+    'Primera infancia': 'var(--color-primary-fixed-dim)', // Light blue
+    'Infancia': 'var(--color-primary-500)', // Teal
+    'Adolescencia': 'var(--color-neutral-700)', // Dark
+    'No catalogado': 'var(--color-neutral-400)',
   }
-  return colors[source] || 'var(--color-neutral-500)'
+  return colors[ageGroup] || 'var(--color-neutral-500)'
 }

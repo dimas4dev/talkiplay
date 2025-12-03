@@ -251,3 +251,45 @@ export interface DashboardAnalyticsResponse {
   averageClicksPerFamily: AverageClicksPerFamilyData
   languages: LanguagesData
 }
+
+// --- Usage Metrics (/api/analytics/usage-metrics) ---
+
+export interface PlaydatesCreatedData {
+  average: number
+  trend: TrendData
+  monthlyData: MonthlyDataPoint[]
+}
+
+export interface ConversionTimeData {
+  averageDays: number
+  description: string
+}
+
+export interface ClicksPerFamilyData {
+  average: number
+  trend: TrendData
+}
+
+export interface AgeGroupStat {
+  ageGroup: string
+  count: number
+  percentage: number
+}
+
+export interface AgeGroupsData {
+  stats: AgeGroupStat[]
+  totalProfiles: number
+}
+
+export interface ClicksMonthlyData {
+  monthlyData: MonthlyDataPoint[]
+  trend: TrendData
+}
+
+export interface UsageMetricsResponse {
+  playdatesCreated: PlaydatesCreatedData
+  conversionTime: ConversionTimeData
+  clicksPerFamily: ClicksPerFamilyData
+  ageGroups: AgeGroupsData
+  clicksMonthly: ClicksMonthlyData
+}

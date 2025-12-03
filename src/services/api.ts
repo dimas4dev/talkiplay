@@ -21,6 +21,7 @@ import type {
   CreateForbiddenWordPayload,
   UpdateForbiddenWordPayload,
   DashboardAnalyticsResponse,
+  UsageMetricsResponse,
 } from '@/types/api'
 
 // Configuración base de la API
@@ -301,6 +302,11 @@ export const dashboardService = {
   // Obtener datos del dashboard
   async getDashboard(): Promise<DashboardAnalyticsResponse> {
     return apiClient.get<DashboardAnalyticsResponse>('/api/analytics/dashboard')
+  },
+
+  // Obtener métricas de uso
+  async getUsageMetrics(): Promise<UsageMetricsResponse> {
+    return apiClient.get<UsageMetricsResponse>('/api/analytics/usage-metrics')
   },
 }
 
