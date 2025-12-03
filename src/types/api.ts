@@ -309,3 +309,41 @@ export interface LegalDocument {
   createdAt: string
   updatedAt: string
 }
+
+// --- Admin Notifications (/api/admin/notifications) ---
+
+export interface AdminNotificationMetadata {
+  detectedWords?: string[]
+  userCode?: string
+  [key: string]: any
+}
+
+export interface AdminNotification {
+  id: string
+  type: string
+  title: string
+  message: string
+  userId: string
+  familyId: string
+  reportId: string
+  isRead: boolean
+  metadata: AdminNotificationMetadata
+  createdAt: string
+}
+
+export interface AdminNotificationsResponse {
+  data: AdminNotification[]
+  total: number
+  page: number
+  limit: number
+  totalPages: number
+}
+
+export interface AdminNotificationsStats {
+  total: number
+  unread: number
+}
+
+export interface AdminUnreadCount {
+  unread: number
+}

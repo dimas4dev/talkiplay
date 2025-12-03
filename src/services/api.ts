@@ -23,6 +23,9 @@ import type {
   DashboardAnalyticsResponse,
   UsageMetricsResponse,
   LegalDocument,
+  AdminNotificationsResponse,
+  AdminNotificationsStats,
+  AdminUnreadCount,
 } from '@/types/api'
 
 // Configuración base de la API
@@ -316,6 +319,30 @@ export const settingsService = {
   // Obtener documentos legales activos (términos y políticas)
   async getActiveLegalDocuments(): Promise<LegalDocument[]> {
     return apiClient.get<LegalDocument[]>('/api/settings/legal-documents/active')
+  },
+}
+
+// --- Servicios de Notificaciones de Administrador ---
+export const notificationsService = {
+  // Obtener notificaciones con paginación
+  async getAdminNotifications(params?: { page?: number; limit?: number }): Promise<AdminNotificationsResponse> {
+    const query = buildQueryString(params as Record<string, any> | undefined)
+    return apiClient.get<AdminNotificationsResponse>(`/api/admin/notifications${query}`)
+  },
+
+  // Obtener estadísticas de notificaciones
+  async getAdminNotificationsStats(): Promise<AdminNotificationsStats> {
+    return apiClient.get<AdminNotificationsStats>('/api/admin/notifications/stats')
+  },
+
+  // Marcar notificación como leída
+  async markNotificationAsRead(id: string): Promise<void> {
+    await apiClient.post<void>(`/api/admin/notifications/${id}/read`)
+  },
+
+  // Obtener solo el conteo de no leídas (optimizado para badges en header, etc.)
+  async getUnreadCount(): Promise<AdminUnreadCount> {
+    return apiClient.get<AdminUnreadCount>('/api/admin/notifications/unread-count')
   },
 }
 

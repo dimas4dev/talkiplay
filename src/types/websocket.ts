@@ -39,7 +39,12 @@ export interface Notification {
   read_at?: Date
 }
 
-export type NotificationType = 'new_report' | 'cancel_subscription' | 'payment_success' | 'payment_failed'
+export type NotificationType =
+  | 'new_report'
+  | 'cancel_subscription'
+  | 'payment_success'
+  | 'payment_failed'
+  | 'forbidden_word_detected'
 
 export interface NotificationWebSocketMessage {
   type: 'notification'
