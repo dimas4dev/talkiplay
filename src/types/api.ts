@@ -293,3 +293,19 @@ export interface UsageMetricsResponse {
   ageGroups: AgeGroupsData
   clicksMonthly: ClicksMonthlyData
 }
+
+// --- Settings: Legal Documents (/api/settings/legal-documents/active) ---
+
+export type LegalDocumentType = 'terms' | 'privacy' | 'privacy_policy'
+
+export interface LegalDocument {
+  id: string
+  type: LegalDocumentType
+  title: string
+  content: string
+  version: number
+  isActive: boolean
+  updatedBy: string | null
+  createdAt: string
+  updatedAt: string
+}

@@ -22,6 +22,7 @@ import type {
   UpdateForbiddenWordPayload,
   DashboardAnalyticsResponse,
   UsageMetricsResponse,
+  LegalDocument,
 } from '@/types/api'
 
 // Configuración base de la API
@@ -307,6 +308,14 @@ export const dashboardService = {
   // Obtener métricas de uso
   async getUsageMetrics(): Promise<UsageMetricsResponse> {
     return apiClient.get<UsageMetricsResponse>('/api/analytics/usage-metrics')
+  },
+}
+
+// --- Servicios de Settings ---
+export const settingsService = {
+  // Obtener documentos legales activos (términos y políticas)
+  async getActiveLegalDocuments(): Promise<LegalDocument[]> {
+    return apiClient.get<LegalDocument[]>('/api/settings/legal-documents/active')
   },
 }
 
