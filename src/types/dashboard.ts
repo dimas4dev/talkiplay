@@ -312,6 +312,8 @@ export interface UserReport {
   status: 'pending' | 'reviewed' | 'resolved'
   created_at: string
   updated_at: string
+  // Tipo de reporte: manual | automatic (u otros que pueda definir el backend)
+  type?: string
 }
 
 export interface UserHeader {

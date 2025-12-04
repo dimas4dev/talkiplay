@@ -23,16 +23,30 @@ export function useAdminReports(params: ReportsQuery) {
         type: params.type,
       })
 
-      const reports = response.data.map((item) => ({
-        id: item.id,
-        user_id: item.reportedUser?.id || item.id,
-        author: item.family?.familyName || item.reportedUser?.email || '-',
-        email: item.reportedUser?.email || '-',
-        comment: item.offensiveContent || item.reason || '-',
-        body: item.offensiveContent || item.reason || '-',
-        status: item.status,
-        created_at: item.createdAt,
-      }))
+      const reports = response.data.map((item: any) => {
+        // ID del usuario que usaremos para /api/admin/users/{id}/reports.
+        // Prioridad: reporter.id (quien hizo el reporte) y fallback al usuario reportado.
+        const userId =
+          item.reporter?.id ||
+          item.reportedUser?.id ||
+          item.reporterId ||
+          item.reportedUserId ||
+          item.id
+
+        const familyId = item.family?.id || item.familyId || null
+
+        return {
+          id: item.id,
+          user_id: userId,
+          family_id: familyId,
+          author: item.family?.familyName || item.reporter?.email || item.reportedUser?.email || '-',
+          email: item.reportedUser?.email || item.reporter?.email || '-',
+          comment: item.offensiveContent || item.reason || '-',
+          body: item.offensiveContent || item.reason || '-',
+          status: item.status,
+          created_at: item.createdAt,
+        }
+      })
 
       return {
         reports,

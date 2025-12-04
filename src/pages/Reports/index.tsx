@@ -251,7 +251,9 @@ export default function Reports() {
                     const statusInfo = statusStyles[normalizedStatus] || statusStyles.leido
                     const baseHref =
                       activeTab === 'suggestions'
+                        // Sugerencias: reportes por usuario
                         ? `/reports/suggestions/${(report as any).user_id || report.id}`
+                        // Incidentes: también navegamos por USUARIO (la pantalla es "reportes de un usuario")
                         : `${ROUTES.reports}/${(report as any).user_id || report.id}`
                     return (
                       <tr key={report.id} className={index > 0 ? 'border-t border-neutral-200' : ''}>

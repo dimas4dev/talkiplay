@@ -15,6 +15,7 @@ function mapReportToUserReport(report: ReportListItem, index: number): UserRepor
     status: report.status === 'marked' ? 'pending' : report.status === 'read' ? 'reviewed' : 'resolved',
     created_at: report.createdAt,
     updated_at: report.createdAt,
+    type: (report as any).type,
   }
 }
 
@@ -33,45 +34,85 @@ function mapFeedbackToUserReport(feedback: FeedbackItem, index: number): UserRep
   }
 }
 
+// En esta pantalla el parámetro que recibimos en la URL es el ID del USUARIO.
+// Paso 1: consultamos /api/admin/users/{userId}/reports
+// Paso 2: de la respuesta tomamos el familyId del primer reporte (si existe)
+//         y con eso consultamos /api/admin/families/{familyId} para armar el header.
 export function useUserReports(userId: string) {
   return useApiData<UserReportsData>({
     fetchFn: async () => {
-      // Obtener reportes del usuario
-      const reportsData = await userReportsService.getUserReports(userId)
-      
-      // Obtener información de la familia para construir UserHeader
-      const familyData = await adminFamilyService.getById(userId)
+      // 1) Obtener reportes del usuario
+      const rawReports = await userReportsService.getUserReports(userId)
+
+      const reportsArray: any[] = Array.isArray((rawReports as any)?.data)
+        ? (rawReports as any).data
+        : Array.isArray(rawReports)
+          ? (rawReports as any)
+          : []
       
       // Mapear reportes
-      const reports: UserReport[] = Array.isArray(reportsData) 
-        ? reportsData.map((r: any, i: number) => {
-            // Si viene como ReportListItem
-            if (r.type && r.reportedUser) {
-              return mapReportToUserReport(r as ReportListItem, i)
-            }
-            // Si ya viene en formato UserReport
-            return r as UserReport
-          })
-        : reportsData?.data?.map((r: any, i: number) => mapReportToUserReport(r, i)) || []
-      
-      // Construir UserHeader desde familyData
+      const reports: UserReport[] = reportsArray.map((r: any, i: number) => {
+        if (r.type && r.reportedUser) {
+          return mapReportToUserReport(r as ReportListItem, i)
+        }
+        return r as UserReport
+      })
+
+      // 2) Intentar obtener la familia a partir del primer reporte
+      const firstReport = reportsArray[0]
+      const familyIdFromReport: string | null =
+        firstReport?.family?.id || firstReport?.familyId || null
+
+      let familyData: any = null
+      if (familyIdFromReport) {
+        familyData = await adminFamilyService.getById(familyIdFromReport)
+      }
+
+      // Construir UserHeader priorizando la información de la familia
       const userHeader: UserHeader = {
-        id: parseInt(familyData.id) || 0,
-        name: familyData.family?.familyName || familyData.name || '',
-        email: familyData.email || '',
-        userId: familyData.id,
+        id: familyData ? parseInt(familyData.id) || 0 : 0,
+        name:
+          familyData?.familyName ||
+          familyData?.family?.familyName ||
+          firstReport?.family?.familyName ||
+          firstReport?.reportedUser?.name ||
+          firstReport?.reportedUser?.email ||
+          'Usuario',
+        email:
+          familyData?.email ||
+          familyData?.family?.user?.email ||
+          firstReport?.reportedUser?.email ||
+          firstReport?.reporter?.email ||
+          '',
+        userId: userId,
         subscription: 'Explorador' as const, // TODO: obtener del API si está disponible
-        status: familyData.accountStatus === 'active' ? 'Activo' : 
-                familyData.accountStatus === 'blocked' ? 'Bloqueado' : 'Inactivo',
-        registrationDate: familyData.createdAt || '',
+        status:
+          (familyData?.accountStatus === 'blocked'
+            ? 'Bloqueado'
+            : familyData?.accountStatus === 'inactive'
+              ? 'Inactivo'
+              : 'Activo'),
+        registrationDate: familyData?.createdAt || firstReport?.createdAt || '',
         reports: reports.length,
-        clicks: familyData.clicksCount || 0,
+        clicks: familyData?.clicksCount || 0,
       }
       
+      // 3) Construir lista de mensajes manuales a partir de los reportes type === 'manual'
+      const manualMessages = reportsArray
+        .filter((r: any) => r.type === 'manual')
+        .flatMap((r: any) =>
+          (r.lastMessages || []).map((m: any) => ({
+            sender: m.sender?.familyName || 'Familia',
+            text: m.content,
+          })),
+        )
+        .slice(0, 10)
+
       return {
         user: userHeader,
         reports,
-        manualMessages: [], // TODO: obtener del API si está disponible
+        // Mensajes construidos desde los reportes manuales del API
+        manualMessages,
       }
     },
     dependencies: [userId],
@@ -79,6 +120,8 @@ export function useUserReports(userId: string) {
   })
 }
 
+// Para sugerencias seguimos recibiendo el ID de USUARIO (no de familia),
+// por lo que aquí no cambiamos la semántica todavía.
 export function useUserSuggestions(userId: string) {
   return useApiData<UserReportsData>({
     fetchFn: async () => {
@@ -103,8 +146,12 @@ export function useUserSuggestions(userId: string) {
       // Construir UserHeader desde familyData
       const userHeader: UserHeader = {
         id: parseInt(familyData.id?.replace(/-/g, '').substring(0, 8) || '0', 16) || 0,
-        name: familyData.family?.familyName || familyData.name || '',
-        email: familyData.email || '',
+        name:
+          (familyData as any)?.family?.familyName ||
+          (familyData as any)?.familyName ||
+          (familyData as any)?.name ||
+          'Familia',
+        email: (familyData as any)?.email || (familyData as any)?.family?.user?.email || '',
         userId: familyData.id,
         subscription: 'Explorador' as const, // TODO: obtener del API si está disponible
         status: familyData.accountStatus === 'active' ? 'Activo' : 
