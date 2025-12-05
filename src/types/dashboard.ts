@@ -320,9 +320,18 @@ export interface UserHeader {
   id: number
   name: string
   email: string
+  /**
+   * Identificador que usamos para navegar a la pantalla de detalle.
+   * En la mayoría de casos será el ID de la familia (para /users/:id).
+   */
   userId: string
+  /**
+   * ID real de la familia cuando la tengamos disponible
+   * (por ejemplo, desde /api/admin/families/{familyId}).
+   */
+  familyId?: string
   subscription: 'Explorador' | 'Premium' | 'Pro'
-  status: 'Activo' | 'Bloqueado' | 'Inactivo'
+  status: 'Activo' | 'Bloqueado' | 'Inactivo' | 'Suspendido'
   registrationDate: string
   reports: number
   clicks?: number

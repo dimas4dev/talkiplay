@@ -6,16 +6,28 @@ import { ToastContainer, useToast } from '@/components/ui/toast'
 import { useUserReports } from '@/hooks/useUserReports'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import {
+  useWarnAdminUser,
+  useSuspendAdminUser,
+  useBlockAdminUser,
+  useActivateAdminUser,
+} from '@/hooks/useAdminUsers'
 
 type RouteParams = { id: string }
 
 export default function UserReportsPage() {
   const { t } = useTranslation('reports')
   const { id } = useParams<RouteParams>()
-  const { data, isLoading, error } = useUserReports(id || '')
-  const { toasts, removeToast } = useToast()
+  const { data, isLoading, error, refetch } = useUserReports(id || '')
+  const { toasts, removeToast, success, error: showError } = useToast()
   const [activeTab, setActiveTab] = useState<'sent' | 'manual'>('sent')
   const [isManualOpen, setIsManualOpen] = useState(true)
+
+  // Hooks de acciones sobre familia
+  const { warn, isLoading: isWarning } = useWarnAdminUser()
+  const { suspend, isLoading: isSuspending } = useSuspendAdminUser()
+  const { block, isLoading: isBlocking } = useBlockAdminUser()
+  const { activate, isLoading: isActivating } = useActivateAdminUser()
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr)
@@ -43,6 +55,88 @@ export default function UserReportsPage() {
     })
   }, [data])
 
+  const getTargetFamilyId = () => {
+    if (!data) return null
+    return (data.user as any).familyId || id || data.user.userId
+  }
+
+  const handleWarn = async () => {
+    const familyId = getTargetFamilyId()
+    if (!familyId) return
+
+    try {
+      await warn(familyId, {
+        reason: 'Advertencia administrativa desde la pantalla de reportes',
+        adminNotes: undefined,
+      })
+      success('Familia advertida', 'La advertencia se ha registrado correctamente')
+      refetch()
+    } catch (err) {
+      showError(
+        'Error al advertir',
+        err instanceof Error ? err.message : 'No se pudo advertir a la familia',
+      )
+    }
+  }
+
+  const handleSuspend = async () => {
+    const familyId = getTargetFamilyId()
+    if (!familyId) return
+
+    try {
+      await suspend(familyId, {
+        days: 7,
+        reason: 'Suspensión desde la pantalla de reportes',
+        adminNotes: undefined,
+      })
+      success('Familia suspendida', 'La familia ha sido suspendida por 7 días')
+      refetch()
+    } catch (err) {
+      showError(
+        'Error al suspender',
+        err instanceof Error ? err.message : 'No se pudo suspender a la familia',
+      )
+    }
+  }
+
+  const handleBlock = async () => {
+    const familyId = getTargetFamilyId()
+    if (!familyId) return
+
+    try {
+      await block(familyId, {
+        reason: 'Bloqueo desde la pantalla de reportes',
+        adminNotes: undefined,
+      })
+      success('Familia bloqueada', 'La familia ha sido bloqueada correctamente')
+      refetch()
+    } catch (err) {
+      showError(
+        'Error al bloquear',
+        err instanceof Error ? err.message : 'No se pudo bloquear a la familia',
+      )
+    }
+  }
+
+  const handleActivate = async () => {
+    const familyId = getTargetFamilyId()
+    if (!familyId) return
+
+    try {
+      await activate(familyId, {
+        reason: 'Activación/desbloqueo desde la pantalla de reportes',
+        adminNotes: undefined,
+      })
+      success('Familia activada', 'La familia ha sido activada/desbloqueada correctamente')
+      refetch()
+    } catch (err) {
+      showError(
+        'Error al activar',
+        err instanceof Error ? err.message : 'No se pudo activar a la familia',
+      )
+    }
+  }
+
   return (
     <>
       <ApiStateHandler
@@ -53,8 +147,9 @@ export default function UserReportsPage() {
         errorTitle="Error al cargar los reportes"
         emptyText="No hay reportes disponibles para este usuario"
       >
-        {(data) => {
+      {(data) => {
           const manualMessages = data.manualMessages ?? []
+          const isBlocked = data.user.status === 'Bloqueado'
           return (
           <div className="mx-auto max-w-6xl p-6 space-y-6">
             {/* Breadcrumb */}
@@ -70,30 +165,38 @@ export default function UserReportsPage() {
             {/* Botones de acción familia */}
             <div className="grid grid-cols-3 gap-4">
               <button 
-                className="w-full rounded-lg border-0 px-4 py-3 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500"
+                onClick={handleWarn}
+                disabled={isWarning}
+                className="w-full rounded-lg border-0 px-4 py-3 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{
                   backgroundColor: 'var(--color-primary-container)',
                   color: 'var(--color-primary-600)',
                 }}
               >
-                Advertir
+                {isWarning ? 'Advirtiendo...' : 'Advertir'}
               </button>
               <button 
-                className="w-full rounded-lg border-0 px-4 py-3 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500"
+                onClick={handleSuspend}
+                disabled={isSuspending || isBlocked}
+                className="w-full rounded-lg border-0 px-4 py-3 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{
                   backgroundColor: 'var(--color-primary-500)',
                 }}
               >
-                Suspender
+                {isSuspending ? 'Suspendiendo...' : 'Suspender'}
               </button>
               <button 
-                className="w-full rounded-lg border-0 px-4 py-3 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
+                onClick={isBlocked ? handleActivate : handleBlock}
+                disabled={isBlocking || isActivating}
+                className="w-full rounded-lg border-0 px-4 py-3 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{
                   backgroundColor: 'var(--color-error-container)',
                   color: 'var(--color-error-500)',
                 }}
               >
-                Desbloquear
+                {isBlocked
+                  ? (isActivating ? 'Desbloqueando...' : 'Desbloquear')
+                  : (isBlocking ? 'Bloqueando...' : 'Bloquear')}
               </button>
             </div>
 

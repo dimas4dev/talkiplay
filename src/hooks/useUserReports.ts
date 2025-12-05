@@ -68,32 +68,38 @@ export function useUserReports(userId: string) {
         familyData = await adminFamilyService.getById(familyIdFromReport)
       }
 
+      const rawStatus: string = familyData?.accountStatus || 'active'
+      const normalizedStatus = rawStatus.toLowerCase()
+      let statusText: UserHeader['status'] = 'Activo'
+      if (normalizedStatus.includes('bloq') || rawStatus === 'blocked') {
+        statusText = 'Bloqueado'
+      } else if (normalizedStatus.includes('suspen') || rawStatus === 'suspended') {
+        statusText = 'Suspendido'
+      } else if (normalizedStatus.includes('inac') || rawStatus === 'inactive') {
+        statusText = 'Inactivo'
+      }
+
       // Construir UserHeader priorizando la información de la familia
       const userHeader: UserHeader = {
-        id: familyData ? parseInt(familyData.id) || 0 : 0,
+        id: 0,
         name:
-          familyData?.familyName ||
           familyData?.family?.familyName ||
+          familyData?.familyName ||
           firstReport?.family?.familyName ||
           firstReport?.reportedUser?.name ||
           firstReport?.reportedUser?.email ||
           'Usuario',
         email:
           familyData?.email ||
-          familyData?.family?.user?.email ||
           firstReport?.reportedUser?.email ||
           firstReport?.reporter?.email ||
           '',
-        userId: userId,
+        userId: familyData?.userId || userId,
+        familyId: familyIdFromReport || familyData?.family?.id,
         subscription: 'Explorador' as const, // TODO: obtener del API si está disponible
-        status:
-          (familyData?.accountStatus === 'blocked'
-            ? 'Bloqueado'
-            : familyData?.accountStatus === 'inactive'
-              ? 'Inactivo'
-              : 'Activo'),
+        status: statusText,
         registrationDate: familyData?.createdAt || firstReport?.createdAt || '',
-        reports: reports.length,
+        reports: familyData?.reportCount ?? reports.length,
         clicks: familyData?.clicksCount || 0,
       }
       
@@ -151,30 +157,36 @@ export function useUserSuggestions(userId: string, familyId?: string | null) {
         familyData = await adminFamilyService.getById(familyIdToUse)
       }
 
+      const rawStatus: string = familyData?.accountStatus || 'active'
+      const normalizedStatus = rawStatus.toLowerCase()
+      let statusText: UserHeader['status'] = 'Activo'
+      if (normalizedStatus.includes('bloq') || rawStatus === 'blocked') {
+        statusText = 'Bloqueado'
+      } else if (normalizedStatus.includes('suspen') || rawStatus === 'suspended') {
+        statusText = 'Suspendido'
+      } else if (normalizedStatus.includes('inac') || rawStatus === 'inactive') {
+        statusText = 'Inactivo'
+      }
+
       // 3) Construir UserHeader combinando info de familia + usuario que envía la sugerencia
       const userHeader: UserHeader = {
-        id: familyData ? parseInt(familyData.id) || 0 : 0,
+        id: 0,
         name:
-          familyData?.familyName ||
           familyData?.family?.familyName ||
+          familyData?.familyName ||
           first?.user?.name ||
           first?.user?.email ||
           'Usuario',
         email:
-          first?.user?.email ||
           familyData?.email ||
-          familyData?.family?.user?.email ||
+          first?.user?.email ||
           '',
-        userId: first?.user?.id || userId,
+        userId: familyData?.userId || first?.user?.id || userId,
+        familyId: familyIdToUse || familyData?.family?.id,
         subscription: 'Explorador' as const, // TODO: obtener del API si está disponible
-        status:
-          (familyData?.accountStatus === 'blocked'
-            ? 'Bloqueado'
-            : familyData?.accountStatus === 'inactive'
-              ? 'Inactivo'
-              : 'Activo'),
+        status: statusText,
         registrationDate: familyData?.createdAt || first?.createdAt || '',
-        reports: reports.length,
+        reports: familyData?.reportCount ?? reports.length,
         clicks: familyData?.clicksCount || 0,
       }
       

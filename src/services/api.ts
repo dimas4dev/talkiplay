@@ -202,7 +202,7 @@ export const authService = {
 
   // Obtener perfil de usuario
   async getUserProfile(): Promise<ApiResponse<any>> {
-    return apiClient.get<ApiResponse<any>>('/api/v1/auth/profile')
+    return apiClient.get<ApiResponse<any>>('/api/auth/profile')
   },
 
   // Logout (limpiar tokens)

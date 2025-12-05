@@ -10,6 +10,7 @@ export type UserHeader = {
   name: string
   email: string
   userId: string
+  familyId?: string
   subscription: string
   status: string
   registrationDate: string
@@ -104,7 +105,7 @@ export default function UserHeaderCard({
               </>
             ) : (
               <Link
-                href={`${ROUTES.users}/${user.userId}`}
+                href={`${ROUTES.users}/${(user as any).familyId || user.userId}`}
                 className="flex w-full items-center gap-3 rounded px-3 py-2 text-left hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-primary-500"
                 role="menuitem"
               >
@@ -124,6 +125,7 @@ export default function UserHeaderCard({
           </div>
           <div className="mt-4 text-center">
             <span className="mr-2 text-sm text-neutral-900">{translations?.status || 'Estado'}:</span>
+            {console.log('user', user)}
             <Badge variant={getStatusBadgeVariant(user.status)}>{user.status}</Badge>
           </div>
         </div>
