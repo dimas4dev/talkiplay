@@ -13,7 +13,10 @@ type RouteParams = { id: string }
 export default function UserSuggestionReportsPage() {
   const { t } = useTranslation('reports')
   const { id } = useParams<RouteParams>()
-  const { data, isLoading, error } = useUserSuggestions(id || '')
+  // familyId viene como query param (?familyId=...) desde la tabla de reportes
+  const searchParams = new URLSearchParams(window.location.search)
+  const familyId = searchParams.get('familyId')
+  const { data, isLoading, error } = useUserSuggestions(id || '', familyId)
   const { toasts, removeToast } = useToast()
   const [flaggedIds, setFlaggedIds] = useState<string[]>([])
 

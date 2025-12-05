@@ -421,7 +421,25 @@ export const feedbackService = {
   // Listar feedback con paginación y filtros
   async list(params?: { page?: number; limit?: number; status?: string; search?: string }): Promise<FeedbackListResponse> {
     const query = buildQueryString(params as Record<string, any> | undefined)
-    return apiClient.get<FeedbackListResponse>(`/api/feedback${query}`)
+    const response = await apiClient.get<any>(`/api/feedback${query}`)
+
+    // El endpoint puede devolver directamente un array (como en tu ejemplo de curl)
+    // o un objeto paginado con { data, total, page, limit, totalPages }.
+    if (Array.isArray(response)) {
+      const data = response
+      const limit = params?.limit ?? data.length
+      const page = params?.page ?? 1
+
+      return {
+        data,
+        total: data.length,
+        page,
+        limit,
+        totalPages: Math.max(1, Math.ceil(data.length / limit)),
+      }
+    }
+
+    return response as FeedbackListResponse
   },
 
   // Obtener detalle de feedback por ID

@@ -43,7 +43,9 @@ function ToastItem({ toast, onRemove }: ToastProps) {
   }
 
   const getToastStyles = () => {
-    const baseStyles = "flex items-start gap-3 p-4 rounded-lg shadow-lg border transition-all duration-300 transform"
+    // Estilos base del contenedor del toast (card flotante)
+    const baseStyles =
+      'flex items-start gap-3 p-4 rounded-2xl shadow-md border border-[var(--color-card-border)] bg-white transition-all duration-300 transform'
     
     if (isLeaving) {
       return `${baseStyles} translate-x-full opacity-0`
@@ -59,37 +61,39 @@ function ToastItem({ toast, onRemove }: ToastProps) {
   const getTypeStyles = () => {
     switch (toast.type) {
       case 'success':
-        return 'bg-success-50 border-success-200 text-success-800'
+        return 'border-l-4 border-l-[var(--color-success-500)] text-[var(--color-neutral-900)]'
       case 'error':
-        return 'bg-danger-50 border-danger-200 text-danger-800'
+        return 'border-l-4 border-l-[var(--color-danger-500)] text-[var(--color-neutral-900)]'
       case 'warning':
-        return 'bg-warning-50 border-warning-200 text-warning-800'
+        return 'border-l-4 border-l-[var(--color-warning-500)] text-[var(--color-neutral-900)]'
       case 'info':
-        return 'bg-info-50 border-info-200 text-info-800'
+        return 'border-l-4 border-l-[var(--color-info-500)] text-[var(--color-neutral-900)]'
       default:
-        return 'bg-neutral-50 border-neutral-200 text-neutral-800'
+        return 'border-l-4 border-l-[var(--color-neutral-300)] text-[var(--color-neutral-900)]'
     }
   }
 
   const getIcon = () => {
+    // Usar Material Symbols para mantener consistencia visual con el resto de la app
     switch (toast.type) {
       case 'success':
-        return '✓'
+        return 'check_circle'
       case 'error':
-        return '✕'
+        return 'error'
       case 'warning':
-        return '⚠'
+        return 'warning'
       case 'info':
-        return 'ℹ'
       default:
-        return 'ℹ'
+        return 'info'
     }
   }
 
   return (
     <div className={`${getToastStyles()} ${getTypeStyles()}`}>
-      <div className="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-current text-white text-sm font-bold">
-        {getIcon()}
+      <div className="flex-shrink-0 mt-0.5">
+        <span className="ms text-[var(--color-info-500)] text-base">
+          {getIcon()}
+        </span>
       </div>
       <div className="flex-1 min-w-0">
         <h4 className="text-sm font-semibold">{toast.title}</h4>

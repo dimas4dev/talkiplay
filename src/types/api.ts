@@ -419,6 +419,8 @@ export interface FeedbackItem {
   email: string
   comments: string
   status: FeedbackStatus
+  // Familia asociada al usuario que envía el feedback (puede ser null)
+  familyId?: string | null
   user: FeedbackUser
   createdAt: string
 }

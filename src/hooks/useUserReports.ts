@@ -122,43 +122,60 @@ export function useUserReports(userId: string) {
 
 // Para sugerencias seguimos recibiendo el ID de USUARIO (no de familia),
 // por lo que aquí no cambiamos la semántica todavía.
-export function useUserSuggestions(userId: string) {
+export function useUserSuggestions(userId: string, familyId?: string | null) {
   return useApiData<UserReportsData>({
     fetchFn: async () => {
-      // Obtener sugerencias del usuario
-      const suggestionsData = await userReportsService.getUserSuggestions(userId)
-      
-      // Obtener información de la familia para construir UserHeader
-      const familyData = await adminFamilyService.getById(userId)
-      
-      // Mapear sugerencias
-      const reports: UserReport[] = Array.isArray(suggestionsData)
-        ? suggestionsData.map((s: any, i: number) => {
-            // Si viene como FeedbackItem
-            if (s.comments && s.user) {
-              return mapFeedbackToUserReport(s as FeedbackItem, i)
-            }
-            // Si ya viene en formato UserReport
-            return s as UserReport
-          })
-        : suggestionsData?.data?.map((s: any, i: number) => mapFeedbackToUserReport(s, i)) || []
-      
-      // Construir UserHeader desde familyData
+      // 1) Obtener sugerencias del usuario
+      const rawSuggestions = await userReportsService.getUserSuggestions(userId)
+
+      const suggestionsArray: any[] = Array.isArray((rawSuggestions as any)?.data)
+        ? (rawSuggestions as any).data
+        : Array.isArray(rawSuggestions)
+          ? (rawSuggestions as any)
+          : []
+
+      // Mapear sugerencias al formato de UserReport
+      const reports: UserReport[] = suggestionsArray.map((s: any, i: number) => {
+        if (s.comments && s.user) {
+          return mapFeedbackToUserReport(s as FeedbackItem, i)
+        }
+        return s as UserReport
+      })
+
+      const first = suggestionsArray[0]
+      // 2) Determinar familyId a usar: prioridad al queryParam, luego al campo familyId del API
+      const familyIdToUse: string | null = familyId || first?.familyId || null
+
+      let familyData: any = null
+      if (familyIdToUse) {
+        familyData = await adminFamilyService.getById(familyIdToUse)
+      }
+
+      // 3) Construir UserHeader combinando info de familia + usuario que envía la sugerencia
       const userHeader: UserHeader = {
-        id: parseInt(familyData.id?.replace(/-/g, '').substring(0, 8) || '0', 16) || 0,
+        id: familyData ? parseInt(familyData.id) || 0 : 0,
         name:
-          (familyData as any)?.family?.familyName ||
-          (familyData as any)?.familyName ||
-          (familyData as any)?.name ||
-          'Familia',
-        email: (familyData as any)?.email || (familyData as any)?.family?.user?.email || '',
-        userId: familyData.id,
+          familyData?.familyName ||
+          familyData?.family?.familyName ||
+          first?.user?.name ||
+          first?.user?.email ||
+          'Usuario',
+        email:
+          first?.user?.email ||
+          familyData?.email ||
+          familyData?.family?.user?.email ||
+          '',
+        userId: first?.user?.id || userId,
         subscription: 'Explorador' as const, // TODO: obtener del API si está disponible
-        status: familyData.accountStatus === 'active' ? 'Activo' : 
-                familyData.accountStatus === 'blocked' ? 'Bloqueado' : 'Inactivo',
-        registrationDate: familyData.createdAt || '',
+        status:
+          (familyData?.accountStatus === 'blocked'
+            ? 'Bloqueado'
+            : familyData?.accountStatus === 'inactive'
+              ? 'Inactivo'
+              : 'Activo'),
+        registrationDate: familyData?.createdAt || first?.createdAt || '',
         reports: reports.length,
-        clicks: familyData.clicksCount || 0,
+        clicks: familyData?.clicksCount || 0,
       }
       
       return {
@@ -166,7 +183,7 @@ export function useUserSuggestions(userId: string) {
         reports,
       }
     },
-    dependencies: [userId],
+    dependencies: [userId, familyId],
     enabled: !!userId,
   })
 }

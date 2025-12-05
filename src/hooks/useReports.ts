@@ -78,7 +78,10 @@ export function useFeedbackList(params: ReportsQuery) {
 
       const reports = response.data.map((item) => ({
         id: item.id,
+        // ID del usuario que envía la sugerencia
         user_id: item.user.id,
+        // ID de la familia asociada (si existe) para usarlo en la página de detalle
+        family_id: (item as any).familyId || null,
         author: item.fullName || item.user.name,
         email: item.email,
         comment: item.comments,
