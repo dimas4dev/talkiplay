@@ -13,7 +13,6 @@ import type {
   AdminUserDetail,
   AdminFamiliesQueryParams,
   AdminFamiliesResponse,
-  AdminFamilyStats,
   AdminFamilyDetail,
   WarnUserPayload,
   SuspendUserPayload,

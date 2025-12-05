@@ -129,17 +129,30 @@ export interface AdminFamilyStats {
 }
 
 export interface AdminFamilyDetail extends AdminFamily {
+  userId?: string
+  email?: string
+  name?: string | null
   accountStatus: AdminUserStatus
   suspendedUntil: string | null
   suspensionReason: string | null
   warnings: number
   lastWarningDate: string | null
+  lastWarningReason?: string | null
   blockReason: string | null
+  blockedAt?: string | null
   lastActivityDate: string | null
   reportCount: number
   recentReports: any[]
   clicksCount: number
   history: AdminUserHistoryItem[]
+  integrantes?: AdminFamilyMember[]
+  administrators?: Array<{
+    id: string
+    name: string
+    email: string
+    registrationDate: string
+    status: string
+  }>
 }
 
 export interface AdminFamilyMember {

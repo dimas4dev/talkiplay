@@ -1,4 +1,4 @@
-import type { ApiResponse, LoginResponse, RefreshTokenResponse, User } from '@/types/api'
+import type { ApiResponse, LoginResponse, User } from '@/types/api'
 
 const MOCK_USER: User = {
   id: '1',
@@ -9,7 +9,6 @@ const MOCK_USER: User = {
 }
 
 const MOCK_ACCESS_TOKEN = 'mock_access_token_' + Date.now()
-const MOCK_REFRESH_TOKEN = 'mock_refresh_token_' + Date.now()
 
 export const mockAuth = {
   login: (email: string, password: string): Response => {
@@ -20,10 +19,7 @@ export const mockAuth = {
         message: 'Login exitoso',
         data: {
           user: MOCK_USER,
-          tokens: {
-            accessToken: MOCK_ACCESS_TOKEN,
-            refreshToken: MOCK_REFRESH_TOKEN,
-          },
+          accessToken: MOCK_ACCESS_TOKEN,
         },
       }
       return new Response(JSON.stringify(response), {
@@ -45,7 +41,7 @@ export const mockAuth = {
   },
 
   refreshToken: (): Response => {
-    const response: ApiResponse<RefreshTokenResponse> = {
+    const response: ApiResponse<{ accessToken: string }> = {
       success: true,
       message: 'Token renovado exitosamente',
       data: {

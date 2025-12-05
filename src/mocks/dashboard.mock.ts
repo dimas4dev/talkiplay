@@ -67,10 +67,15 @@ const MOCK_DASHBOARD_DATA: DashboardData = {
     trend: '+5.2% vs mes pasado',
   },
   languages: {
+    stats: [
+      { language: 'Español', count: 60, percentage: 60 },
+      { language: 'Inglés', count: 25, percentage: 25 },
+      { language: 'Alemán', count: 15, percentage: 15 },
+    ],
+    trend: '+5.2% vs mes pasado',
     spanish: 60,
     english: 25,
     german: 15,
-    trend: '+5.2% vs mes pasado',
   },
 }
 

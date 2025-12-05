@@ -125,7 +125,6 @@ export default function UserHeaderCard({
           </div>
           <div className="mt-4 text-center">
             <span className="mr-2 text-sm text-neutral-900">{translations?.status || 'Estado'}:</span>
-            {console.log('user', user)}
             <Badge variant={getStatusBadgeVariant(user.status)}>{user.status}</Badge>
           </div>
         </div>

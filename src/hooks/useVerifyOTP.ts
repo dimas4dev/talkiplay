@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react'
 import { useLocation } from 'wouter'
 import { verifyOTPSchema } from '@/schemas/auth'
 import { authService } from '@/services/api'
-import type { ApiResponse, VerifyOTPResponse } from '@/types/api'
 
 export default function useVerifyOTP() {
   const [otp, setOtp] = useState('')

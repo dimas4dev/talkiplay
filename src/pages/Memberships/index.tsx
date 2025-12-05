@@ -117,10 +117,10 @@ export default function Memberships() {
     
     return currentData.data
       // Filtrar por búsqueda
-      .filter((item) => item.user.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      .filter((item: any) => item.user.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                        item.user.email.toLowerCase().includes(searchTerm.toLowerCase()))
       // Filtrar por suscripción
-      .filter((item) => {
+      .filter((item: any) => {
         if (filters.includes('premium') || filters.includes('pro')) {
           return (filters.includes('premium') && item.plan.type === 'premium') || 
                  (filters.includes('pro') && item.plan.type === 'pro')
@@ -128,7 +128,7 @@ export default function Memberships() {
         return true
       })
       // Filtrar por estado
-      .filter((item) => {
+      .filter((item: any) => {
         if (filters.includes('active') || filters.includes('cancelled') || filters.includes('trial') || 
             filters.includes('payment_error') || filters.includes('expired') || filters.includes('inactivo')) {
           return (filters.includes('active') && item.status === 'active') || 
@@ -141,7 +141,7 @@ export default function Memberships() {
         return true
       })
       // Filtrar por método de pago
-      .filter((item) => {
+      .filter((item: any) => {
         if (filters.includes('google_pay') || filters.includes('apple_pay') || filters.includes('stripe')) {
           return (filters.includes('google_pay') && item.payment_method === 'google_pay') || 
                  (filters.includes('apple_pay') && item.payment_method === 'apple_pay') ||
@@ -150,7 +150,7 @@ export default function Memberships() {
         return true
       })
       // Filtrar por vencimiento en 7 días (filtro especial)
-      .filter((item) => {
+      .filter((item: any) => {
         if (!specialFilters.includes('due_next_7_days')) return true
         const now = new Date()
         const due = new Date(item.dates.end_date)
@@ -158,7 +158,7 @@ export default function Memberships() {
         return diff >= 0 && diff <= 7
       })
       // Ordenar
-      .sort((a, b) => {
+      .sort((a: any, b: any) => {
         switch (sortValue) {
           case 'name_asc':
             return a.user.name.localeCompare(b.user.name)

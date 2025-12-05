@@ -47,7 +47,7 @@ export default function Revenues() {
   }
 
   // Filtrar datos si están disponibles
-  const filteredRows = periodsData?.periods?.filter((r) => {
+  const filteredRows = periodsData?.periods?.filter((r: any) => {
     const d = parsePeriod(r.period).getTime()
     const afterStart = startDate ? d >= new Date(startDate).getTime() : true
     const beforeEnd = endDate ? d <= new Date(endDate).getTime() : true
@@ -149,7 +149,7 @@ export default function Revenues() {
                   const mostPopularMethod = paymentMethodsData.summary?.most_popular_method
                   
                   // Mapear datos y encontrar el índice del método más popular
-                  const mappedData = paymentMethodsData.payment_methods.map((method, index) => {
+                  const mappedData = paymentMethodsData.payment_methods.map((method: any, index: number) => {
                     const methodName = method.method_name || method.method || 'Desconocido'
                     let translatedName = methodName
                     
@@ -171,7 +171,7 @@ export default function Revenues() {
                   })
                   
                   // Encontrar el índice del método más popular
-                  const mostPopularIndex = mappedData.findIndex(item => 
+                  const mostPopularIndex = mappedData.findIndex((item: any) => 
                     item.originalMethod.toLowerCase().includes(mostPopularMethod?.toLowerCase() || '')
                   )
                   
@@ -230,7 +230,7 @@ export default function Revenues() {
               text={t('exportRevenues')}
               onExport={() => {
                 // Preparar datos para exportar: periodos visibles actualmente
-                const rows = pageItems.map((r) => ({
+                const rows = pageItems.map((r: any) => ({
                   Periodo: r.period,
                   Premium: r.premium_subscriptions,
                   Pro: r.pro_subscriptions,

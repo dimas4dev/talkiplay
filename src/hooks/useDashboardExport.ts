@@ -1,7 +1,7 @@
 import { exportToCSV } from '@/components/ui/export-button'
-import type { DashboardData } from '@/types/dashboard'
+import type { DashboardDataResponse } from './useDashboard'
 
-export function useDashboardExport(data: DashboardData | null) {
+export function useDashboardExport(data: DashboardDataResponse | null) {
   const exportDashboard = () => {
     if (!data) {
       console.warn('No hay datos para exportar')
@@ -15,14 +15,14 @@ export function useDashboardExport(data: DashboardData | null) {
         'Período': 'Actual'
       },
       {
-        'Métrica': 'Crecimiento de usuarios',
-        'Valor': data.growth_rate?.new_subscriptions || 0,
-        'Período': 'Último mes'
+        'Métrica': 'Tasa de éxito de clicks',
+        'Valor': data.click_success_rate?.success_rate || 0,
+        'Período': 'Actual'
       },
       {
-        'Métrica': 'Tasa de retención',
-        'Valor': data.retention_rate?.average_retention || 0,
-        'Período': 'Último mes'
+        'Métrica': 'Clicks promedio por familia',
+        'Valor': data.averageClicksPerFamily?.average || 0,
+        'Período': 'Actual'
       }
     ]
 

@@ -12,7 +12,7 @@ export type UsersQuery = {
   sort_order?: 'asc' | 'desc'
 }
 
-export function useUsers(params: UsersQuery) {
+export function useUsers(_params: UsersQuery) {
   return useApiData<any>({
     fetchFn: async () => {
       // TODO: Implementar llamada a API si es necesario

@@ -80,7 +80,7 @@ export default function UserDetailPage() {
       return
     }
 
-    const familyName = userData.family?.familyName || userData.name || userData.email || 'Familia'
+    const familyName = userData.familyName || userData.name || userData.email || 'Familia'
     
     const result = await deleteUser(params.id)
     
@@ -90,7 +90,7 @@ export default function UserDetailPage() {
         setLocation(ROUTES.users)
       }, 1500)
     } else {
-      showError('Error al eliminar familia', result.message)
+      showError('Error al eliminar familia', 'No se pudo eliminar la familia')
     }
   }
 
@@ -199,8 +199,8 @@ export default function UserDetailPage() {
       >
         {(data) => {
           // Mapear la estructura de datos de la API
-          const familyName = data.family?.familyName || data.name || data.email || 'Familia'
-          const familyMembers = data.integrantes || data.family?.members || []
+          const familyName = data.familyName || data.name || data.email || 'Familia'
+          const familyMembers = data.integrantes || data.members || []
           const administrators = data.administrators || []
           const statusText = getStatusText(data.accountStatus || 'active')
 

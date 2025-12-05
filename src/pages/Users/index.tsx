@@ -137,8 +137,8 @@ export default function Users() {
           break
         case 'created_at':
         default:
-          const dateA = new Date(a.created_at)
-          const dateB = new Date(b.created_at)
+          const dateA = a.created_at ? new Date(a.created_at) : new Date(0)
+          const dateB = b.created_at ? new Date(b.created_at) : new Date(0)
           
           if (isNaN(dateA.getTime()) || isNaN(dateB.getTime())) {
             return 0

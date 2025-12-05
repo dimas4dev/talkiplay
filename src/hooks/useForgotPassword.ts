@@ -2,7 +2,6 @@ import { useState, useCallback } from 'react'
 import { useLocation } from 'wouter'
 import { forgotPasswordSchema } from '@/schemas/auth'
 import { authService } from '@/services/api'
-import type { ApiResponse, ForgotPasswordResponse } from '@/types/api'
 
 export default function useForgotPassword() {
   const [email, setEmail] = useState('')

@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react'
 import { useLocation } from 'wouter'
 import { resetPasswordSchema } from '@/schemas/auth'
 import { authService } from '@/services/api'
-import type { ResetPasswordRequest, ApiResponse, ResetPasswordResponse } from '@/types/api'
 
 export default function useResetPassword() {
   const [newPassword, setNewPassword] = useState('')

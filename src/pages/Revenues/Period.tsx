@@ -61,7 +61,7 @@ export default function RevenuePeriod() {
   }, [search])
 
   const payments = data?.payments ?? []
-  const filtered = payments.filter((p) =>
+  const filtered = payments.filter((p: any) =>
     (p.user_email || '').toLowerCase().includes(search.toLowerCase())
   )
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize))
