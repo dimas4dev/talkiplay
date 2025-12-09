@@ -173,7 +173,7 @@ const apiClient = new ApiClient(API_BASE_URL)
 export const authService = {
   // Login
   async login(credentials: LoginRequest): Promise<ApiResponse<LoginResponse>> {
-    const response = await apiClient.post<ApiResponse<LoginResponse>>('/api/v1/auth/login', credentials)
+    const response = await apiClient.post<ApiResponse<LoginResponse>>('/api/auth/login', credentials)
     
     if (response.success && response.data) {
       // Guardar access token
@@ -185,17 +185,17 @@ export const authService = {
 
   // Olvido de contraseña
   async forgotPassword(email: string): Promise<ApiResponse<ForgotPasswordResponse>> {
-    return apiClient.post<ApiResponse<ForgotPasswordResponse>>('/api/v1/auth/forgot-password', { email })
+    return apiClient.post<ApiResponse<ForgotPasswordResponse>>('/api/auth/forgot-password', { email })
   },
 
   // Verificar OTP
   async verifyOTP(email: string, code: string): Promise<ApiResponse<VerifyOTPResponse>> {
-    return apiClient.post<ApiResponse<VerifyOTPResponse>>('/api/v1/auth/verify-otp', { email, code })
+    return apiClient.post<ApiResponse<VerifyOTPResponse>>('/api/auth/verify-otp', { email, code })
   },
 
   // Reset password
   async resetPassword(payload: ResetPasswordRequest): Promise<ApiResponse<ResetPasswordResponse>> {
-    return apiClient.post<ApiResponse<ResetPasswordResponse>>('/api/v1/auth/reset-password', payload)
+    return apiClient.post<ApiResponse<ResetPasswordResponse>>('/api/auth/reset-password', payload)
   },
 
 
