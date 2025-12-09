@@ -142,15 +142,28 @@ class ApiClient {
       // Intentar parsear como JSON
       let responseData
       try {
-        responseData = await response.json()
+        const text = await response.text()
+        // Si la respuesta está vacía, intentar parsear como objeto vacío
+        if (!text || text.trim() === '') {
+          responseData = {}
+        } else {
+          responseData = JSON.parse(text)
+        }
       } catch (jsonError) {
         const contentType = response.headers.get('content-type')
         if (contentType && contentType.includes('text/html')) {
           throw new Error('La API no está configurada correctamente. Verifica la URL de la API.')
         }
-        throw new Error('Respuesta no válida del servidor')
+        // Si es un código de éxito (2xx) pero no se puede parsear JSON, devolver objeto vacío
+        if (response.ok) {
+          console.warn('Respuesta exitosa pero no es JSON válido:', jsonError)
+          responseData = {}
+        } else {
+          throw new Error('Respuesta no válida del servidor')
+        }
       }
 
+      // Aceptar códigos 200-299 como éxito (incluyendo 201 Created)
       if (!response.ok) {
         const errorMessage = responseData?.message || responseData?.error || `Error ${response.status}: ${response.statusText}`
         throw new Error(errorMessage)
@@ -173,14 +186,63 @@ const apiClient = new ApiClient(API_BASE_URL)
 export const authService = {
   // Login
   async login(credentials: LoginRequest): Promise<ApiResponse<LoginResponse>> {
-    const response = await apiClient.post<ApiResponse<LoginResponse>>('/api/auth/login', credentials)
-    
-    if (response.success && response.data) {
-      // Guardar access token
-      apiClient.setAccessToken(response.data.accessToken)
+    try {
+      // Permitimos que el backend responda en distintos formatos:
+      // 1) ApiResponse<LoginResponse>
+      // 2) LoginResponse directo { user, accessToken }
+      // 3) Cualquier objeto que contenga accessToken y user
+      const raw = await apiClient.post<any>('/api/auth/login', credentials)
+
+      if (!raw || typeof raw !== 'object') {
+        throw new Error('Respuesta del servidor inválida')
+      }
+
+      let wrapped: ApiResponse<LoginResponse>
+
+      // Caso 1: ya viene como ApiResponse<LoginResponse>
+      if ('success' in raw && 'data' in raw && raw.data) {
+        wrapped = raw as ApiResponse<LoginResponse>
+      } else if (raw.user && (raw.accessToken || raw.token)) {
+        // Caso 2: LoginResponse plano { user, accessToken } o { user, token }
+        wrapped = {
+          success: true,
+          message: raw.message || 'Login exitoso',
+          data: {
+            user: raw.user,
+            accessToken: raw.accessToken || raw.token,
+          },
+        }
+      } else if (raw.data && raw.data.user && (raw.data.accessToken || raw.data.token)) {
+        // Caso 3: data contiene user + token con otra key
+        wrapped = {
+          success: true,
+          message: raw.message || 'Login exitoso',
+          data: {
+            user: raw.data.user,
+            accessToken: raw.data.accessToken || raw.data.token,
+          },
+        }
+      } else {
+        console.error('Formato de respuesta de login no reconocido:', raw)
+        throw new Error('Formato de respuesta de login no reconocido')
+      }
+
+      if (wrapped.success && wrapped.data) {
+        const token = wrapped.data.accessToken
+        if (token) {
+          apiClient.setAccessToken(token)
+        } else {
+          console.warn('Login exitoso pero no se recibió accessToken')
+        }
+      } else {
+        console.warn('Login no exitoso:', wrapped.message || 'Sin mensaje')
+      }
+
+      return wrapped
+    } catch (error) {
+      console.error('Error en login:', error)
+      throw error
     }
-    
-    return response
   },
 
   // Olvido de contraseña

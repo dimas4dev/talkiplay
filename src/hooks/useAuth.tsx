@@ -156,14 +156,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setLocation('/login')
   }
 
+  // Crear el valor del contexto de forma estable
+  const contextValue: AuthContextType = {
+    isAuthenticated,
+    isLoading,
+    user,
+    login,
+    logout
+  }
+
   return (
-    <AuthContext.Provider value={{
-      isAuthenticated,
-      isLoading,
-      user,
-      login,
-      logout
-    }}>
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   )
@@ -172,6 +175,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext)
   if (context === undefined) {
+    // En desarrollo, dar más información sobre el error
+    if (process.env.NODE_ENV === 'development') {
+      console.error('useAuth fue llamado fuera de AuthProvider.')
+      console.error('Stack trace:', new Error().stack)
+      console.error('Asegúrate de que AuthProvider envuelva tu aplicación en App.tsx')
+    }
     throw new Error('useAuth debe ser usado dentro de un AuthProvider')
   }
   return context
