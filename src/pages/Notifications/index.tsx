@@ -57,6 +57,14 @@ export default function Notifications() {
     return diffInHours >= 24 && diffInHours < 168 // 7 días
   })
 
+  // Notificaciones anteriores a la última semana
+  const olderNotifications = displayNotifications.filter(n => {
+    const now = new Date()
+    const notificationDate = new Date(n.created_at)
+    const diffInHours = (now.getTime() - notificationDate.getTime()) / (1000 * 60 * 60)
+    return diffInHours >= 168
+  })
+
   return (
     <div className="mx-auto max-w-6xl p-6">
       {/* Header */}
@@ -131,6 +139,40 @@ export default function Notifications() {
             <h2 className="mb-3 text-sm font-bold text-neutral-900">{t('lastWeek')}</h2>
             <div className="space-y-3">
               {lastWeekNotifications.map((notification) => (
+                <div 
+                  key={notification.id} 
+                  className="relative w-full rounded-lg border border-neutral-200 bg-white px-4 py-6 transition-colors hover:bg-neutral-50 cursor-pointer"
+                  onClick={() => markAsRead(notification.id)}
+                >
+                  {notification.title && (
+                    <h3 className="text-sm font-semibold text-neutral-900 mb-1">{notification.title}</h3>
+                  )}
+                  <p className="text-sm text-neutral-900">{notification.message}</p>
+                  <p className="mt-2 text-xs text-neutral-500">
+                    {new Date(notification.created_at).toLocaleDateString('es-ES', {
+                      day: '2-digit',
+                      month: 'short',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
+                  </p>
+                  {!notification.is_read && (
+                    <div className="absolute right-4 top-4 h-2 w-2 rounded-full bg-neutral-900"></div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Older Section */}
+        {olderNotifications.length > 0 && (
+          <section>
+            <h2 className="mb-3 text-sm font-bold text-neutral-900">
+              {t('older', 'Más antiguas')}
+            </h2>
+            <div className="space-y-3">
+              {olderNotifications.map((notification) => (
                 <div 
                   key={notification.id} 
                   className="relative w-full rounded-lg border border-neutral-200 bg-white px-4 py-6 transition-colors hover:bg-neutral-50 cursor-pointer"

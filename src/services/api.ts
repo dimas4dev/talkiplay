@@ -325,7 +325,7 @@ export const adminFamilyService = {
 
   // Eliminar imagen de perfil de familia (admin)
   async deleteProfileImage(id: string): Promise<{ message: string }> {
-    return apiClient.delete<{ message: string }>(`/api/admin/families/${id}/profile-image`)
+    return apiClient.delete<{ message: string }>(`/admin/families/${id}/profile-image`)
   },
 }
 
@@ -334,17 +334,17 @@ export const adminUserService = {
   // Listar usuarios con filtros y paginación
   async getUsers(params: AdminUsersQueryParams): Promise<AdminUsersResponse> {
     const query = buildQueryString(params as Record<string, any>)
-    return apiClient.get<AdminUsersResponse>(`/api/admin/users${query}`)
+    return apiClient.get<AdminUsersResponse>(`/admin/users${query}`)
   },
 
   // Obtener estadísticas de usuarios
   async getStats(): Promise<AdminUserStats> {
-    return apiClient.get<AdminUserStats>('/api/admin/users/stats')
+    return apiClient.get<AdminUserStats>('/admin/users/stats')
   },
 
   // Obtener detalle de usuario por ID
   async getById(id: string): Promise<AdminUserDetail> {
-    return apiClient.get<AdminUserDetail>(`/api/admin/users/${id}`)
+    return apiClient.get<AdminUserDetail>(`/admin/users/${id}`)
   },
 
   // Advertir usuario
@@ -410,7 +410,8 @@ export const forbiddenWordsService = {
 
   // Actualizar una palabra prohibida
   async update(id: string, payload: UpdateForbiddenWordPayload): Promise<ApiResponse<ForbiddenWord> | ForbiddenWord> {
-    const response = await apiClient.put<any>(`/api/moderation/forbidden-words/${id}`, payload)
+    // El backend expone PATCH /api/moderation/forbidden-words/{id}
+    const response = await apiClient.patch<any>(`/api/moderation/forbidden-words/${id}`, payload)
     
     // Si la respuesta es directamente un ForbiddenWord (sin wrapper ApiResponse)
     if (response && typeof response === 'object' && 'word' in response && 'isStrong' in response) {
@@ -427,7 +428,19 @@ export const forbiddenWordsService = {
 
   // Eliminar una palabra prohibida
   async delete(id: string): Promise<ApiResponse<{ message: string }>> {
-    return apiClient.delete<ApiResponse<{ message: string }>>(`/api/moderation/forbidden-words/${id}`)
+    const response = await apiClient.delete<any>(`/api/moderation/forbidden-words/${id}`)
+
+    // Si el backend devuelve solo { message: string }, normalizar a ApiResponse
+    if (response && typeof response === 'object' && 'message' in response && !('success' in response)) {
+      return {
+        success: true,
+        message: (response as { message: string }).message,
+        data: { message: (response as { message: string }).message },
+      }
+    }
+
+    // Si ya viene en formato ApiResponse, retornarlo tal cual
+    return response as ApiResponse<{ message: string }>
   },
 }
 
@@ -553,7 +566,7 @@ export const notificationsService = {
 
   // Marcar notificación como leída
   async markNotificationAsRead(id: string): Promise<void> {
-    await apiClient.post<void>(`/api/admin/notifications/${id}/read`)
+    await apiClient.patch<void>(`/api/admin/notifications/${id}/read`)
   },
 
   // Obtener solo el conteo de no leídas (optimizado para badges en header, etc.)

@@ -1,8 +1,10 @@
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import type { Notification, NotificationFilter, NotificationStats, NotificationsReturn } from '@/types/websocket'
 import { notificationsService, authService } from '@/services/api'
 import type { AdminNotification, AdminNotificationsStats } from '@/types/api'
 import { io, type Socket } from 'socket.io-client'
+
+const NOTIFICATIONS_STORAGE_KEY = 'talkiplay_admin_notifications'
 
 export function useNotifications(): NotificationsReturn {
   const [notifications, setNotifications] = useState<Notification[]>([])
@@ -13,6 +15,47 @@ export function useNotifications(): NotificationsReturn {
   const [isConnecting, setIsConnecting] = useState(false)
   const [apiStats, setApiStats] = useState<AdminNotificationsStats | null>(null)
   const socketRef = useRef<Socket | null>(null)
+  const isConnectingRef = useRef(false)
+
+  // Hidratar desde localStorage al montar
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(NOTIFICATIONS_STORAGE_KEY)
+      if (!raw) return
+      const parsed = JSON.parse(raw) as {
+        notifications?: any[]
+        apiStats?: AdminNotificationsStats | null
+      }
+      if (parsed.notifications && Array.isArray(parsed.notifications)) {
+        const mapped: Notification[] = parsed.notifications.map((n) => ({
+          ...n,
+          created_at: new Date(n.created_at),
+          read_at: n.read_at ? new Date(n.read_at) : undefined,
+        }))
+        setNotifications(mapped)
+      }
+      if (parsed.apiStats) {
+        setApiStats(parsed.apiStats)
+      }
+    } catch (err) {
+      console.error('Error hidratando notificaciones desde localStorage', err)
+    }
+  }, [])
+
+  // Persistir en localStorage cuando cambien
+  useEffect(() => {
+    try {
+      const serializable = notifications.map((n) => ({
+        ...n,
+        created_at: n.created_at instanceof Date ? n.created_at.toISOString() : n.created_at,
+        read_at: n.read_at instanceof Date ? n.read_at.toISOString() : n.read_at,
+      }))
+      const payload = JSON.stringify({ notifications: serializable, apiStats })
+      localStorage.setItem(NOTIFICATIONS_STORAGE_KEY, payload)
+    } catch (err) {
+      console.error('Error persistiendo notificaciones en localStorage', err)
+    }
+  }, [notifications, apiStats])
 
   const markAsRead = useCallback(async (notificationId: string) => {
     try {
@@ -135,7 +178,7 @@ export function useNotifications(): NotificationsReturn {
   }, [])
 
   const connect = useCallback(() => {
-    if (socketRef.current || isConnecting) return
+    if (socketRef.current || isConnectingRef.current) return
 
     const baseUrl = (import.meta.env.VITE_TALKIPLAY_API_URL || '').replace(/\/+$/, '')
     const token = authService.getAccessToken()
@@ -146,6 +189,7 @@ export function useNotifications(): NotificationsReturn {
     }
 
     setIsConnecting(true)
+    isConnectingRef.current = true
 
     const socket = io(`${baseUrl}/admin-notifications`, {
       auth: { token },
@@ -157,10 +201,12 @@ export function useNotifications(): NotificationsReturn {
     socket.on('connect', () => {
       setIsConnected(true)
       setIsConnecting(false)
+      isConnectingRef.current = false
     })
 
     socket.on('disconnect', () => {
       setIsConnected(false)
+      isConnectingRef.current = false
     })
 
     socket.on('connect_error', (err) => {
@@ -168,6 +214,7 @@ export function useNotifications(): NotificationsReturn {
       setError(err instanceof Error ? err.message : 'Error de conexión al WebSocket')
       setIsConnecting(false)
       setIsConnected(false)
+      isConnectingRef.current = false
     })
 
     // Nueva notificación en tiempo real
@@ -187,7 +234,7 @@ export function useNotifications(): NotificationsReturn {
         prev ? { ...prev, unread: data.count } : { total: notifications.length, unread: data.count }
       )
     })
-  }, [isConnecting, notifications.length])
+  }, [])
 
   const disconnect = useCallback(() => {
     if (socketRef.current) {

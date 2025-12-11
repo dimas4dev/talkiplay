@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react'
+import { createContext, useContext, useEffect } from 'react'
 import type { ReactNode } from 'react'
 import { useNotifications } from '@/hooks/useNotifications'
 import type { NotificationsReturn } from '@/types/websocket'
@@ -13,6 +13,16 @@ interface NotificationsProviderProps {
 
 export function NotificationsProvider({ children }: NotificationsProviderProps) {
   const notificationsData = useNotifications()
+
+  // Cargar notificaciones iniciales y conectar el socket de forma global
+  useEffect(() => {
+    notificationsData.loadNotifications()
+    notificationsData.connect()
+
+    return () => {
+      notificationsData.disconnect()
+    }
+  }, [notificationsData.loadNotifications, notificationsData.connect, notificationsData.disconnect])
 
   return (
     <NotificationsContext.Provider value={notificationsData}>
