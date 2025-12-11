@@ -499,8 +499,11 @@ const resources = {
         sendGreeting: 'Enviar saludo',
         exportUsers: 'Exportar usuarios',
         warn: 'Advertir',
+        warning: 'Advirtiendo...',
         suspend: 'Suspender',
+        suspending: 'Suspendiendo...',
         block: 'Bloquear',
+        blocking: 'Bloqueando...',
       },
       export: {
         username: 'Usuario',
@@ -941,8 +944,11 @@ const resources = {
         sendGreeting: 'Send greeting',
         exportUsers: 'Export users',
         warn: 'Warn',
+        warning: 'Warning...',
         suspend: 'Suspend',
+        suspending: 'Suspending...',
         block: 'Block',
+        blocking: 'Blocking...',
       },
       export: {
         username: 'User',

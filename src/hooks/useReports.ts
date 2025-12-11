@@ -76,19 +76,23 @@ export function useFeedbackList(params: ReportsQuery) {
         search: params.search,
       })
 
-      const reports = response.data.map((item) => ({
-        id: item.id,
-        // ID del usuario que envía la sugerencia
-        user_id: item.user.id,
-        // ID de la familia asociada (si existe) para usarlo en la página de detalle
-        family_id: (item as any).familyId || null,
-        author: item.fullName || item.user.name,
-        email: item.email,
-        comment: item.comments,
-        body: item.comments,
-        status: item.status,
-        created_at: item.createdAt,
-      }))
+      const reports = response.data.map((item) => {
+        const user = (item as any).user || null
+
+        return {
+          id: item.id,
+          // ID del usuario que envía la sugerencia (fallback al id de la sugerencia si no hay user)
+          user_id: user?.id || item.id,
+          // ID de la familia asociada (si existe) para usarlo en la página de detalle
+          family_id: (item as any).familyId || null,
+          author: item.fullName || user?.name || item.email || '-',
+          email: item.email || user?.email || '-',
+          comment: item.comments,
+          body: item.comments,
+          status: item.status,
+          created_at: item.createdAt,
+        }
+      })
 
       return {
         reports,

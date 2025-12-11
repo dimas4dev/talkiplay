@@ -7,8 +7,14 @@ import FilterDropdown from '@/components/ui/filter-dropdown'
 import Table from '@/components/ui/table'
 import Badge from '@/components/ui/badge'
 import ApiStateHandler from '@/components/ui/ApiStateHandler'
-import { useAdminUsers } from '@/hooks/useAdminUsers'
+import {
+  useAdminUsers,
+  useWarnAdminUser,
+  useSuspendAdminUser,
+  useBlockAdminUser,
+} from '@/hooks/useAdminUsers'
 import Pagination from '@/components/ui/pagination'
+import { useToast, ToastContainer } from '@/components/ui/toast'
 
 export default function Users() {
   const { t } = useTranslation('users')
@@ -21,6 +27,9 @@ export default function Users() {
   
   const [page, setPage] = useState(1)
   const [pageSize] = useState(10)
+
+  // Toasts
+  const { toasts, removeToast, success, error: showError } = useToast()
 
   // Función para leer parámetros de URL y aplicar filtros automáticamente
   useEffect(() => {
@@ -77,12 +86,20 @@ export default function Users() {
   }
 
   // Query para obtener todos los usuarios (sin filtros, para filtrar localmente)
-  const query = useMemo(() => ({
-    page: 1,
-    limit: 1000, // Obtener una cantidad grande para filtrar localmente
-  }), [])
+  const query = useMemo(
+    () => ({
+      page: 1,
+      limit: 1000, // Obtener una cantidad grande para filtrar localmente
+    }),
+    [],
+  )
 
-  const { data: adminUsersData, isLoading, error } = useAdminUsers(query)
+  const { data: adminUsersData, isLoading, error, refetch } = useAdminUsers(query)
+
+  // Hooks de acciones masivas sobre familias
+  const { warn, isLoading: isWarning } = useWarnAdminUser()
+  const { suspend, isLoading: isSuspending } = useSuspendAdminUser()
+  const { block, isLoading: isBlocking } = useBlockAdminUser()
   
   // Transformar y aplicar filtros localmente
   const filteredAndPaginatedData = useMemo(() => {
@@ -357,53 +374,121 @@ export default function Users() {
 
           {/* Botones de acción */}
           <div className="grid grid-cols-3 gap-4">
-            <button 
-              disabled={selectedUsers.length === 0}
+            <button
+              onClick={async () => {
+                if (selectedUsers.length === 0) return
+                try {
+                  await Promise.all(
+                    selectedUsers.map((id) =>
+                      warn(id, {
+                        reason: 'Advertencia administrativa desde la lista de usuarios',
+                        adminNotes: undefined,
+                      }),
+                    ),
+                  )
+                  success('Familias advertidas', `Se ha advertido a ${selectedUsers.length} familia(s).`)
+                  setSelectedUsers([])
+                  refetch()
+                } catch (err) {
+                  showError(
+                    'Error al advertir',
+                    err instanceof Error ? err.message : 'No se pudo advertir a las familias seleccionadas',
+                  )
+                }
+              }}
+              disabled={selectedUsers.length === 0 || isWarning}
               className="w-full rounded-lg border-0 px-4 py-3 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:cursor-not-allowed"
               style={{
-                backgroundColor: selectedUsers.length > 0 
-                  ? 'var(--color-primary-container)' 
-                  : 'rgba(23, 29, 30, 0.10)', // M3/state-layers/light/onSurface/opacity-0.10
-                color: selectedUsers.length > 0 
-                  ? 'var(--color-primary-600)' // On Primary Container
-                  : 'var(--color-neutral-500)',
+                backgroundColor:
+                  selectedUsers.length > 0 && !isWarning
+                    ? 'var(--color-primary-container)'
+                    : 'rgba(23, 29, 30, 0.10)',
+                color:
+                  selectedUsers.length > 0 && !isWarning
+                    ? 'var(--color-primary-600)'
+                    : 'var(--color-neutral-500)',
               }}
             >
-              {t('actions.warn')}
+              {isWarning ? t('actions.warning') || 'Advirtiendo...' : t('actions.warn')}
             </button>
-            <button 
-              disabled={selectedUsers.length === 0}
-              className="w-full rounded-lg border-0 px-4 py-3 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:cursor-not-allowed"
+            <button
+              onClick={async () => {
+                if (selectedUsers.length === 0) return
+                try {
+                  await Promise.all(
+                    selectedUsers.map((id) =>
+                      suspend(id, {
+                        days: 7,
+                        reason: 'Suspensión desde la lista de usuarios',
+                        adminNotes: undefined,
+                      }),
+                    ),
+                  )
+                  success('Familias suspendidas', `Se ha suspendido a ${selectedUsers.length} familia(s) por 7 días.`)
+                  setSelectedUsers([])
+                  refetch()
+                } catch (err) {
+                  showError(
+                    'Error al suspender',
+                    err instanceof Error ? err.message : 'No se pudo suspender a las familias seleccionadas',
+                  )
+                }
+              }}
+              disabled={selectedUsers.length === 0 || isSuspending}
+              className="w-full rounded-lg border-0 px-4 py-3 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:cursor-not-allowed"
               style={{
-                backgroundColor: selectedUsers.length > 0 
-                  ? 'var(--color-primary-500)' 
-                  : 'rgba(23, 29, 30, 0.10)', // M3/state-layers/light/onSurface/opacity-0.10
-                color: selectedUsers.length > 0 
-                  ? 'white' 
-                  : 'var(--color-neutral-500)',
+                backgroundColor:
+                  selectedUsers.length > 0 && !isSuspending
+                    ? 'var(--color-primary-500)'
+                    : 'rgba(23, 29, 30, 0.10)',
+                color: selectedUsers.length > 0 && !isSuspending ? 'white' : 'var(--color-neutral-500)',
               }}
             >
-              {t('actions.suspend')}
+              {isSuspending ? t('actions.suspending') || 'Suspendiendo...' : t('actions.suspend')}
             </button>
-            <button 
-              disabled={selectedUsers.length === 0}
+            <button
+              onClick={async () => {
+                if (selectedUsers.length === 0) return
+                try {
+                  await Promise.all(
+                    selectedUsers.map((id) =>
+                      block(id, {
+                        reason: 'Bloqueo desde la lista de usuarios',
+                        adminNotes: undefined,
+                      }),
+                    ),
+                  )
+                  success('Familias bloqueadas', `Se ha bloqueado a ${selectedUsers.length} familia(s).`)
+                  setSelectedUsers([])
+                  refetch()
+                } catch (err) {
+                  showError(
+                    'Error al bloquear',
+                    err instanceof Error ? err.message : 'No se pudo bloquear a las familias seleccionadas',
+                  )
+                }
+              }}
+              disabled={selectedUsers.length === 0 || isBlocking}
               className="w-full rounded-lg border-0 px-4 py-3 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 disabled:cursor-not-allowed"
               style={{
-                backgroundColor: selectedUsers.length > 0 
-                  ? 'var(--color-error-container)' 
-                  : 'rgba(23, 29, 30, 0.10)', // M3/state-layers/light/onSurface/opacity-0.10
-                color: selectedUsers.length > 0 
-                  ? 'var(--color-error-500)' // Error color for text
-                  : 'var(--color-neutral-500)',
+                backgroundColor:
+                  selectedUsers.length > 0 && !isBlocking
+                    ? 'var(--color-error-container)'
+                    : 'rgba(23, 29, 30, 0.10)',
+                color:
+                  selectedUsers.length > 0 && !isBlocking
+                    ? 'var(--color-error-500)'
+                    : 'var(--color-neutral-500)',
               }}
             >
-              {t('actions.block')}
+              {isBlocking ? t('actions.blocking') || 'Bloqueando...' : t('actions.block')}
             </button>
           </div>
         </div>
         )
       }}
     </ApiStateHandler>
+    <ToastContainer toasts={toasts} onRemove={removeToast} />
   </>
   )
 }
